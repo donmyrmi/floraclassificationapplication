@@ -1,16 +1,13 @@
 package com.sn.floraclassificationapplication;
 
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.Toast;
 import com.sn.floraclassificationapplication.segmenter.SegmentationController;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    SegmentationController sgm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,16 +19,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void init()
     {
-        sgm = SegmentationController.getInstance(this);
-
         Flower segmentedFlower = TestFlower();
-        sgm.segment(segmentedFlower);
+        segmentedFlower.segmentAndClassify();
     }
 
     public Flower TestFlower()
     {
         GPSTracker gps;
-        Flower segmentedFlower = new Flower();
+        Flower segmentedFlower = new Flower(this);
         segmentedFlower.setFlowerImage(BitmapFactory.decodeResource(getResources(), R.mipmap.f1));
 
         gps = new GPSTracker(this);
