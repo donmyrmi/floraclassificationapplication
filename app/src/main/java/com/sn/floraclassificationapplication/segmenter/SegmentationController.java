@@ -1,7 +1,9 @@
 package com.sn.floraclassificationapplication.segmenter;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +28,8 @@ public class SegmentationController {
     private ImageView flowerView;
     private Flower segmentedFlower;
 
-    public static SegmentationController getInstance() {
+    public static SegmentationController getInstance(AppCompatActivity aActivity) {
+        activity = aActivity;
         return ourInstance;
     }
 
@@ -45,7 +48,6 @@ public class SegmentationController {
         output = Bitmap.createBitmap(bi.getWidth(), bi.getHeight(), conf);
 
         cutOutImage(bi);
-
     }
 
     public void init()
@@ -60,22 +62,24 @@ public class SegmentationController {
     private void confirmSegmentation() {
         flowerView.setImageBitmap(output);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         builder.setTitle("Confirm");
-        builder.setMessage("Confirm segmentation?");
-        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+        builder.setMessage("Is this okay?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 segmentedFlower.setFlowerImage(output);
                 dialog.dismiss();
                 continueToClassifier();
             }
+
         });
-        builder.setNegativeButton("Repeat", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
                 segment(segmentedFlower);
             }
         });
@@ -88,15 +92,10 @@ public class SegmentationController {
 
     private void continueToClassifier() {
         bg_bi = null;
-        Toast.makeText(activity.getApplicationContext(), "Calculating grayscale...", Toast.LENGTH_LONG).show();
-        segmentedFlower.setGrayImage(ic.toGrayscale(output));
-        flowerView.setImageBitmap(segmentedFlower.getGrayImage());
-        
         output = null;
         flowerSegments = null;
         Toast.makeText(activity.getApplicationContext(), "Done! Calculating variables...", Toast.LENGTH_LONG).show();
-
-        segmentedFlower.classify();
+        segmentedFlower.classify(activity);
     }
 
     private void cutOutImage(Bitmap bi) {
@@ -114,6 +113,7 @@ public class SegmentationController {
                 askSegmentPart();
             }
         }, 150);
+        //askSegmentPart();
     }
 
     private void askSegmentPart()

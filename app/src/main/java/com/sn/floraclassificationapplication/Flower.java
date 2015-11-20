@@ -11,7 +11,6 @@ import com.sn.floraclassificationapplication.classifier.Classifier;
 import com.sn.floraclassificationapplication.classifier.Hu8Moments;
 import com.sn.floraclassificationapplication.classifier.RGBColorAverage;
 import com.sn.floraclassificationapplication.classifier.ShowValues;
-import com.sn.floraclassificationapplication.segmenter.SegmentationController;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,7 +23,6 @@ public class Flower {
     private int id;
     private String name;
     private Bitmap flowerImage;
-    private Bitmap grayImage;
     private double[] hu8Moments;
     private int color;
     private List<Location> locations;
@@ -32,16 +30,12 @@ public class Flower {
     private List<Classifier> classifiers;
     Hu8Moments hu8MomentController = Hu8Moments.getInstance();
     RGBColorAverage rgbColorAverage = RGBColorAverage.getInstance();
-    SegmentationController sm = SegmentationController.getInstance();
-    private static AppCompatActivity activity;
 
-    public Flower(AppCompatActivity activity) {
+    public Flower() {
 
         locations = new ArrayList<Location>();
         classifiers = new ArrayList<Classifier>();
         hu8Moments = new double[8];
-        this.activity = activity;
-        sm.setActivity(activity);
     }
 
     public int getId() {
@@ -103,32 +97,20 @@ public class Flower {
     }
 
     public void calcHu8Moments() {
-        this.hu8Moments = hu8MomentController.cal_moments(grayImage);
+        this.hu8Moments = hu8MomentController.cal_moments(flowerImage);
     }
 
     private void calcRGBAverages() {
         this.color = rgbColorAverage.cal_rgb_averages(flowerImage);
     }
 
-    public void classify() {
+    public void classify(AppCompatActivity mainActivity) {
 
         calcHu8Moments();
         calcRGBAverages();
 
-        ShowValues showValues = new ShowValues(activity, this);
+        ShowValues showValues = new ShowValues(mainActivity, this);
         showValues.show();
 
-    }
-
-    public void setGrayImage(Bitmap BWimage) {
-        this.grayImage = BWimage;
-    }
-
-    public Bitmap getGrayImage() {
-        return grayImage;
-    }
-
-    public void segmentAndClassify() {
-        sm.segment(this);
     }
 }

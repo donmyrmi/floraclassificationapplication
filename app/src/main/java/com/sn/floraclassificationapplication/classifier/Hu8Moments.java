@@ -46,7 +46,9 @@ public class Hu8Moments{
         moments[5] = (scl[2][0] - scl[0][2]) * ( Math.pow((scl[3][0] + scl[1][2]),2) - Math.pow((scl[2][1] + scl[0][3]),2) ) + 4*scl[1][1]*(scl[3][0] + scl[1][2])*(scl[2][1] + scl[0][3]);
         moments[6] = (3 * scl[2][1] - scl[0][3]) * (scl[3][0] + scl[1][2]) * ( Math.pow((scl[3][0] + scl[1][2]),2) - 3 * Math.pow((scl[2][1]+scl[0][3]),2) ) - (scl[3][0]-3*scl[1][2]) * (scl[2][1]+scl[0][3])*( 3*Math.pow((scl[3][0] + scl[1][2]), 2) - Math.pow((scl[2][1] + scl[0][3]),2) );
         moments[7] = scl[1][1] * ( Math.pow((scl[3][0] + scl[1][2] ),2) - Math.pow((scl[0][3] + scl[2][1]),2) ) - (scl[2][0] - scl[0][2]) * (scl[3][0] + scl[1][2]) * (scl[0][3] + scl[2][1]);
-
+        System.out.println("-----HU----");
+        for (double d:moments)
+            System.out.println(d);
         return moments;
     }
 
