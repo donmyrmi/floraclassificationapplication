@@ -31,11 +31,6 @@ public class Cent {
         this.y = y;
     }
 
-    public Cent()
-    {
-        x=y=0;
-    }
-
     public Cent(Bitmap bi)
     {
         find_centroid(bi);
@@ -55,13 +50,14 @@ public class Cent {
             p = cpq[c][0];
             q = cpq[c][1];
             centroid[c] = 0;
-            for (int xc = 0; xc<w; xc++)
+
+            for (int xc = 0; xc<w; xc++){
                 for (int yc = 0; yc<h; yc++) {
                     int pixel = bi.getPixel(x, y);
                     if (Color.alpha(pixel) != 0)
                         centroid[c] += Math.pow(xc,p) * Math.pow(yc,q) * pixel;
                 }
-
+            }
         }
         x = centroid[1] / centroid[0];
         y = centroid[2] / centroid[0];
