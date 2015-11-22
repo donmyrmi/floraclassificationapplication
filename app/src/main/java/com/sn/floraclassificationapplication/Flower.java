@@ -1,21 +1,21 @@
 package com.sn.floraclassificationapplication;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.sn.floraclassificationapplication.classifier.Classifier;
 import com.sn.floraclassificationapplication.classifier.Hu8Moments;
 import com.sn.floraclassificationapplication.classifier.RGBColorAverage;
 import com.sn.floraclassificationapplication.classifier.ShowValues;
+import com.sn.floraclassificationapplication.segmenter.ImageController;
 import com.sn.floraclassificationapplication.segmenter.SegmentationController;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+
 
 /**
  * Created by Nadav on 19-Nov-15.
@@ -29,19 +29,25 @@ public class Flower {
     private int color;
     private List<Location> locations;
     private int month;
-    private List<Classifier> classifiers;
-    Hu8Moments hu8MomentController = Hu8Moments.getInstance();
-    RGBColorAverage rgbColorAverage = RGBColorAverage.getInstance();
-    SegmentationController sm = SegmentationController.getInstance();
+    private Hu8Moments hu8MomentController = Hu8Moments.getInstance();
+    private RGBColorAverage rgbColorAverage = RGBColorAverage.getInstance();
+    private SegmentationController sm = SegmentationController.getInstance();
+    private ImageController ic = ImageController.getInstance();
     private static AppCompatActivity activity;
+    private ShowValues showValues;
 
-    public Flower(AppCompatActivity activity) {
-
+    public Flower(AppCompatActivity activity)  {
         locations = new ArrayList<Location>();
-        classifiers = new ArrayList<Classifier>();
+        //classifiers = new ArrayList<Classifier>();
         hu8Moments = new double[8];
         this.activity = activity;
+        sm = new SegmentationController();
         sm.setActivity(activity);
+        showValues = new ShowValues(activity, this);
+    }
+
+    public AppCompatActivity getActivity() {
+        return activity;
     }
 
     public int getId() {
@@ -73,7 +79,7 @@ public class Flower {
     }
 
     public void setFlowerImage(Bitmap flowerImage) {
-        this.flowerImage = flowerImage;
+        this.flowerImage = flowerImage.copy(flowerImage.getConfig(),true);
     }
 
     public void addLocation(Location location) {
@@ -103,7 +109,7 @@ public class Flower {
     }
 
     public void calcHu8Moments() {
-        this.hu8Moments = hu8MomentController.cal_moments(grayImage);
+        //this.hu8Moments = hu8MomentController.cal_moments(grayImage);
     }
 
     private void calcRGBAverages() {
@@ -111,17 +117,17 @@ public class Flower {
     }
 
     public void classify() {
-
-        calcHu8Moments();
+        setGrayImage(flowerImage);
+        hu8Moments = hu8MomentController.cal_moments(grayImage);
         calcRGBAverages();
-
-        ShowValues showValues = new ShowValues(activity, this);
+        Toast.makeText(activity, "Calculating...",Toast.LENGTH_LONG);   
         showValues.show();
-
     }
 
+
+
     public void setGrayImage(Bitmap BWimage) {
-        this.grayImage = BWimage;
+        this.grayImage = BWimage.copy(BWimage.getConfig(),true);
     }
 
     public Bitmap getGrayImage() {
@@ -129,6 +135,6 @@ public class Flower {
     }
 
     public void segmentAndClassify() {
-        sm.segment(this);
+       sm.segment(this);
     }
 }

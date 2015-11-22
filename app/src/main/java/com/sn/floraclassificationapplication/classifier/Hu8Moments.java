@@ -2,8 +2,11 @@ package com.sn.floraclassificationapplication.classifier;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 
 import com.sn.floraclassificationapplication.Flower;
+import com.sn.floraclassificationapplication.R;
 
 /**
  * Created by Nadav on 19-Nov-15.
@@ -17,6 +20,7 @@ public class Hu8Moments{
 
     public double[] cal_moments(Bitmap bi) {
         double[] moments = new double[8];
+
         Cent cent = new Cent(bi);
 
         int h = bi.getHeight();
@@ -48,6 +52,7 @@ public class Hu8Moments{
         moments[7] = scl[1][1] * ( Math.pow((scl[3][0] + scl[1][2] ),2) - Math.pow((scl[0][3] + scl[2][1]),2) ) - (scl[2][0] - scl[0][2]) * (scl[3][0] + scl[1][2]) * (scl[0][3] + scl[2][1]);
 
         return moments;
+
     }
 
     public double HuDistance(double[] hu1, double[] hu2)
