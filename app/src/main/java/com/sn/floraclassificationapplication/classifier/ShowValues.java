@@ -26,6 +26,7 @@ public class ShowValues {
     private List<String> List_file;
     private ListView listView;
     private static int NUMBER_OF_VARIABLES = 8+3;
+    private ResultList adapter;
 
     private AppCompatActivity mainActivity;
 
@@ -60,7 +61,7 @@ public class ShowValues {
 
 
 
-        ResultList adapter = new ResultList(mainActivity, strUpValues, imgValues, strDownValues);
+        adapter = new ResultList(mainActivity, strUpValues, imgValues, strDownValues);
 
         listView.setAdapter(adapter);
 
@@ -92,5 +93,9 @@ public class ShowValues {
         ImageView segFlowerImg = (ImageView)mainActivity.findViewById(R.id.segFlower);
         segFlowerImg.setImageBitmap(flower.getFlowerImage());
         CreateListView();
+    }
+
+    public void updateMoments() {
+        adapter.notifyDataSetChanged();
     }
 }

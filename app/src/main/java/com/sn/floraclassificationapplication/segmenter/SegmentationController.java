@@ -154,7 +154,7 @@ public class SegmentationController {
 
     private class CopyImageSegmentTask extends AsyncTask<Void, Integer, Bitmap> {
         protected void onPreExecute() {
-            Toast.makeText(activity, "Merging segments... please hold.", Toast.LENGTH_SHORT).show();
+            // before
         }
 
         protected Bitmap doInBackground(Void... strings) {

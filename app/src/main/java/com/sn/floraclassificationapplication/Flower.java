@@ -27,7 +27,7 @@ public class Flower {
     private Bitmap flowerImage;
     private Bitmap grayImage;
     private double[] hu8Moments;
-    private int color;
+    private int rgbColorAverage;
     private List<Location> locations;
     private int month;
     private Hu8Moments hu8MomentCalculator;
@@ -88,11 +88,11 @@ public class Flower {
     }
 
     public int getColor() {
-        return color;
+        return rgbColorAverage;
     }
 
     public void setColor(int color) {
-        this.color = color;
+        this.rgbColorAverage = color;
     }
 
     public int getMonth() {
@@ -109,23 +109,15 @@ public class Flower {
         return hu8Moments;
     }
 
-    public void calcHu8Moments() {
-        //this.hu8Moments = hu8MomentController.cal_moments(grayImage);
-    }
-
     public void classify() {
-        //Toast.makeText(activity, "Calculating...",Toast.LENGTH_SHORT);
 
-        hu8MomentCalculator = new Hu8Moments();
+        rgbColorAverage = RGBColorAverage.cal_rgb_averages(flowerImage);
+
+        hu8MomentCalculator = new Hu8Moments(showValues, hu8Moments);
         hu8MomentCalculator.execute(grayImage);
 
-        rgbColorAverageCalculator = new RGBColorAverage();
-        rgbColorAverageCalculator.execute(flowerImage);
-
-        showValues.show();
+        //showValues.show();
     }
-
-
 
     public void setGrayImage(Bitmap BWimage) {
         this.grayImage = BWimage.copy(BWimage.getConfig(),true);

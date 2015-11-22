@@ -11,6 +11,12 @@ import com.sn.floraclassificationapplication.Flower;
  */
 public class RGBColorAverage extends AsyncTask<Bitmap, Void, Integer> {
 
+    private ShowValues showValuesActivity;
+
+    public RGBColorAverage(ShowValues showValues) {
+        this.showValuesActivity = showValues;
+    }
+
     public static int cal_rgb_averages(Bitmap flowerImage) {
         long rs,gs,bs, pixelCount=0;
         rs=gs=bs=0;
