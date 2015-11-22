@@ -3,6 +3,7 @@ package com.sn.floraclassificationapplication;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -29,8 +30,8 @@ public class Flower {
     private int color;
     private List<Location> locations;
     private int month;
-    private Hu8Moments hu8MomentController = Hu8Moments.getInstance();
-    private RGBColorAverage rgbColorAverage = RGBColorAverage.getInstance();
+    private Hu8Moments hu8MomentCalculator;
+    private RGBColorAverage rgbColorAverageCalculator;
     private SegmentationController sm = SegmentationController.getInstance();
     private ImageController ic = ImageController.getInstance();
     private static AppCompatActivity activity;
@@ -112,15 +113,15 @@ public class Flower {
         //this.hu8Moments = hu8MomentController.cal_moments(grayImage);
     }
 
-    private void calcRGBAverages() {
-        this.color = rgbColorAverage.cal_rgb_averages(flowerImage);
-    }
-
     public void classify() {
-        setGrayImage(flowerImage);
-        hu8Moments = hu8MomentController.cal_moments(grayImage);
-        calcRGBAverages();
-        Toast.makeText(activity, "Calculating...",Toast.LENGTH_LONG);   
+        //Toast.makeText(activity, "Calculating...",Toast.LENGTH_SHORT);
+
+        hu8MomentCalculator = new Hu8Moments();
+        hu8MomentCalculator.execute(grayImage);
+
+        rgbColorAverageCalculator = new RGBColorAverage();
+        rgbColorAverageCalculator.execute(flowerImage);
+
         showValues.show();
     }
 

@@ -1,10 +1,7 @@
 package com.sn.floraclassificationapplication.segmenter;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +27,7 @@ public class SegmentationController {
     private Button buttonYes, buttonNo;
     private View.OnClickListener onClickListenerNo, onClickListenerYes;
     private Thread thread;
+    CopyImageSegmentTask copyImageSegmentTask;
 
     public static SegmentationController getInstance() {
         return ourInstance;
@@ -93,24 +91,8 @@ public class SegmentationController {
         hideDialog();
         bg_bi = null;
 
-        thread = new Thread(){
-            @Override
-            public void run() {
-                try {
-                    segmentedFlower.setFlowerImage(output);
-                    output = null;
-                } catch (Exception e) {}
-                activity.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        segmentedFlower.classify();
-                    }
-                });
-            }
-        };
-        thread.start();
-
+        setImagesToClassifier copyAndSet = new setImagesToClassifier();
+        copyAndSet.execute();
     }
 
 
@@ -133,8 +115,9 @@ public class SegmentationController {
         onClickListenerYes = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                output = ic.overlay(output, flowerSegments[currentSegment]);
-                continueSegmenting();
+                hideDialog();
+                copyImageSegmentTask = new CopyImageSegmentTask();
+                copyImageSegmentTask.execute();
             }
         };
         buttonYes.setOnClickListener(onClickListenerYes);
@@ -143,24 +126,21 @@ public class SegmentationController {
         onClickListenerNo = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                continueSegmenting();
+                hideDialog();
+                if (currentSegment < K-1)
+                {
+                    currentSegment++;
+                    askSegmentPart();
+                } else {
+                    confirmSegmentation();
+                }
             }
         };
         buttonNo.setOnClickListener(onClickListenerNo);
         buttonNo.setVisibility(Button.VISIBLE);
     }
 
-    public void continueSegmenting()
-    {
-        hideDialog();
-        if (currentSegment < K-1)
-        {
-            currentSegment++;
-            askSegmentPart();
-        } else {
-            confirmSegmentation();
-        }
-    }
+
 
     public void hideDialog() {
         buttonYes.setVisibility(Button.GONE);
@@ -172,6 +152,59 @@ public class SegmentationController {
         this.activity = activity;
     }
 
+    private class CopyImageSegmentTask extends AsyncTask<Void, Integer, Bitmap> {
+        protected void onPreExecute() {
+            Toast.makeText(activity, "Merging segments... please hold.", Toast.LENGTH_SHORT).show();
+        }
 
+        protected Bitmap doInBackground(Void... strings) {
+            // Some long-running task like downloading an image.
+            output = ic.overlay(output, flowerSegments[currentSegment]);
+            return output;
+        }
+
+        protected void onProgressUpdate(Integer... values) {
+            // Executes whenever publishProgress is called from doInBackground
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            // This method is executed in the UIThread
+            // with access to the result of the long running task
+            //flowerView.setImageBitmap(segmentedFlower.getGrayImage());
+            if (currentSegment < K-1)
+            {
+                currentSegment++;
+                askSegmentPart();
+            } else {
+                confirmSegmentation();
+            }
+        }
+    }
+
+    private class setImagesToClassifier extends AsyncTask<String, Integer, Bitmap> {
+        protected void onPreExecute() {
+            Toast.makeText(activity, "Computing... please hold.", Toast.LENGTH_SHORT).show();
+        }
+
+        protected Bitmap doInBackground(String... strings) {
+            // Some long-running task like downloading an image.
+            segmentedFlower.setFlowerImage(output);
+            segmentedFlower.setGrayImage(ic.toGrayscale(segmentedFlower.getFlowerImage()));
+            return output;
+        }
+
+        protected void onProgressUpdate(Integer... values) {
+            // Executes whenever publishProgress is called from doInBackground
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            // This method is executed in the UIThread
+            // with access to the result of the long running task
+            //flowerView.setImageBitmap(segmentedFlower.getGrayImage());
+            segmentedFlower.classify();
+        }
+    }
 
 }
+
+

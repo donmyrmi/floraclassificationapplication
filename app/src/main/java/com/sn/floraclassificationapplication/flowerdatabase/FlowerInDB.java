@@ -12,7 +12,6 @@ public class FlowerInDB {
     private Bitmap flowerImage;
     double[] hu8MomentsMax;
     double[] hu8MomentsMin;
-    Hu8Moments hu8 = Hu8Moments.getInstance();
     private Color colorMax;
     private Color colorMin;
     private List<Location> locations;

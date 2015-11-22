@@ -2,19 +2,17 @@ package com.sn.floraclassificationapplication.classifier;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
+
+import com.sn.floraclassificationapplication.Flower;
 
 /**
  * Created by Nadav on 19-Nov-15.
  */
-public class RGBColorAverage {
-    private static RGBColorAverage ourInstance = new RGBColorAverage();
-
-    public static RGBColorAverage getInstance() {
-        return ourInstance;
-    }
+public class RGBColorAverage extends AsyncTask<Bitmap, Void, Integer> {
 
     public static int cal_rgb_averages(Bitmap flowerImage) {
-        int rs,gs,bs, pixelCount=0;
+        long rs,gs,bs, pixelCount=0;
         rs=gs=bs=0;
         int h = flowerImage.getHeight();
         int w = flowerImage.getWidth();
@@ -31,10 +29,16 @@ public class RGBColorAverage {
 
             }
         }
-        rs /= pixelCount;
-        gs /= pixelCount;
-        bs /= pixelCount;
+        int rTot = (int)(rs / pixelCount);
+        int gTot = (int)(gs / pixelCount);
+        int bTot = (int)(bs / pixelCount);
 
-        return Color.rgb(rs,gs,bs);
+        return Color.rgb(rTot,gTot,bTot);
+    }
+
+    @Override
+    protected Integer doInBackground(Bitmap... params) {
+        Bitmap bi = (Bitmap) params[0];
+        return cal_rgb_averages(bi);
     }
 }
