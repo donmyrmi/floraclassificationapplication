@@ -16,6 +16,7 @@ import android.graphics.Rect;
  */
 public class ImageController {
     private static ImageController ourInstance = new ImageController();
+    private static float CLEAN_THRESHOLD = 0.1f;
 
     public static ImageController getInstance() {
         return ourInstance;
@@ -71,7 +72,7 @@ public class ImageController {
         int targetWidth = scaleBitmapImage.getWidth();
         int targetHeight = scaleBitmapImage.getHeight();
         Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
-                targetHeight,Bitmap.Config.ARGB_8888);
+                targetHeight, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(targetBitmap);
         Path path = new Path();

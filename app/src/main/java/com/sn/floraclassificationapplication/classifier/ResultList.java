@@ -42,7 +42,7 @@ public class ResultList extends ArrayAdapter<String> {
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         Bitmap tempBi = BitmapFactory.decodeResource(context.getResources(), imageId[position]);
-        tempBi = ic.getRoundedShape(tempBi);
+        //tempBi = ic.getRoundedShape(tempBi);
 
 
         upTxtTitle.setText(upTxt[position]);

@@ -46,6 +46,7 @@ public class GPSTracker extends Service implements LocationListener {
         getLocation();
     }
 
+
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext
@@ -65,6 +66,7 @@ public class GPSTracker extends Service implements LocationListener {
                 this.canGetLocation = true;
                 // First get location from Network Provider
                 if (isNetworkEnabled) {
+
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,

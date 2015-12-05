@@ -1,6 +1,10 @@
 package com.sn.floraclassificationapplication.segmenter;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,7 +15,10 @@ import android.widget.Toast;
 import com.sn.floraclassificationapplication.Flower;
 import com.sn.floraclassificationapplication.R;
 
+import java.io.ByteArrayOutputStream;
+
 public class SegmentationController {
+    private static int CLEAN_IMAGE_REQUEST = 1;
     private static SegmentationController ourInstance = new SegmentationController();
     private ImageController ic;
     private KMeans km;
@@ -28,6 +35,8 @@ public class SegmentationController {
     private View.OnClickListener onClickListenerNo, onClickListenerYes;
     private Thread thread;
     CopyImageSegmentTask copyImageSegmentTask;
+    ProgressDialog mProgressDialog;
+
 
     public static SegmentationController getInstance() {
         return ourInstance;
@@ -63,6 +72,7 @@ public class SegmentationController {
     private void confirmSegmentation() {
         flowerSegments = null;
         bg_bi = null;
+
         flowerView.setImageBitmap(output);
         confTextView.setText("Confirm segmentation?");
         confTextView.setVisibility(TextView.VISIBLE);
@@ -86,12 +96,40 @@ public class SegmentationController {
         buttonNo.setVisibility(Button.VISIBLE);
     }
 
+    private void cleanImage() {
+
+        flowerView.setImageBitmap(output);
+        confTextView.setText("Does this image needs cleaning?");
+        confTextView.setVisibility(TextView.VISIBLE);
+        onClickListenerYes = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flowerSegments = null;
+                bg_bi = null;
+                CleanActivity cleanActivity = new CleanActivity(segmentedFlower,output, activity);
+                cleanActivity.show();
+            }
+        };
+        buttonYes.setOnClickListener(onClickListenerYes);
+        buttonYes.setVisibility(Button.VISIBLE);
+
+        onClickListenerNo = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmSegmentation();
+            }
+        };
+        buttonNo.setOnClickListener(onClickListenerNo);
+        buttonNo.setVisibility(Button.VISIBLE);
+
+    }
+
 
     private void continueToClassifier() {
         hideDialog();
         bg_bi = null;
 
-        setImagesToClassifier copyAndSet = new setImagesToClassifier();
+        SetImagesToClassifier copyAndSet = new SetImagesToClassifier();
         copyAndSet.execute();
     }
 
@@ -102,8 +140,9 @@ public class SegmentationController {
         bg_bi = ic.makeTransparent(bg_bi, 33);
         flowerView.setImageBitmap(bg_bi);
 
-        flowerSegments = km.KMeans(bi, K);
-        askSegmentPart();
+        CutOutTask copyAndSet = new CutOutTask(bi);
+        copyAndSet.execute();
+
     }
 
     private void askSegmentPart() {
@@ -132,7 +171,7 @@ public class SegmentationController {
                     currentSegment++;
                     askSegmentPart();
                 } else {
-                    confirmSegmentation();
+                    cleanImage();
                 }
             }
         };
@@ -140,7 +179,17 @@ public class SegmentationController {
         buttonNo.setVisibility(Button.VISIBLE);
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request it is that we're responding to
 
+        if (resultCode == Activity.RESULT_OK) {
+            hideDialog();
+            byte[] bytes = data.getByteArrayExtra("BMP");
+            Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            segmentedFlower.setFlowerImage(temp);
+            continueToClassifier();
+        }
+    }
 
     public void hideDialog() {
         buttonYes.setVisibility(Button.GONE);
@@ -176,14 +225,14 @@ public class SegmentationController {
                 currentSegment++;
                 askSegmentPart();
             } else {
-                confirmSegmentation();
+                cleanImage();
             }
         }
     }
 
-    private class setImagesToClassifier extends AsyncTask<String, Integer, Bitmap> {
+    private class SetImagesToClassifier extends AsyncTask<String, Void, Bitmap> {
         protected void onPreExecute() {
-            Toast.makeText(activity, "Computing... please hold.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Computing... please hold.", Toast.LENGTH_LONG).show();
         }
 
         protected Bitmap doInBackground(String... strings) {
@@ -193,9 +242,6 @@ public class SegmentationController {
             return output;
         }
 
-        protected void onProgressUpdate(Integer... values) {
-            // Executes whenever publishProgress is called from doInBackground
-        }
 
         protected void onPostExecute(Bitmap result) {
             // This method is executed in the UIThread
@@ -205,6 +251,26 @@ public class SegmentationController {
         }
     }
 
+    private class CutOutTask extends AsyncTask<Void, Void, Void> {
+        private Bitmap bi;
+
+        protected void onPreExecute() {
+            Toast.makeText(activity, "Segmenting... please hold.", Toast.LENGTH_LONG).show();
+        }
+
+        public CutOutTask(Bitmap bi) {
+            this.bi = bi;
+        }
+        protected Void doInBackground(Void... voids) {
+            // Some long-running task like downloading an image.
+            flowerSegments = km.KMeans(bi, K);
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            askSegmentPart();
+        }
+    }
 }
 
 

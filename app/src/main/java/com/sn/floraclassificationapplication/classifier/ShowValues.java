@@ -1,6 +1,7 @@
 package com.sn.floraclassificationapplication.classifier;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.sn.floraclassificationapplication.Flower;
 import com.sn.floraclassificationapplication.MainActivity;
 import com.sn.floraclassificationapplication.R;
+import com.sn.floraclassificationapplication.segmenter.ImageController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
  */
 public class ShowValues {
     private final Flower flower;
+    private ImageController ic;
     private List<String> List_file;
     private ListView listView;
     private static int NUMBER_OF_VARIABLES = 8+3;
@@ -35,6 +38,7 @@ public class ShowValues {
         this.mainActivity = mainActivity;
         this.flower = currentFlower;
         List_file =new ArrayList<String>();
+        ic = ImageController.getInstance();
     }
 
     private void CreateListView()
@@ -48,6 +52,8 @@ public class ShowValues {
             strUpValues[i] = "HU"+(i+1);
             strDownValues[i] = Double.toString(moments[i]);
         }
+
+        // Add RGB
         strUpValues[8] = "R-avg";
         strUpValues[9] = "G-avg";
         strUpValues[10] = "B-avg";

@@ -28,7 +28,7 @@ public class Flower {
     private Bitmap grayImage;
     private double[] hu8Moments;
     private int rgbColorAverage;
-    private List<Location> locations;
+    private Location location;
     private int month;
     private Hu8Moments hu8MomentCalculator;
     private RGBColorAverage rgbColorAverageCalculator;
@@ -38,7 +38,6 @@ public class Flower {
     private ShowValues showValues;
 
     public Flower(AppCompatActivity activity)  {
-        locations = new ArrayList<Location>();
         //classifiers = new ArrayList<Classifier>();
         hu8Moments = new double[8];
         this.activity = activity;
@@ -67,12 +66,12 @@ public class Flower {
         this.name = name;
     }
 
-    public List<Location> getLocations() {
-        return locations;
+    public Location getLocations() {
+        return location;
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public Bitmap getFlowerImage() {
@@ -81,10 +80,6 @@ public class Flower {
 
     public void setFlowerImage(Bitmap flowerImage) {
         this.flowerImage = flowerImage.copy(flowerImage.getConfig(),true);
-    }
-
-    public void addLocation(Location location) {
-        locations.add(location);
     }
 
     public int getColor() {
