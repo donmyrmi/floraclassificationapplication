@@ -18,7 +18,8 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:layout_above="@+id/yesButton"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/daffodil" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -29,30 +30,34 @@
             android:weightSum="1">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="confText"
-                android:id="@+id/confTextView" />
+                android:text="Choose flower picture from:"
+                android:id="@+id/confTextView"
+                android:layout_weight="0.26" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:weightSum="1">
 
                 <Button
                     style="@android:style/Holo.Light.ButtonBar.AlertDialog"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No"
-                    android:id="@+id/confNoButton" />
+                    android:text="confYesButton"
+                    android:id="@+id/confYesButton"
+                    android:layout_weight="0.93" />
 
                 <Button
                     style="@android:style/Holo.Light.ButtonBar"
-                    android:layout_width="wrap_content"
+                    android:layout_width="175dp"
                     android:layout_height="wrap_content"
-                    android:text="Yes"
-                    android:id="@+id/confYesButton" />
+                    android:text="confNoButton"
+                    android:id="@+id/confNoButton" />
+
             </LinearLayout>
 
         </LinearLayout>
