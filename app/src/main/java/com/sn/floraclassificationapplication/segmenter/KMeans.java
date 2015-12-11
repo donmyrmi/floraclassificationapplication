@@ -6,7 +6,12 @@ import android.graphics.Color;
 import java.util.Random;
 
 public class KMeans {
+    private static final int MAX_ITERATIONS = 20;
     private static KMeans ourInstance = new KMeans();
+    private int w;
+    private int h;
+    private Bitmap image;
+    private int[][] im_clusters;
 
     public static KMeans getInstance() {
         return ourInstance;
@@ -19,47 +24,31 @@ public class KMeans {
     public KMeans() {    }
 
     public Bitmap[] KMeans(Bitmap image, int k) {
-        int w = image.getWidth();
-        int h = image.getHeight();
+        this.image = image;
+        w = image.getWidth();
+        h = image.getHeight();
 
         // create clusters
-        int[][] im_clusters = new int[w][h];
+        im_clusters = new int[w][h];
         clusters = new Cluster[k];
 
         //findMinMaxClusters(image, h, w);
+        initClusters();
 
-        for (int i=0; i<k; i++)
-        {
-            float tf = (float)(i+1)/(k+2)*256;
-            int t = (int) tf;
-            int rgb = ((t&0x0ff)<<16)|((t&0x0ff)<<8)|(t&0x0ff);
-            clusters[i] = new Cluster(i,rgb);
-        }
+        attachPixelsToClusters();
+
         // at first loop all pixels will move their clusters
         boolean pixelChangedCluster = true;
+        int iterationCounter = 0;
+
         // loop until all clusters are stable!
-        while (pixelChangedCluster) {
+        while (pixelChangedCluster && iterationCounter < MAX_ITERATIONS) {
 
             for (int i=0; i<k; i++)
                 clusters[i].calculateNewCenter();
 
-            pixelChangedCluster = false;
-            for (int y=0;y<h;y++) {
-                for (int x = 0; x < w; x++) {
-                    int pixel = image.getPixel(x, y);
-                    if (Color.alpha(pixel) != 0)
-                    {
-                        int oldCluster = im_clusters[x][y];
-                        im_clusters[x][y] = findMinimalCluster(pixel);
-
-                        if (oldCluster != im_clusters[x][y]) {
-                            pixelChangedCluster = true;
-                            clusters[im_clusters[x][y]].addPixel(pixel);
-                        }
-                    }
-                }
-            }
-
+            pixelChangedCluster = attachPixelsToClusters();
+            iterationCounter++;
         }
 
         // create result image
@@ -76,6 +65,42 @@ public class KMeans {
             }
         }
         return result;
+    }
+
+    private void initClusters() {
+        clusters[0] = new Cluster(0,Color.RED);
+        clusters[1] = new Cluster(0,Color.GREEN);
+        clusters[2] = new Cluster(0,Color.BLUE);
+        clusters[3] = new Cluster(0,Color.BLACK);
+        clusters[4] = new Cluster(0,Color.WHITE);
+
+        /*for (int i=0; i<k; i++)
+        {
+            float tf = (float)(i+1)/(k+2)*256;
+            int t = Math.round(tf);
+            int rgb = ((t&0x0ff)<<16)|(((k-t)&0x0ff)<<8)|(t&0x0ff);
+            clusters[i] = new Cluster(i,rgb);
+        }*/
+    }
+
+    private boolean attachPixelsToClusters() {
+        boolean pixelChangedCluster = false;
+        for (int y=0;y<h;y++) {
+            for (int x = 0; x < w; x++) {
+                int pixel = image.getPixel(x, y);
+                if (Color.alpha(pixel) != 0)
+                {
+                    int oldCluster = im_clusters[x][y];
+                    im_clusters[x][y] = findMinimalCluster(pixel);
+
+                    if (oldCluster != im_clusters[x][y]) {
+                        pixelChangedCluster = true;
+                        clusters[im_clusters[x][y]].addPixel(pixel);
+                    }
+                }
+            }
+        }
+        return pixelChangedCluster;
     }
 
     private void findMinMaxClusters(Bitmap image, int h, int w) {

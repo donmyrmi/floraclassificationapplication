@@ -21,14 +21,16 @@ public class ResultList extends ArrayAdapter<String> {
     private final AppCompatActivity context;
     private final String[] upTxt,downTxt;
     private final int[] imageId;
+    private final boolean[] isRGB;
     private ImageController ic = ImageController.getInstance();
 
     public ResultList(AppCompatActivity context,
-                      String[] upTxt, int[] imageId, String[] downTxt) {
+                      String[] upTxt, int[] imageId, String[] downTxt, boolean[] isRGB) {
         super(context, R.layout.resultsingle, upTxt);
         this.context = context;
         this.upTxt = upTxt;
         this.downTxt = downTxt;
+        this.isRGB = isRGB;
         this.imageId = imageId;
     }
 
@@ -39,9 +41,13 @@ public class ResultList extends ArrayAdapter<String> {
         TextView upTxtTitle = (TextView) rowView.findViewById(R.id.uptxt);
         TextView downTxtTitle = (TextView) rowView.findViewById(R.id.downtxt);
 
-
+        Bitmap tempBi;
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
-        Bitmap tempBi = BitmapFactory.decodeResource(context.getResources(), imageId[position]);
+        if (isRGB[position]) {
+            tempBi = ic.createImage(64,64,imageId[position]);
+        } else {
+            tempBi = BitmapFactory.decodeResource(context.getResources(), imageId[position]);
+        }
         //tempBi = ic.getRoundedShape(tempBi);
 
 

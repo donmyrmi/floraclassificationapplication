@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.sn.floraclassificationapplication.Flower;
 import com.sn.floraclassificationapplication.R;
@@ -19,6 +20,7 @@ public class CleanActivity extends AppCompatActivity  {
     private DrawingView dv ;
     private Bitmap image;
     private Button cleanCont, cleanReset;
+    private TextView cleanText;
     private Flower flower;
     ImageController ic = ImageController.getInstance();
 
@@ -31,6 +33,8 @@ public class CleanActivity extends AppCompatActivity  {
     public void show() {
         activity.setContentView(R.layout.clean_flower_layout);
 
+        cleanText = (TextView) activity.findViewById(R.id.cleanTextView);
+
         dv = (DrawingView) activity.findViewById(R.id.cleanFlowerView);
         dv.setImage(image);
 
@@ -39,6 +43,8 @@ public class CleanActivity extends AppCompatActivity  {
             public void onClick(View v) {
                 cleanCont.setVisibility(View.GONE);
                 cleanReset.setVisibility(View.GONE);
+                cleanText.setText("Computing... please hold. this could take a while.");
+                dv.setVisibility(View.GONE);
                 flower.setFlowerImage(dv.saveImage());
                 SetImagesToClassifier copyAndSet = new SetImagesToClassifier();
                 copyAndSet.execute();
@@ -55,7 +61,6 @@ public class CleanActivity extends AppCompatActivity  {
 
     private class SetImagesToClassifier extends AsyncTask<Void, Void, Void> {
         protected void onPreExecute() {
-            Toast.makeText(activity, "Computing... please hold.", Toast.LENGTH_LONG).show();
         }
 
         protected Void doInBackground(Void... strings) {

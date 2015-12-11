@@ -8,7 +8,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -27,6 +29,10 @@ public class DrawingView extends View {
     private Path circlePath;
     private Paint mPaint;
     private Bitmap image;
+    private int w;
+    private int h;
+    private ImageController ic = ImageController.getInstance();
+
 
     public DrawingView(Context context) {
         this(context, null);
@@ -67,9 +73,12 @@ public class DrawingView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        this.w = w;
+        this.h = h;
 
         if (image!= null) {
             mBitmap = image.copy(Bitmap.Config.ARGB_8888, true);
+            mBitmap = ic.getResizedBitmap(mBitmap, h, w);
             mCanvas = new Canvas(mBitmap);
         }
     }
@@ -84,7 +93,6 @@ public class DrawingView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mPath, mPaint);
     }
@@ -145,11 +153,12 @@ public class DrawingView extends View {
 
     public void clear(){
         mBitmap = image.copy(Bitmap.Config.ARGB_8888, true);
+        mBitmap = ic.getResizedBitmap(mBitmap, h, w);
         mCanvas = new Canvas(mBitmap);
         invalidate();
     }
 
     public Bitmap saveImage() {
-        return mBitmap;
+        return ic.getResizedBitmap(mBitmap, image.getHeight(), image.getWidth());
     }
 }
