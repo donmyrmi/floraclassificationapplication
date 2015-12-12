@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Flora Classification Application</string>
+    <string-array name="array_angles">
+        <item>Top view</item>
+        <item>45 deg. view</item>
+        <item>Side view</item>
+    </string-array>
 </resources>
