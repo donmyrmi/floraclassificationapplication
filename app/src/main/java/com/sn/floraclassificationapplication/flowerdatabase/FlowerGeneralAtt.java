@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Sapir on 05-Dec-15.
  */
-public class FlowerGeneralAtt {
+public class FlowerGeneralAtt extends AbstractDBFlower {
 
     //Labels table name
     public static final String TABLE = "FlowerGeneralAtt";

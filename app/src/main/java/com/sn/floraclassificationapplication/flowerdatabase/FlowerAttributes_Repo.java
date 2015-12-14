@@ -24,6 +24,7 @@ public class FlowerAttributes_Repo {
 
     private final int HU_SET_MAX = 1;
     private final int HU_SET_MIN = 0;
+    private final int NUM_OF_MOMENTS = 8;
 
 
     public FlowerAttributes_Repo(Context context) {
@@ -35,15 +36,33 @@ public class FlowerAttributes_Repo {
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        
+
+        //convert HU sets of moments into string
         convertArrayToString(flowerAttributes);
-        
-        values.put(flowerAttributes.KEY_ID,flowerAttributes.KEY_ANGLE);
-        values.put(flowerAttributes.KEY_flowerImage,flowerAttributes.KEY_hu8MomentsMax);//TODO::SAPIR:bitmap,huMoment - reference or full array?
-        values.put(flowerAttributes.KEY_hu8MomentsMin,flowerAttributes.KEY_colorMax);
+
+        values.put(flowerAttributes.KEY_ID, flowerAttributes.flower_ID);
+        values.put(flowerAttributes.KEY_flowerImage,flowerAttributes.flowerImageIndex);
+        values.put(flowerAttributes.KEY_hu8MomentsMax,hu8MomentsMaxString);
+        values.put(flowerAttributes.KEY_hu8MomentsMin,hu8MomentsMinString);
+
+        values.put(flowerAttributes.KEY_red, flowerAttributes.red);
+        values.put(flowerAttributes.KEY_redMin,flowerAttributes.redMin);
+        values.put(flowerAttributes.KEY_redMax,flowerAttributes.redMax);
+        values.put(flowerAttributes.KEY_redRange,flowerAttributes.redRange);
+
+        values.put(flowerAttributes.KEY_green,flowerAttributes.green);
+        values.put(flowerAttributes.KEY_greenMin,flowerAttributes.greenMin);
+        values.put(flowerAttributes.KEY_greenMax,flowerAttributes.greenMax);
+        values.put(flowerAttributes.KEY_greenRange,flowerAttributes.greenRange);
+
+        values.put(flowerAttributes.KEY_blue,flowerAttributes.blue);
+        values.put(flowerAttributes.KEY_blueMin,flowerAttributes.blueMin);
+        values.put(flowerAttributes.KEY_blueMax,flowerAttributes.blueMax);
+        values.put(flowerAttributes.KEY_blueRange,flowerAttributes.blueRange);
 
         // Inserting Row
         long FlowerAttributes_Id = db.insert(FlowerAttributes.TABLE, null, values);
+
         db.close(); // Closing database connection
         return (int) FlowerAttributes_Id;
     }
@@ -60,7 +79,6 @@ public class FlowerAttributes_Repo {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(FlowerAttributes.KEY_ID, FlowerAttributes.KEY_ANGLE);
         values.put(FlowerInDB.KEY_flowerImage,FlowerInDB.KEY_hu8MomentsMax);//TODO::SAPIR:bitmap,huMoment - reference or full array?
         values.put(FlowerInDB.KEY_hu8MomentsMin,FlowerInDB.KEY_colorMax);
         values.put(FlowerInDB.KEY_colorMin,"");
@@ -75,12 +93,21 @@ public class FlowerAttributes_Repo {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 FlowerAttributes.KEY_ID + "," +
-                FlowerAttributes.KEY_ANGLE + "," +
                 FlowerAttributes.KEY_flowerImage + "," +
                 FlowerAttributes.KEY_hu8MomentsMax + "," +
                 FlowerAttributes.KEY_hu8MomentsMin + "," +
-                FlowerAttributes.KEY_colorMax + "," +
-                FlowerAttributes.KEY_colorMin +
+                FlowerAttributes.KEY_red + "," +
+                FlowerAttributes.KEY_redMax + "," +
+                FlowerAttributes.KEY_redMin + "," +
+                FlowerAttributes.KEY_redRange + "," +
+                FlowerAttributes.KEY_green + "," +
+                FlowerAttributes.KEY_greenMax + "," +
+                FlowerAttributes.KEY_greenMin + "," +
+                FlowerAttributes.KEY_greenRange + "," +
+                FlowerAttributes.KEY_blue + "," +
+                FlowerAttributes.KEY_blueMax + "," +
+                FlowerAttributes.KEY_blueMin + "," +
+                FlowerAttributes.KEY_blueRange +
                 " FROM " + FlowerAttributes.TABLE;
 
         //FlowerInDB FlowerInDB = new FlowerInDB();
@@ -93,13 +120,22 @@ public class FlowerAttributes_Repo {
             do {
                 HashMap<String, Object> flowerAttributes = new HashMap<String, Object>();
                 flowerAttributes.put("id", cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ID)));
-                flowerAttributes.put("angle", cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ANGLE)));
-                flowerAttributes.put("flowerImage", cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_flowerImage)));
-                flowerAttributes.put("hu8MomentsMax",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMax)));//TODO::SAPIR: CHECK
-                flowerAttributes.put("hu8MomentsMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMin)));
-                flowerAttributes.put("colorMax",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_colorMax)));
-                flowerAttributes.put("colorMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_colorMin)));
-
+                flowerAttributes.put("flowerImage", cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_flowerImage)));
+                flowerAttributes.put("hu8MomentsMax", cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMax)));//TODO::SAPIR: CHECK, returns byte[]
+                flowerAttributes.put("hu8MomentsMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMin)));//TODO::SAPIR: CHECK, returns byte[]
+                flowerAttributes.put("red",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_red)));
+                flowerAttributes.put("redMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_redMin)));
+                flowerAttributes.put("redMax",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_redMax)));
+                flowerAttributes.put("redRange",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_redRange)));
+                flowerAttributes.put("green",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_green)));
+                flowerAttributes.put("greenMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_greenMin)));
+                flowerAttributes.put("greenMax",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_greenMax)));
+                flowerAttributes.put("greenRange",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_greenRange)));
+                flowerAttributes.put("blue",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_blue)));
+                flowerAttributes.put("blueMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_blueMin)));
+                flowerAttributes.put("blueMax",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_blueMax)));
+                flowerAttributes.put("blueRange",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_blueRange)));
+                FlowerAttributesList.add(flowerAttributes);
             } while (cursor.moveToNext());
         }
 
@@ -112,12 +148,21 @@ public class FlowerAttributes_Repo {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 FlowerAttributes.KEY_ID + "," +
-                FlowerAttributes.KEY_ANGLE + "," +
                 FlowerAttributes.KEY_flowerImage + "," +
                 FlowerAttributes.KEY_hu8MomentsMax + "," +
                 FlowerAttributes.KEY_hu8MomentsMin + "," +
-                FlowerAttributes.KEY_colorMax + "," +
-                FlowerAttributes.KEY_colorMin +
+                FlowerAttributes.KEY_red + "," +
+                FlowerAttributes.KEY_redMax + "," +
+                FlowerAttributes.KEY_redMin + "," +
+                FlowerAttributes.KEY_redRange + "," +
+                FlowerAttributes.KEY_green + "," +
+                FlowerAttributes.KEY_greenMax + "," +
+                FlowerAttributes.KEY_greenMin + "," +
+                FlowerAttributes.KEY_greenRange + "," +
+                FlowerAttributes.KEY_blue + "," +
+                FlowerAttributes.KEY_blueMax + "," +
+                FlowerAttributes.KEY_blueMin + "," +
+                FlowerAttributes.KEY_blueRange +
                 " FROM " + FlowerAttributes.TABLE
                 + " WHERE " +
                 FlowerAttributes.KEY_ID + "=?";
@@ -130,11 +175,21 @@ public class FlowerAttributes_Repo {
         if (cursor.moveToFirst()) {
             do {
                 flowerAttributes.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ID));
-                flowerAttributes.angle = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ANGLE));
-                flowerAttributes.flowerImage = cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_flowerImage));
+                flowerAttributes.flowerImageIndex = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_flowerImage));
                 convertStringToArray(flowerAttributes,cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMax)),HU_SET_MAX);
                 convertStringToArray(flowerAttributes,cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMin)),HU_SET_MIN);
-                //flowerAttributes.colorMax = cursor.getClass<Color>(cursor.getColumnIndex(FlowerAttributes.KEY_colorMax));
+                flowerAttributes.red = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_red));
+                flowerAttributes.redMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_redMin));
+                flowerAttributes.redMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_redMax));
+                flowerAttributes.redRange = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_redRange));
+                flowerAttributes.green = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_green));
+                flowerAttributes.greenMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_greenMin));
+                flowerAttributes.greenMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_greenMax));
+                flowerAttributes.greenRange = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_greenRange));
+                flowerAttributes.blue = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blue));
+                flowerAttributes.blueMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blueMin));
+                flowerAttributes.blueMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blueMax));
+                flowerAttributes.blueRange = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blueRange));
             } while (cursor.moveToNext());
         }
 
@@ -142,7 +197,7 @@ public class FlowerAttributes_Repo {
         db.close();
         return flowerAttributes;
     }
-
+    //Converting double[] to string method
     public void convertArrayToString(FlowerAttributes flowerAttributes){
 
         int i;
@@ -155,7 +210,7 @@ public class FlowerAttributes_Repo {
             }
         }
 }
-
+    //Converting string to double[] method
     public void convertStringToArray(FlowerAttributes flowerAttributes,String str,int type){
         String[] strToDouble;
         int i;

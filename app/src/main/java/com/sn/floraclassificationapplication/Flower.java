@@ -29,6 +29,8 @@ public class Flower {
     private double[] hu8Moments;
     private int rgbColorAverage;
     private Location location;
+    private double longitude;
+    private double latitude;
     private int month;
     private Hu8Moments hu8MomentCalculator;
     private RGBColorAverage rgbColorAverageCalculator;
@@ -121,6 +123,24 @@ public class Flower {
     public Bitmap getGrayImage() {
         return grayImage;
     }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = Double.parseDouble(latitude);
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = Double.parseDouble(longitude);
+    }
+
+
 
     public void segmentAndClassify() {
        sm.segment(this);

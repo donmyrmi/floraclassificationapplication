@@ -1,6 +1,8 @@
 package com.sn.floraclassificationapplication;
 
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import java.util.Calendar;
@@ -57,12 +59,13 @@ public class MainActivity extends AppCompatActivity {
     {
         Flower segmentedFlower = TestFlower();
         segmentedFlower.segmentAndClassify();
+
     }
 
     public Flower TestFlower()
     {
         GPSTracker gps;
-        Flower segmentedFlower = new Flower(this);
+        Flower segmentedFlower = new Flower(this);//TODO::SAPIR:maybe make segmentedFlower a class variable
         segmentedFlower.setFlowerImage(BitmapFactory.decodeResource(getResources(), R.mipmap.f1));
 
         gps = new GPSTracker(this);
@@ -85,8 +88,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void SelectGalleryImage(){
+        String filePath = null;
         Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, 2);
+
+        getFilePath(intent, filePath);
+        try {
+            ExifInterface exif = new ExifInterface(filePath);
+        }
+        catch (IOException io)
+        {
+            System.out.print("IO Exception occurred while getting photo gallery file path");
+        }
+        String latitude = ExifInterface.TAG_GPS_LATITUDE;
+        String longitude = ExifInterface.TAG_GPS_LONGITUDE;
+//      segmentedFlower.setLatitude(latitude);
+//       segmentedFlower.setLongitude(longitude);
     }
 
     public void TakePhoto(){
@@ -106,6 +123,26 @@ public class MainActivity extends AppCompatActivity {
         String path = android.os.Environment.getExternalStorageDirectory() + File.separator
                 + "Phoenix" + File.separator + "default";
         flower.setFlowerImage(bitmap);
-        file.delete();
+            file.delete();
     }
+
+
+    public void getFilePath(Intent data, String filePath) {
+
+            Uri selectedImageUri = data.getData();
+            String s = getRealPathFromURI(selectedImageUri);
+            //editText1.setText(s);
+
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        @SuppressWarnings("deprecation")
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
 }

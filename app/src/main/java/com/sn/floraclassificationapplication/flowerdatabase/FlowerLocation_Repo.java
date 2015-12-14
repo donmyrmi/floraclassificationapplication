@@ -8,18 +8,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class FlowerLocation_Repo {
+public class FlowerLocation_Repo implements RepositoryController {
 
     private DBController dbHelper;
 
@@ -32,10 +31,14 @@ public class FlowerLocation_Repo {
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(flowerLocation.KEY_ID,flowerLocation.KEY_locations);
-        //values.put(FlowerInDB.KEY_flowerImage,FlowerInDB.KEY_hu8MomentsMax);//TODO::SAPIR:bitmap,huMoment - reference or full array?
-        //values.put(FlowerInDB.KEY_hu8MomentsMin,FlowerInDB.KEY_colorMax);
-        //values.put(FlowerInDB.KEY_colorMin,FlowerInDB.KEY_months);
+        values.put(flowerLocation.KEY_ID,flowerLocation.id);
+        //put flower locations in values
+        for (com.sn.floraclassificationapplication.flowerdatabase.Location loc :
+                flowerLocation.locations) {
+            values.put(flowerLocation.KEY_locations,loc.getLatitude());
+            values.put(flowerLocation.KEY_locations,loc.getLongitude());
+        }
+
 
         // Inserting Row
         long FlowerLocation_Id = db.insert(flowerLocation.TABLE, null, values);
@@ -61,7 +64,7 @@ public class FlowerLocation_Repo {
         db.close(); // Closing database connection
     }
 
-    public ArrayList<HashMap<String, String>>  getFlowerLocation() {
+    public ArrayList<HashMap<String, Object>>  getFlowerLocation() {
         //Open connection to read only
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -70,18 +73,17 @@ public class FlowerLocation_Repo {
                 " FROM " + FlowerLocation.TABLE;
 
         //FlowerInDB FlowerInDB = new FlowerInDB();
-        ArrayList<HashMap<String, String>> Flower_Location = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, Object>> Flower_Location = new ArrayList<HashMap<String, Object>>();
 
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
         if (cursor.moveToFirst()) {
             do {
-                HashMap<String, String> flowerLocation = new HashMap<String, String>();
-                flowerLocation.put("id", cursor.getString(cursor.getColumnIndex(FlowerLocation.KEY_ID)));
-                flowerLocation.put("name", cursor.getString(cursor.getColumnIndex(FlowerLocation.KEY_locations)));
+                HashMap<String, Object> flowerLocation = new HashMap<String, Object>();
+                flowerLocation.put("id", cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID)));
+                flowerLocation.put("locations", cursor.getBlob(cursor.getColumnIndex(FlowerLocation.KEY_locations)));//TODO::SAPIR:the calling method will need to convert byte[] into Location class- double,double
                 Flower_Location.add(flowerLocation);
-
             } while (cursor.moveToNext());
         }
 
@@ -90,7 +92,7 @@ public class FlowerLocation_Repo {
         return Flower_Location;
     }
 
-    public FlowerLocation getLocationById(int Id){
+    public FlowerLocation getAttributeById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 FlowerLocation.KEY_ID + "," +
@@ -107,7 +109,7 @@ public class FlowerLocation_Repo {
         if (cursor.moveToFirst()) {
             do {
                 flowerLocation.id = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
-                //flowerLocation.locations = cursor.getBlob((cursor.getColumnIndex(FlowerLocation.KEY_locations)));//TODO::SAPIR:IMPLEMENT
+                convertToLocation(cursor.getBlob((cursor.getColumnIndex(FlowerLocation.KEY_locations))),flowerLocation);
             } while (cursor.moveToNext());
         }
 
@@ -116,21 +118,35 @@ public class FlowerLocation_Repo {
         return flowerLocation;
     }
 
-
-
     public static byte[] serialize(Object obj) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(out);
         os.writeObject(obj);
         return out.toByteArray();
     }
+
     public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         ObjectInputStream is = new ObjectInputStream(in);
         return is.readObject();
     }
 
+    public static void convertToLocation(byte[] bytes,FlowerLocation flowerLocation) {
+        int numOfLocations = bytes.length/2;
+        int i = 0;
+        int j = 0;
 
+        for(;i < numOfLocations;i++)
+        {
+            for (com.sn.floraclassificationapplication.flowerdatabase.Location loc :
+                    flowerLocation.locations) {
+                loc.setLongitude(ByteBuffer.wrap(bytes).getDouble(j));
+                j += 8;
+                loc.setLatitude(ByteBuffer.wrap(bytes).getDouble(j));
+                j += 8;
+            }
+        }
+    }
 
 
 }

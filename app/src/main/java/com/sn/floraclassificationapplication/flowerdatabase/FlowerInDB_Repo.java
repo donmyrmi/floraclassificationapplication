@@ -19,17 +19,16 @@ public class FlowerInDB_Repo {
         dbHelper = new DBController(context);
     }
 
-    public int insert(FlowerGeneralAtt FlowerGeneralAtt) {
+    public int insert(FlowerGeneralAtt flowerGeneralAtt) {
 
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(FlowerGeneralAtt.KEY_ID,FlowerGeneralAtt.KEY_NAME);
-        //values.put(FlowerInDB.KEY_flowerImage,FlowerInDB.KEY_hu8MomentsMax);//TODO::SAPIR:bitmap,huMoment - reference or full array?
-        //values.put(FlowerInDB.KEY_hu8MomentsMin,FlowerInDB.KEY_colorMax);
-        //values.put(FlowerInDB.KEY_colorMin,FlowerInDB.KEY_months);
-        values.put(FlowerGeneralAtt.KEY_months,FlowerGeneralAtt.KEY_momentsWeight);
-        values.put(FlowerGeneralAtt.KEY_colorWeight,"");
+        values.put(FlowerGeneralAtt.KEY_ID,flowerGeneralAtt.flower_ID);
+        values.put(FlowerGeneralAtt.KEY_NAME,flowerGeneralAtt.name);
+        values.put(FlowerGeneralAtt.KEY_months,flowerGeneralAtt.months);
+        values.put(FlowerGeneralAtt.KEY_momentsWeight,flowerGeneralAtt.momentsWeight);
+        values.put(FlowerGeneralAtt.KEY_colorWeight,flowerGeneralAtt.colorWeight);
         // Inserting Row
         long FlowerGeneralAtt_Id = db.insert(FlowerGeneralAtt.TABLE, null, values);
         db.close(); // Closing database connection
@@ -43,17 +42,16 @@ public class FlowerInDB_Repo {
         db.close(); // Closing database connection
     }
 
-    public void update(FlowerGeneralAtt flower) {
+    public void update(FlowerGeneralAtt flowerGeneralAtt) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(FlowerGeneralAtt.KEY_ID, FlowerGeneralAtt.KEY_NAME);
-        //values.put(FlowerInDB.KEY_flowerImage,FlowerInDB.KEY_hu8MomentsMax);//TODO::SAPIR:bitmap,huMoment - reference or full array?
-        //values.put(FlowerInDB.KEY_hu8MomentsMin,FlowerInDB.KEY_colorMax);
-        //values.put(FlowerInDB.KEY_colorMin,FlowerInDB.KEY_months);
-        values.put(FlowerGeneralAtt.KEY_months,FlowerGeneralAtt.KEY_momentsWeight);
-        values.put(FlowerGeneralAtt.KEY_colorWeight,"");
+        values.put(FlowerGeneralAtt.KEY_ID,flowerGeneralAtt.flower_ID);
+        values.put(FlowerGeneralAtt.KEY_NAME,flowerGeneralAtt.name);
+        values.put(FlowerGeneralAtt.KEY_months,flowerGeneralAtt.months);
+        values.put(FlowerGeneralAtt.KEY_momentsWeight,flowerGeneralAtt.momentsWeight);
+        values.put(FlowerGeneralAtt.KEY_colorWeight,flowerGeneralAtt.colorWeight);
 
         //update Row
         db.update(FlowerGeneralAtt.TABLE, values, FlowerGeneralAtt.KEY_ID + "= ?", new String[]{String.valueOf(FlowerGeneralAtt.KEY_ID)});
@@ -82,6 +80,9 @@ public class FlowerInDB_Repo {
                 HashMap<String, String> flowerGeneralAtt = new HashMap<String, String>();
                 flowerGeneralAtt.put("id", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID)));
                 flowerGeneralAtt.put("name", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME)));
+                flowerGeneralAtt.put("months", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months)));
+                flowerGeneralAtt.put("momentsWeight", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight)));
+                flowerGeneralAtt.put("colorWeight", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight)));
                 FlowerInDBList.add(flowerGeneralAtt);
 
             } while (cursor.moveToNext());
@@ -113,7 +114,6 @@ public class FlowerInDB_Repo {
             do {
                 flowerGeneralAtt.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerInDB.KEY_ID));
                 flowerGeneralAtt.name = cursor.getString(cursor.getColumnIndex(FlowerInDB.KEY_NAME));
-                //flowerInDB.flowerImage = cursor.getBitMap(cursor.getColumnIndex(FlowerInDB.KEY_flowerImage));//TODO::SAPIR:check how to get bitmap
                 flowerGeneralAtt.months = cursor.getInt(cursor.getColumnIndex(FlowerInDB.KEY_months));
                 flowerGeneralAtt.momentsWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight));
                 flowerGeneralAtt.colorWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight));

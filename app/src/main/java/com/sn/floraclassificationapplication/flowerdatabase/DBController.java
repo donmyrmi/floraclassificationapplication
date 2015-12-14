@@ -33,19 +33,28 @@ public class DBController extends SQLiteOpenHelper{
         database.execSQL(CREATE_TABLE_FlowerGeneralAtt);
 
         String CREATE_TABLE_FlowerLocation = "CREATE TABLE " + FlowerLocation.TABLE + "("
-                + FlowerLocation.KEY_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                + FlowerLocation.KEY_ID  + " INTEGER, "
                 + FlowerLocation.KEY_locations + " BLOB, ";
 
         database.execSQL(CREATE_TABLE_FlowerLocation);
 
         String CREATE_TABLE_FlowerAttributes = "CREATE TABLE " + FlowerAttributes.TABLE + "("
                 + FlowerAttributes.KEY_ID + "INTEGER PRIMARY KEY, "
-                + FlowerAttributes.KEY_ANGLE + "INTEGER PRIMARY KEY ,"
-                + FlowerAttributes.KEY_flowerImage + "BLOB, "
+                + FlowerAttributes.KEY_flowerImage + "INTEGER, "
                 + FlowerAttributes.KEY_hu8MomentsMax + "DOUBLE[], "
                 + FlowerAttributes.KEY_hu8MomentsMin + "DOUBLE[], "
-                + FlowerAttributes.KEY_colorMax + "COLOR, "
-                + FlowerAttributes.KEY_colorMin + "COLOR, ";
+                + FlowerAttributes.KEY_red + "INTEGER, "
+                + FlowerAttributes.KEY_redMax + "INTEGER, "
+                + FlowerAttributes.KEY_redMin + "INTEGER, "
+                + FlowerAttributes.KEY_redRange + "INTEGER, "
+                + FlowerAttributes.KEY_green + "INTEGER, "
+                + FlowerAttributes.KEY_greenMax + "INTEGER, "
+                + FlowerAttributes.KEY_greenMin + "INTEGER, "
+                + FlowerAttributes.KEY_greenRange + "INTEGER, "
+                + FlowerAttributes.KEY_blue + "INTEGER, "
+                + FlowerAttributes.KEY_blueMax + "INTEGER, "
+                + FlowerAttributes.KEY_blueMin + "INTEGER, "
+                + FlowerAttributes.KEY_blueRange + "INTEGER, ";
 
         database.execSQL(CREATE_TABLE_FlowerAttributes);
     }
