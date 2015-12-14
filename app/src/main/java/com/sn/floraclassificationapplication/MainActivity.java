@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
     public void getFilePath(Intent data, String filePath) {
 
             Uri selectedImageUri = data.getData();
-            String s = getRealPathFromURI(selectedImageUri);
-            //editText1.setText(s);
+            filePath = getRealPathFromURI(selectedImageUri);
+
 
     }
 

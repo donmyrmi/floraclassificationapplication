@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FlowerLocation_Repo implements RepositoryController {
+public class FlowerLocation_Repo {
 
     private DBController dbHelper;
 
