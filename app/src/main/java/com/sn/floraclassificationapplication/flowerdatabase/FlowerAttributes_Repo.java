@@ -16,16 +16,11 @@ import java.util.HashMap;
  * Created by Sapir on 05-Dec-15.
  */
 
-public class FlowerAttributes_Repo {
+public class FlowerAttributes_Repo extends AbstractFlower_Repo{
 
     private DBController dbHelper;
     private String hu8MomentsMaxString;
     private String hu8MomentsMinString;
-
-    private final int HU_SET_MAX = 1;
-    private final int HU_SET_MIN = 0;
-    private final int NUM_OF_MOMENTS = 8;
-
 
     public FlowerAttributes_Repo(Context context) {
         dbHelper = new DBController(context);
@@ -75,17 +70,17 @@ public class FlowerAttributes_Repo {
     }
 
     public void update(FlowerAttributes flowerAttributes) {
-
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(FlowerInDB.KEY_flowerImage,FlowerInDB.KEY_hu8MomentsMax);//TODO::SAPIR:bitmap,huMoment - reference or full array?
-        values.put(FlowerInDB.KEY_hu8MomentsMin,FlowerInDB.KEY_colorMax);
-        values.put(FlowerInDB.KEY_colorMin,"");
-
-        //update Row
-        db.update(FlowerAttributes.TABLE, values, FlowerAttributes.KEY_ID + "= ?", new String[]{String.valueOf(FlowerAttributes.KEY_ID)});
-        db.close(); // Closing database connection
+//
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//
+//        values.put(FlowerInDB.KEY_flowerImage,FlowerInDB.KEY_hu8MomentsMax);//TODO::SAPIR:bitmap,huMoment - reference or full array?
+//        values.put(FlowerInDB.KEY_hu8MomentsMin,FlowerInDB.KEY_colorMax);
+//        values.put(FlowerInDB.KEY_colorMin,"");
+//
+//        //update Row
+//        db.update(FlowerAttributes.TABLE, values, FlowerAttributes.KEY_ID + "= ?", new String[]{String.valueOf(FlowerAttributes.KEY_ID)});
+//        db.close(); // Closing database connection
     }
 
     public ArrayList<HashMap<String, Object>> getFlowerAttributesList() {
@@ -201,7 +196,7 @@ public class FlowerAttributes_Repo {
     public void convertArrayToString(FlowerAttributes flowerAttributes){
 
         int i;
-        for ( i = 0;i < 8;i++){
+        for ( i = 0;i < NUM_OF_MOMENTS;i++){
             hu8MomentsMaxString += String.valueOf(flowerAttributes.hu8MomentsMax[i]);
             hu8MomentsMinString += String.valueOf(flowerAttributes.hu8MomentsMin[i]);
             if(i < 7){
@@ -209,7 +204,7 @@ public class FlowerAttributes_Repo {
                 hu8MomentsMinString += "::";
             }
         }
-}
+    }
     //Converting string to double[] method
     public void convertStringToArray(FlowerAttributes flowerAttributes,String str,int type){
         String[] strToDouble;

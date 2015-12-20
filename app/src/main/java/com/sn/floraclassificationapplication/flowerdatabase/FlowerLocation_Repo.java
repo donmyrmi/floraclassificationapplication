@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FlowerLocation_Repo {
+public class FlowerLocation_Repo extends AbstractFlower_Repo{
 
     private DBController dbHelper;
 
@@ -109,7 +109,7 @@ public class FlowerLocation_Repo {
         if (cursor.moveToFirst()) {
             do {
                 flowerLocation.id = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
-                convertToLocation(cursor.getBlob((cursor.getColumnIndex(FlowerLocation.KEY_locations))),flowerLocation);
+                convertToLocation(cursor.getBlob((cursor.getColumnIndex(FlowerLocation.KEY_locations))), flowerLocation);
             } while (cursor.moveToNext());
         }
 
@@ -131,7 +131,7 @@ public class FlowerLocation_Repo {
         return is.readObject();
     }
 
-    public static void convertToLocation(byte[] bytes,FlowerLocation flowerLocation) {
+    public void convertToLocation(byte[] bytes,FlowerLocation flowerLocation) {
         int numOfLocations = bytes.length/2;
         int i = 0;
         int j = 0;
@@ -147,7 +147,5 @@ public class FlowerLocation_Repo {
             }
         }
     }
-
-
 }
 

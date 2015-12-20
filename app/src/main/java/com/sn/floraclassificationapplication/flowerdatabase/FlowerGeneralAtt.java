@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class FlowerGeneralAtt extends AbstractDBFlower {
 
+
     //Labels table name
     public static final String TABLE = "FlowerGeneralAtt";
     //Label table column names
@@ -23,9 +24,12 @@ public class FlowerGeneralAtt extends AbstractDBFlower {
     //attributes to keep data
     public int flower_ID;
     public String name;
-    public int months;
-    public float momentsWeight;
-    public float colorWeight;
+    public byte[] months;
+    public float[] momentsWeight;
+    public float[] colorWeight;
 
-    public FlowerGeneralAtt(){}
+    public FlowerGeneralAtt(){
+        momentsWeight = new float[HU_MOMENTS_NUM];
+        colorWeight = new float[NUM_OF_COLORS];
+    }
 }
