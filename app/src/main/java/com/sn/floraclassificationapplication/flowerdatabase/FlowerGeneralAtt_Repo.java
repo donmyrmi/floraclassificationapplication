@@ -16,8 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo{
+public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements RepositoryController{
     private DBController dbHelper;
     private HashMap<String,Object> tempFlowerTable = new HashMap<String, Object>();
     private String momentsWeightString;
@@ -27,8 +28,9 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo{
         dbHelper = new DBController(context);
     }
 
-    public int insert(FlowerGeneralAtt flowerGeneralAtt) {
+    public int insert(AbstractDBFlower DBFlower) {
 
+        FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;
         convertArrayToString(flowerGeneralAtt);
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -51,8 +53,9 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo{
         db.close(); // Closing database connection
     }
 
-    public void update(FlowerGeneralAtt flowerGeneralAtt) {
+    public void update(AbstractDBFlower DBFlower) {
 
+        FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         convertArrayToString(flowerGeneralAtt);
@@ -67,7 +70,7 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo{
         db.close(); // Closing database connection
     }
 
-    public ArrayList<HashMap<String, String>>  getFlowerGeneralAttList() {
+    public ArrayList<HashMap<String, Object>>  getAttributesList() {
         //Open connection to read only
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -79,19 +82,21 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo{
                 " FROM " + FlowerGeneralAtt.TABLE;
 
         //FlowerInDB FlowerInDB = new FlowerInDB();
-        ArrayList<HashMap<String, String>> FlowerInDBList = new ArrayList<HashMap<String, String>>();
-
+        ArrayList<HashMap<String, Object>> FlowerInDBList = new ArrayList<HashMap<String, Object>>();
+        FlowerGeneralAtt flower = new FlowerGeneralAtt();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
         if (cursor.moveToFirst()) {
             do {
-                HashMap<String, String> flowerGeneralAtt = new HashMap<String, String>();
+                HashMap<String, Object> flowerGeneralAtt = new HashMap<String, Object>();
                 flowerGeneralAtt.put("id", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID)));
                 flowerGeneralAtt.put("name", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME)));
-                flowerGeneralAtt.put("months", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months)));
-                flowerGeneralAtt.put("momentsWeight", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight)));
-                flowerGeneralAtt.put("colorWeight", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight)));
+                flowerGeneralAtt.put("months", cursor.getBlob(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months)));
+                convertStringToArray(flower, cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight)), HU_WEIGHT);
+                flowerGeneralAtt.put("momemtsWeight", flower.momentsWeight);
+                convertStringToArray(flower, cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight)), COLORS);
+                flowerGeneralAtt.put("colorWeight", flower.colorWeight);
                 FlowerInDBList.add(flowerGeneralAtt);
 
             } while (cursor.moveToNext());
@@ -102,7 +107,7 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo{
         return FlowerInDBList;
     }
 
-    public FlowerGeneralAtt getFlowerById(int Id){
+    public FlowerGeneralAtt getAttributesById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 FlowerInDB.KEY_ID + "," +

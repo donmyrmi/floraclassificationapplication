@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by Sapir on 20-Dec-15.
  */
-public class FlowerInDB_Repo extends AbstractFlower_Repo {
+public class FlowerInDB_Repo extends AbstractFlower_Repo{
 
     private DBController dbHelper;
 

@@ -16,7 +16,7 @@ import java.util.HashMap;
  * Created by Sapir on 05-Dec-15.
  */
 
-public class FlowerAttributes_Repo extends AbstractFlower_Repo{
+public class FlowerAttributes_Repo extends AbstractFlower_Repo implements RepositoryController{
 
     private DBController dbHelper;
     private String hu8MomentsMaxString;
@@ -26,8 +26,8 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo{
         dbHelper = new DBController(context);
     }
 
-    public int insert(FlowerAttributes flowerAttributes) {
-
+    public int insert(AbstractDBFlower DBFlower){
+        FlowerAttributes flowerAttributes = (FlowerAttributes)DBFlower;
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -69,8 +69,8 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo{
         db.close(); // Closing database connection
     }
 
-    public void update(FlowerAttributes flowerAttributes) {
-//
+    public void update(AbstractDBFlower DBFlower) {
+//        FlowerAttributes flowerAttributes = (FlowerAttributes) DBFlower;
 //        SQLiteDatabase db = dbHelper.getWritableDatabase();
 //        ContentValues values = new ContentValues();
 //
@@ -83,7 +83,7 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo{
 //        db.close(); // Closing database connection
     }
 
-    public ArrayList<HashMap<String, Object>> getFlowerAttributesList() {
+    public ArrayList<HashMap<String, Object>> getAttributesList() {
         //Open connection to read only
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -139,7 +139,7 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo{
         return FlowerAttributesList;
     }
 
-    public FlowerAttributes getFlowerAttributesById(int Id){
+    public FlowerAttributes getAttributesById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 FlowerAttributes.KEY_ID + "," +

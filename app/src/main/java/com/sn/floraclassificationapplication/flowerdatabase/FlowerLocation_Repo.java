@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FlowerLocation_Repo extends AbstractFlower_Repo{
+public class FlowerLocation_Repo extends AbstractFlower_Repo implements RepositoryController{
 
     private DBController dbHelper;
 
@@ -26,8 +26,9 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo{
         dbHelper = new DBController(context);
     }
 
-    public int insert(FlowerLocation flowerLocation) {
+    public int insert(AbstractDBFlower DBFlower) {
 
+        FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -53,8 +54,9 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo{
         db.close(); // Closing database connection
     }
 
-    public void update(FlowerLocation flowerLocation) {
+    public void update(AbstractDBFlower DBFlower) {
 
+        FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -64,7 +66,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo{
         db.close(); // Closing database connection
     }
 
-    public ArrayList<HashMap<String, Object>>  getFlowerLocation() {
+    public ArrayList<HashMap<String, Object>>  getAttributesList() {
         //Open connection to read only
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -92,7 +94,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo{
         return Flower_Location;
     }
 
-    public FlowerLocation getAttributeById(int Id){
+    public FlowerLocation getAttributesById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
                 FlowerLocation.KEY_ID + "," +
@@ -117,20 +119,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo{
         db.close();
         return flowerLocation;
     }
-
-    public static byte[] serialize(Object obj) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream os = new ObjectOutputStream(out);
-        os.writeObject(obj);
-        return out.toByteArray();
-    }
-
-    public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-        ObjectInputStream is = new ObjectInputStream(in);
-        return is.readObject();
-    }
-
+    
     public void convertToLocation(byte[] bytes,FlowerLocation flowerLocation) {
         int numOfLocations = bytes.length/2;
         int i = 0;
