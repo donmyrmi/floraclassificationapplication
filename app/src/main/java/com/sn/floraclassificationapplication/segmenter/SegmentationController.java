@@ -62,6 +62,8 @@ public class SegmentationController {
         currentSegment = 0;
         buttonYes = (Button) activity.findViewById(R.id.confYesButton);
         buttonNo = (Button) activity.findViewById(R.id.confNoButton);
+        buttonYes.setVisibility(View.VISIBLE);
+        buttonNo.setVisibility(View.VISIBLE);
         confTextView = (TextView) activity.findViewById(R.id.confTextView);
 
         flowerSegments = new Bitmap[K];
@@ -97,6 +99,7 @@ public class SegmentationController {
     }
 
     private void cleanImage() {
+    private void askCleanImage() {
 
         flowerView.setImageBitmap(output);
         confTextView.setText("Does this image needs cleaning?");
@@ -147,6 +150,7 @@ public class SegmentationController {
 
     private void askSegmentPart() {
         Bitmap temp = ic.overlay(flowerSegments[currentSegment], output);
+        Bitmap temp = ic.overlay(flowerSegments[currentSegment], bg_bi);
         flowerView.setImageBitmap(ic.overlay(bg_bi, temp));
 
         confTextView.setText("Is the highlighted image is part of the flower? [" + (currentSegment + 1) + "/" + K + "]");
@@ -172,6 +176,7 @@ public class SegmentationController {
                     askSegmentPart();
                 } else {
                     cleanImage();
+                    askCleanImage();
                 }
             }
         };
@@ -201,7 +206,7 @@ public class SegmentationController {
         this.activity = activity;
     }
 
-    private class CopyImageSegmentTask extends AsyncTask<Void, Integer, Bitmap> {
+    private class CopyImageSegmentTask extends AsyncTask<Void, Void, Void> {
         protected void onPreExecute() {
             // before
         }
@@ -210,13 +215,16 @@ public class SegmentationController {
             // Some long-running task like downloading an image.
             output = ic.overlay(output, flowerSegments[currentSegment]);
             return output;
+            return null;
         }
 
         protected void onProgressUpdate(Integer... values) {
+        protected void onProgressUpdate(Void... values) {
             // Executes whenever publishProgress is called from doInBackground
         }
 
         protected void onPostExecute(Bitmap result) {
+        protected void onPostExecute(Void result) {
             // This method is executed in the UIThread
             // with access to the result of the long running task
             //flowerView.setImageBitmap(segmentedFlower.getGrayImage());
@@ -226,6 +234,7 @@ public class SegmentationController {
                 askSegmentPart();
             } else {
                 cleanImage();
+                askCleanImage();
             }
         }
     }

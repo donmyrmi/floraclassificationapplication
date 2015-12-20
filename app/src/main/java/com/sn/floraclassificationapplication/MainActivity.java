@@ -1,37 +1,36 @@
 package com.sn.floraclassificationapplication;
 
-import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
-import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import java.util.Calendar;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Bundle;
-import android.app.Activity;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Menu;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView viewImage;
-    private Button btn1,btn2;
+    private Button btn1;
+    private Button btn2;
+    private Flower segmentedFlower;
+
+    static final int REQUEST_CAMERA_IMAGE = 1;
+    static final int REQUEST_GALLERY_IMAGE = 2;
+    private File imageFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,25 @@ public class MainActivity extends AppCompatActivity {
         init();
         btn1=(Button)findViewById(R.id.confNoButton);
         btn2=(Button)findViewById(R.id.confYesButton);
+
+    }
+
+    public void init()
+    {
+        segmentedFlower = TestFlower();
+        //segmentedFlower.segmentAndClassify();
+
+        Button temp = (Button) findViewById(R.id.confYesButton);
+        temp.setVisibility(View.GONE);
+        temp = (Button) findViewById(R.id.confNoButton);
+        temp.setVisibility(View.GONE);
+
+        btn1=(Button)findViewById(R.id.useGalleryButton);
+        btn1.setVisibility(View.VISIBLE);
+        btn2=(Button)findViewById(R.id.useCameraButton);
+        btn2.setVisibility(View.VISIBLE);
         //viewImage=(ImageView)findViewById(R.id.viewImage);
+
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,13 +76,125 @@ public class MainActivity extends AppCompatActivity {
     {
         Flower segmentedFlower = TestFlower();
         segmentedFlower.segmentAndClassify();
+    private void SelectGalleryImage() {
+        btn1.setVisibility(View.GONE);
+        btn2.setVisibility(View.GONE);
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_GALLERY_IMAGE);
+    }
 
+    public void TakePhoto(){
+        btn1.setVisibility(View.GONE);
+        btn2.setVisibility(View.GONE);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        imageFile = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+        intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+        startActivityForResult(intent, REQUEST_CAMERA_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK ) {
+            if (requestCode == REQUEST_CAMERA_IMAGE) {
+                Bitmap imageBitmap = ConvertFileToBitMap(imageFile);
+                segmentedFlower.setFlowerImage(imageBitmap);
+                segmentedFlower.segmentAndClassify();
+            } else {
+                if (requestCode == REQUEST_GALLERY_IMAGE) {
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    Cursor cursor = getContentResolver().query(selectedImage,
+                            filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String picturePath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    Bitmap imageBitmap = null;
+                    imageBitmap = BitmapFactory.decodeFile(picturePath);
+
+                    ExifInterface exif = null;
+                    try {
+                        exif = new ExifInterface(picturePath);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (exif != null) {
+                        String datetime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+                        String latitude = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                        String longitude = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                        if (latitude != null) {
+                            segmentedFlower.setLongitude(convertToDegree(longitude));
+                            segmentedFlower.setLatitude(convertToDegree(latitude));
+                        }
+                        if (datetime != null) {
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                            try {
+                                calendar.setTime(simpleDateFormat.parse(datetime));
+                                int month = calendar.get(Calendar.MONTH);
+                                segmentedFlower.setMonth(month);
+                            } catch (ParseException e) {}
+                        }
+                    }
+                    segmentedFlower.setFlowerImage(imageBitmap);
+                    segmentedFlower.segmentAndClassify();
+                }
+            }
+        }
+    }
+
+    private double convertToDegree(String stringDMS){
+        double result;
+        String[] DMS = stringDMS.split(",", 3);
+
+        String[] stringD = DMS[0].split("/", 2);
+        Double D0 = new Double(stringD[0]);
+        Double D1 = new Double(stringD[1]);
+        Double FloatD = D0/D1;
+
+        String[] stringM = DMS[1].split("/", 2);
+        Double M0 = new Double(stringM[0]);
+        Double M1 = new Double(stringM[1]);
+        Double FloatM = M0/M1;
+
+        String[] stringS = DMS[2].split("/", 2);
+        Double S0 = new Double(stringS[0]);
+        Double S1 = new Double(stringS[1]);
+        Double FloatS = S0/S1;
+
+        result = new Double(FloatD + (FloatM/60) + (FloatS/3600));
+
+        return result;
+
+
+    };
+
+    public Bitmap ConvertFileToBitMap(File file){
+        Bitmap bitmap;
+        Flower flower = new Flower(this);
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
+                bitmapOptions);
+        ImageView viewImage = (ImageView) findViewById(R.id.flowerView);
+        viewImage.setImageBitmap(bitmap);
+        String path = android.os.Environment.getExternalStorageDirectory() + File.separator
+                + "Phoenix" + File.separator + "default";
+        flower.setFlowerImage(bitmap);
+        file.delete();
+        return bitmap;
     }
 
     public Flower TestFlower()
     {
         GPSTracker gps;
         Flower segmentedFlower = new Flower(this);//TODO::SAPIR:maybe make segmentedFlower a class variable
+        Flower segmentedFlower = new Flower(this);
         segmentedFlower.setFlowerImage(BitmapFactory.decodeResource(getResources(), R.mipmap.f1));
 
         gps = new GPSTracker(this);

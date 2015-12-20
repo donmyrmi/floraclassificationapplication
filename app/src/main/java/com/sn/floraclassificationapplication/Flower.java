@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 /**
  * Created by Nadav on 19-Nov-15.
  */
@@ -29,8 +30,6 @@ public class Flower {
     private double[] hu8Moments;
     private int rgbColorAverage;
     private Location location;
-    private double longitude;
-    private double latitude;
     private int month;
     private Hu8Moments hu8MomentCalculator;
     private RGBColorAverage rgbColorAverageCalculator;
@@ -47,6 +46,14 @@ public class Flower {
         sm.setActivity(activity);
         showValues = new ShowValues(activity, this);
     }
+
+    public double getLatitude() { return latitude;}
+
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return  longitude;}
+
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
     public AppCompatActivity getActivity() {
         return activity;
@@ -70,10 +77,14 @@ public class Flower {
 
     public Location getLocations() {
         return location;
+    public String getLocation() {
+        return "lat:"+latitude+",lon:"+longitude;
     }
 
     public void setLocation(Location location) {
         this.location = location;
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
     }
 
     public Bitmap getFlowerImage() {
@@ -98,8 +109,10 @@ public class Flower {
 
     public void setMonth(int setToMonth) {
         if (setToMonth < 0 || setToMonth > 12)
+        if (setToMonth < 0 || setToMonth >= 12)
             return;
         month = 1 << setToMonth;
+        month = setToMonth;
     }
 
     public double[] getHu8Moments() {
@@ -139,9 +152,6 @@ public class Flower {
     public void setLongitude(String longitude) {
         this.longitude = Double.parseDouble(longitude);
     }
-
-
-
     public void segmentAndClassify() {
        sm.segment(this);
     }
