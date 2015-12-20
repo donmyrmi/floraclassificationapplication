@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by Sapir on 05-Dec-15.
  */
+public class FlowerLocation extends AbstractDBFlower{
     //Labels table name
     public static final String TABLE = "FlowerLocation";
     //Label table column names
@@ -14,4 +15,5 @@ import java.util.List;
     public static final String KEY_locations = "locations";
 
     public int id;
+    public List<com.sn.floraclassificationapplication.flowerdatabase.Location> locations;
 }

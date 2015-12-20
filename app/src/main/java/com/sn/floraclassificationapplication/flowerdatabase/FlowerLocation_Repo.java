@@ -119,7 +119,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         db.close();
         return flowerLocation;
     }
-    
+
     public void convertToLocation(byte[] bytes,FlowerLocation flowerLocation) {
         int numOfLocations = bytes.length/2;
         int i = 0;

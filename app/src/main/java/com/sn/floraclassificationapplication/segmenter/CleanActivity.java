@@ -61,7 +61,6 @@ public class CleanActivity extends AppCompatActivity  {
 
     private class SetImagesToClassifier extends AsyncTask<Void, Void, Void> {
         protected void onPreExecute() {
-            Toast.makeText(activity, "Computing... please hold.", Toast.LENGTH_LONG).show();
         }
 
         protected Void doInBackground(Void... strings) {

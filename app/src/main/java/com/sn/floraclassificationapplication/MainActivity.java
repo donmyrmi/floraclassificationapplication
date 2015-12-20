@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        btn1=(Button)findViewById(R.id.confNoButton);
-        btn2=(Button)findViewById(R.id.confYesButton);
 
     }
 
@@ -72,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void init()
-    {
-        Flower segmentedFlower = TestFlower();
-        segmentedFlower.segmentAndClassify();
     private void SelectGalleryImage() {
         btn1.setVisibility(View.GONE);
         btn2.setVisibility(View.GONE);
@@ -193,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
     public Flower TestFlower()
     {
         GPSTracker gps;
-        Flower segmentedFlower = new Flower(this);//TODO::SAPIR:maybe make segmentedFlower a class variable
         Flower segmentedFlower = new Flower(this);
         segmentedFlower.setFlowerImage(BitmapFactory.decodeResource(getResources(), R.mipmap.f1));
 
@@ -215,63 +208,4 @@ public class MainActivity extends AppCompatActivity {
 
         return segmentedFlower;
     }
-
-    public void SelectGalleryImage(){
-        String filePath = null;
-        Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, 2);
-
-        getFilePath(intent, filePath);
-        try {
-            ExifInterface exif = new ExifInterface(filePath);
-        }
-        catch (IOException io)
-        {
-            System.out.print("IO Exception occurred while getting photo gallery file path");
-        }
-        String latitude = ExifInterface.TAG_GPS_LATITUDE;
-        String longitude = ExifInterface.TAG_GPS_LONGITUDE;
-//      segmentedFlower.setLatitude(latitude);
-//       segmentedFlower.setLongitude(longitude);
-    }
-
-    public void TakePhoto(){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        startActivityForResult(intent, 1);
-    }
-
-        public void ConvertFileToBitMap(File file){
-        Bitmap bitmap;
-        Flower flower = new Flower(this);
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
-                bitmapOptions);
-        viewImage.setImageBitmap(bitmap);
-        String path = android.os.Environment.getExternalStorageDirectory() + File.separator
-                + "Phoenix" + File.separator + "default";
-        flower.setFlowerImage(bitmap);
-            file.delete();
-    }
-
-
-    public void getFilePath(Intent data, String filePath) {
-
-            Uri selectedImageUri = data.getData();
-            filePath = getRealPathFromURI(selectedImageUri);
-
-
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        @SuppressWarnings("deprecation")
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
 }

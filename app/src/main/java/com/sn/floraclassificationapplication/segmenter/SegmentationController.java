@@ -98,7 +98,6 @@ public class SegmentationController {
         buttonNo.setVisibility(Button.VISIBLE);
     }
 
-    private void cleanImage() {
     private void askCleanImage() {
 
         flowerView.setImageBitmap(output);
@@ -149,7 +148,6 @@ public class SegmentationController {
     }
 
     private void askSegmentPart() {
-        Bitmap temp = ic.overlay(flowerSegments[currentSegment], output);
         Bitmap temp = ic.overlay(flowerSegments[currentSegment], bg_bi);
         flowerView.setImageBitmap(ic.overlay(bg_bi, temp));
 
@@ -175,7 +173,6 @@ public class SegmentationController {
                     currentSegment++;
                     askSegmentPart();
                 } else {
-                    cleanImage();
                     askCleanImage();
                 }
             }
@@ -211,19 +208,15 @@ public class SegmentationController {
             // before
         }
 
-        protected Bitmap doInBackground(Void... strings) {
-            // Some long-running task like downloading an image.
+        protected Void doInBackground(Void... strings) {
             output = ic.overlay(output, flowerSegments[currentSegment]);
-            return output;
             return null;
         }
 
-        protected void onProgressUpdate(Integer... values) {
         protected void onProgressUpdate(Void... values) {
             // Executes whenever publishProgress is called from doInBackground
         }
 
-        protected void onPostExecute(Bitmap result) {
         protected void onPostExecute(Void result) {
             // This method is executed in the UIThread
             // with access to the result of the long running task
@@ -233,7 +226,6 @@ public class SegmentationController {
                 currentSegment++;
                 askSegmentPart();
             } else {
-                cleanImage();
                 askCleanImage();
             }
         }

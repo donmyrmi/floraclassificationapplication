@@ -159,7 +159,6 @@ public class DrawingView extends View {
     }
 
     public Bitmap saveImage() {
-        return mBitmap;
         return ic.getResizedBitmap(mBitmap, image.getHeight(), image.getWidth());
     }
 }

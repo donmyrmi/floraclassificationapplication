@@ -1,21 +1,13 @@
 package com.sn.floraclassificationapplication;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.sn.floraclassificationapplication.classifier.Classifier;
 import com.sn.floraclassificationapplication.classifier.Hu8Moments;
 import com.sn.floraclassificationapplication.classifier.RGBColorAverage;
 import com.sn.floraclassificationapplication.classifier.ShowValues;
 import com.sn.floraclassificationapplication.segmenter.ImageController;
 import com.sn.floraclassificationapplication.segmenter.SegmentationController;
-import java.util.ArrayList;
-import java.util.List;
 
 
 
@@ -29,17 +21,15 @@ public class Flower {
     private Bitmap grayImage;
     private double[] hu8Moments;
     private int rgbColorAverage;
-    private Location location;
+    private double latitude, longitude;
     private int month;
     private Hu8Moments hu8MomentCalculator;
-    private RGBColorAverage rgbColorAverageCalculator;
     private SegmentationController sm = SegmentationController.getInstance();
     private ImageController ic = ImageController.getInstance();
     private static AppCompatActivity activity;
     private ShowValues showValues;
 
     public Flower(AppCompatActivity activity)  {
-        //classifiers = new ArrayList<Classifier>();
         hu8Moments = new double[8];
         this.activity = activity;
         sm = new SegmentationController();
@@ -75,14 +65,11 @@ public class Flower {
         this.name = name;
     }
 
-    public Location getLocations() {
-        return location;
     public String getLocation() {
         return "lat:"+latitude+",lon:"+longitude;
     }
 
     public void setLocation(Location location) {
-        this.location = location;
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
     }
@@ -108,10 +95,8 @@ public class Flower {
     }
 
     public void setMonth(int setToMonth) {
-        if (setToMonth < 0 || setToMonth > 12)
         if (setToMonth < 0 || setToMonth >= 12)
             return;
-        month = 1 << setToMonth;
         month = setToMonth;
     }
 
@@ -137,21 +122,6 @@ public class Flower {
         return grayImage;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = Double.parseDouble(latitude);
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = Double.parseDouble(longitude);
-    }
     public void segmentAndClassify() {
        sm.segment(this);
     }
