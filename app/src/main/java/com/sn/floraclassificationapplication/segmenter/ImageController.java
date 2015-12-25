@@ -11,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 
+import java.io.FileOutputStream;
+
 /**
  * Created by Nadav on 18-Nov-15.
  */
@@ -113,5 +115,16 @@ public class ImageController {
         paint.setColor(color);
         canvas.drawRect(0F, 0F, (float) width, (float) height, paint);
         return bitmap;
+    }
+
+    public Bitmap rotateImage(int degree, Bitmap b) {
+
+        if (degree != 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(degree);
+            b = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(),
+                    matrix, true);
+        }
+        return  b;
     }
 }

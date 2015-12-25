@@ -34,7 +34,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         ContentValues values = new ContentValues();
         values.put(flowerLocation.KEY_ID,flowerLocation.id);
         //put flower locations in values
-        for (com.sn.floraclassificationapplication.flowerdatabase.Location loc :
+        for (FloweringLocation loc :
                 flowerLocation.locations) {
             values.put(flowerLocation.KEY_locations,loc.getLatitude());
             values.put(flowerLocation.KEY_locations,loc.getLongitude());
@@ -127,7 +127,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
 
         for(;i < numOfLocations;i++)
         {
-            for (com.sn.floraclassificationapplication.flowerdatabase.Location loc :
+            for (FloweringLocation loc :
                     flowerLocation.locations) {
                 loc.setLongitude(ByteBuffer.wrap(bytes).getDouble(j));
                 j += 8;

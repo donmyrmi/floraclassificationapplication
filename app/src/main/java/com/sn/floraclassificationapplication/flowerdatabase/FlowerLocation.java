@@ -15,5 +15,5 @@ public class FlowerLocation extends AbstractDBFlower{
     public static final String KEY_locations = "locations";
 
     public int id;
-    public List<com.sn.floraclassificationapplication.flowerdatabase.Location> locations;
+    public List<FloweringLocation> locations;
 }

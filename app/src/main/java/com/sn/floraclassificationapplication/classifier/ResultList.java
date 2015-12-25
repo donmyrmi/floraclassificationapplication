@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.sn.floraclassificationapplication.R;
 import com.sn.floraclassificationapplication.segmenter.ImageController;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Nadav on 19-Nov-15.
  */
@@ -21,15 +23,17 @@ public class ResultList extends ArrayAdapter<String> {
     private final AppCompatActivity context;
     private final String[] upTxt,downTxt;
     private final int[] imageId;
+    private final String[] rankText;
     private final boolean[] isRGB;
     private ImageController ic = ImageController.getInstance();
 
     public ResultList(AppCompatActivity context,
-                      String[] upTxt, int[] imageId, String[] downTxt, boolean[] isRGB) {
+                      String[] upTxt, int[] imageId, String[] downTxt, String[] rankText, boolean[] isRGB) {
         super(context, R.layout.resultsingle, upTxt);
         this.context = context;
         this.upTxt = upTxt;
         this.downTxt = downTxt;
+        this.rankText = rankText;
         this.isRGB = isRGB;
         this.imageId = imageId;
     }
@@ -40,6 +44,7 @@ public class ResultList extends ArrayAdapter<String> {
         View rowView= inflater.inflate(R.layout.resultsingle, null, true);
         TextView upTxtTitle = (TextView) rowView.findViewById(R.id.uptxt);
         TextView downTxtTitle = (TextView) rowView.findViewById(R.id.downtxt);
+        TextView rankTxtTitle = (TextView) rowView.findViewById(R.id.rankText);
 
         Bitmap tempBi;
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
@@ -53,6 +58,7 @@ public class ResultList extends ArrayAdapter<String> {
 
         upTxtTitle.setText(upTxt[position]);
         downTxtTitle.setText(downTxt[position]);
+        rankTxtTitle.setText(rankText[position]);
         imageView.setImageBitmap(tempBi);
         //imageView.setImageResource(imageId[position]);
         return rowView;

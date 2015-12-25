@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.sn.floraclassificationapplication.Flower;
 import com.sn.floraclassificationapplication.MainActivity;
 import com.sn.floraclassificationapplication.R;
+import com.sn.floraclassificationapplication.flowerdatabase.DBController;
+import com.sn.floraclassificationapplication.flowerdatabase.FlowerInDB;
 import com.sn.floraclassificationapplication.segmenter.ImageController;
 
 import java.text.DateFormatSymbols;
@@ -30,7 +32,7 @@ public class ShowValues {
     private ImageController ic;
     private List<String> List_file;
     private ListView listView;
-    private static int NUMBER_OF_VARIABLES = 8+1+1+1;
+    private int numberOfFlowers;
     private ResultList adapter;
 
     private AppCompatActivity mainActivity;
@@ -45,35 +47,61 @@ public class ShowValues {
 
     private void CreateListView()
     {
-        String[] strUpValues = new String[NUMBER_OF_VARIABLES];
-        String[] strDownValues = new String[NUMBER_OF_VARIABLES];
-        int[] imgValues = new int[NUMBER_OF_VARIABLES];
+
+
+        DBController dbc = new DBController(mainActivity);
+        dbc.loadTestFlowerDB();
+
+        List<FlowerInDB> dbFLowers = dbc.getFlowerInDB();
+        int dbFlowerSize = dbFLowers.size();
+        numberOfFlowers = dbFlowerSize + 8 + 3;
+
+        String[] strUpValues = new String[numberOfFlowers];
+        String[] strDownValues = new String[numberOfFlowers];
+        String[] strRankValues = new String[numberOfFlowers];
+        int[] imgValues = new int[numberOfFlowers];
         double[] moments = flower.getHu8Moments();
-        boolean[] isRGBs = new boolean[NUMBER_OF_VARIABLES];
+        boolean[] isRGBs = new boolean[numberOfFlowers];
+        int i = 0;
 
-        for (int i=0; i<8; i++)
-        {
-            strUpValues[i] = "HU"+(i+1);
-            strDownValues[i] = Double.toString(moments[i]);
-        }
-
-        strUpValues[8] = "GPS location";
-        strUpValues[9] = "Month";
-
-        strDownValues[8] = flower.getLocation();
-        strDownValues[9] = getMonth(flower.getMonth());
-
-        for (int i=0; i< NUMBER_OF_VARIABLES-1; i++) {
-            imgValues[i] = R.mipmap.f1;
+        for (FlowerInDB f : dbFLowers) {
+            strUpValues[i] = f.getName();
+            strDownValues[i] = "angle = " + f.getAngle();
             isRGBs[i] = false;
+            imgValues[i] = R.mipmap.f1;
+            strRankValues[i] = String.valueOf((int)f.getRank());
+            i++;
+        }
+        // flower details for testing only!
+        for (int j = 0; j<8; j++)
+        {
+            strUpValues[j + dbFlowerSize] = "HU"+(i+1);
+            strDownValues[j + dbFlowerSize] = String.format("%.24f", moments[j]);
+            isRGBs[j + dbFlowerSize] = false;
+            imgValues[j + dbFlowerSize] = R.mipmap.f1;
+            strRankValues[j+dbFlowerSize] = "0";
         }
 
-        strUpValues[10] = "Color average";
-        isRGBs[10] = true;
-        strDownValues[10] = "("+Color.red(flower.getColor())+","+Color.green(flower.getColor())+","+Color.blue(flower.getColor())+")";
-        imgValues[10] = flower.getColor();
+        strUpValues[8 + dbFlowerSize] = "GPS location";
+        strDownValues[8 + dbFlowerSize] = flower.getLocation();
+        isRGBs[8 + dbFlowerSize] = false;
+        imgValues[8 + dbFlowerSize] = R.mipmap.f1;
+        strRankValues[8+dbFlowerSize] = "0";
 
-        adapter = new ResultList(mainActivity, strUpValues, imgValues, strDownValues, isRGBs);
+        strUpValues[9 + dbFlowerSize] = "Month";
+        strDownValues[9 + dbFlowerSize] = getMonth(flower.getMonth());
+        isRGBs[9 + dbFlowerSize] = false;
+        imgValues[9 + dbFlowerSize] = R.mipmap.f1;
+        strRankValues[9 +dbFlowerSize] = "0";
+
+        strUpValues[10 + dbFlowerSize] = "Color average";
+        isRGBs[10 + dbFlowerSize] = true;
+        strDownValues[10 + dbFlowerSize] = "("+Color.red(flower.getColor())+","+Color.green(flower.getColor())+","+Color.blue(flower.getColor())+")";
+        strRankValues[10 + dbFlowerSize] = "0";
+        imgValues[10 + dbFlowerSize] = flower.getColor();
+        // end of flower details
+
+        adapter = new ResultList(mainActivity, strUpValues, imgValues, strDownValues, strRankValues, isRGBs);
 
         listView.setAdapter(adapter);
 

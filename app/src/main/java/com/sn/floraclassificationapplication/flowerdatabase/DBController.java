@@ -7,16 +7,24 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+
 public class DBController extends SQLiteOpenHelper{
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
+    private List<FlowerInDB> flowerInDB;
     private static final int DATABASE_VERSION = 1;
     // Database Name
     private static final String DATABASE_NAME = "FlowersCRUD.db";
 
     public DBController(Context context ) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        loadTestFlowerDB();
     }
 
     @Override
@@ -87,4 +95,70 @@ public class DBController extends SQLiteOpenHelper{
 //            flowerInDB[i] = new FlowerInDB(i);
 //    }
 
+    public void loadTestFlowerDB() {
+        flowerInDB = new ArrayList<FlowerInDB>();
+        for (int i=0; i<10; i++) {
+            flowerInDB.add(testFlowerInDB(i,1));
+            flowerInDB.add(testFlowerInDB(i,2));
+        }
+        Collections.sort(flowerInDB, new Comparator<FlowerInDB>() {
+            public int compare(FlowerInDB o1, FlowerInDB o2) {
+                return (int) (o2.getRank() - o1.getRank());
+            }
+        });
+
+
+    }
+
+    private FlowerInDB testFlowerInDB(int fid, int angle)  {
+        Random rand = new Random();
+        FlowerInDB testF = new FlowerInDB(fid);
+
+        testF.setAngle(angle);
+        int num;
+
+        testF.setName("Flower"+fid);
+
+        num = rand.nextInt(8191);
+        testF.setMonths(num);
+
+        num = rand.nextInt(206)+50;
+        testF.setRedMax(num);
+        testF.setRedMin(num-50);
+
+        num = rand.nextInt(206)+50;
+        testF.setGreenMax(num);
+        testF.setGreenMin(num-50);
+
+        num = rand.nextInt(206)+50;
+        testF.setBlueMax(num);
+        testF.setBlueMin(num-50);
+
+        double[] husMax = new double[8];
+        double[] husMin = new double[8];
+        for (int i=0; i<8; i++) {
+            husMax[i] = Math.random();
+            husMin[i] = husMax[i] * 0.95;
+        }
+        testF.setHu8MomentsMax(husMax);
+        testF.setHu8MomentsMin(husMin);
+
+        List<FloweringLocation> locations = new ArrayList<FloweringLocation>();
+
+        double lon = 28 + Math.random() * 4;
+        double lat = 28 + Math.random() * 4;
+        double rad = 0.2 + Math.random();
+        locations.add(new FloweringLocation(lon,lat,rad));
+
+        testF.setLocations(locations);
+
+        num = rand.nextInt(100);
+        testF.setRank(num);
+
+        return testF;
+    }
+
+    public List<FlowerInDB> getFlowerInDB() {
+        return flowerInDB;
+    }
 }

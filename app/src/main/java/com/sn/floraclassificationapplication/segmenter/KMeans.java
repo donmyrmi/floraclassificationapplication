@@ -45,7 +45,8 @@ public class KMeans {
         while (pixelChangedCluster && iterationCounter < MAX_ITERATIONS) {
 
             for (int i=0; i<k; i++)
-                clusters[i].calculateNewCenter();
+                if (clusters[i].pixelAdded)
+                    clusters[i].calculateNewCenter();
 
             pixelChangedCluster = attachPixelsToClusters();
             iterationCounter++;
@@ -145,6 +146,7 @@ public class KMeans {
         long reds;
         long greens;
         long blues;
+        public boolean pixelAdded;
 
         public Cluster(int id, int color) {
             int r = (color>>16)&0x0ff;
@@ -153,6 +155,7 @@ public class KMeans {
             red_center = r;
             green_center = g;
             blue_center = b;
+            pixelAdded = true;
         }
 
 
@@ -166,6 +169,7 @@ public class KMeans {
             greens+=g;
             blues+=b;
             pixelCount++;
+            pixelAdded = true;
         }
 
         void removePixel(int color) {
@@ -178,6 +182,7 @@ public class KMeans {
             greens-=g;
             blues-=b;
             pixelCount--;
+            pixelAdded = true;
         }
 
         int distance(int rgb) {
@@ -194,6 +199,7 @@ public class KMeans {
 
         void calculateNewCenter()
         {
+            pixelAdded = false;
             if (pixelCount == 0)
                 return;
             red_center = (int) reds / pixelCount;

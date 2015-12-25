@@ -6,12 +6,13 @@
         <ImageView
             android:id="@+id/img"
             android:layout_width="50dp"
-            android:layout_height="50dp"/>
+            android:layout_height="50dp" />
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/uptxt"
@@ -26,5 +27,15 @@
                 android:text="Small Text"
                 android:id="@+id/downtxt" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="00"
+            android:id="@+id/rankText"
+            android:layout_gravity="right"
+            android:maxWidth="32dp" />
+
     </TableRow>
 </TableLayout>

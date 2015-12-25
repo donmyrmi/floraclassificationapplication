@@ -37,18 +37,50 @@ public class Hu8Moments extends AsyncTask<Bitmap, Void, double[]> {
 
         double[][] mpq = new double[N_ORDER][N_ORDER];
 
-        for (int p=0; p<N_ORDER; p++)
-            for (int q=0; q<N_ORDER; q++)
+        // Calculate Raw Moments
+        for (int p=0; p<2; p++)
+            for (int q=0; q<2; q++)
                 for (int i=0; i<w; i++)
                     for (int j=0; j<h; j++)
-                        if (Color.alpha(bi.getPixel(i,j))!=00)
-                            mpq[p][q] += Math.pow(i-cenX,p) * Math.pow(j - cenY,q) * bi.getPixel(i, j);
+                        if (Color.alpha(bi.getPixel(i,j))!= 0)
+                            mpq[p][q] += Math.pow(i,p) * Math.pow(j,q) * bi.getPixel(i, j);
 
+        for (int i=0; i<w; i++)
+            for (int j=0; j<h; j++)
+                if (Color.alpha(bi.getPixel(i,j))!= 0) {
+                    mpq[2][0] += Math.pow(i, 2) * Math.pow(j, 0) * bi.getPixel(i, j);
+                    mpq[2][1] += Math.pow(i, 2) * Math.pow(j, 1) * bi.getPixel(i, j);
+                    mpq[0][2] += Math.pow(i, 0) * Math.pow(j, 2) * bi.getPixel(i, j);
+                    mpq[1][2] += Math.pow(i, 1) * Math.pow(j, 2) * bi.getPixel(i, j);
+
+                    mpq[0][3] += Math.pow(i, 0) * Math.pow(j, 3) * bi.getPixel(i, j);
+                    mpq[3][0] += Math.pow(i, 3) * Math.pow(j, 0) * bi.getPixel(i, j);
+                }
+
+        // Calculate Central Moments
+        double[][] cpq = new double[N_ORDER][N_ORDER];
+        cpq[0][0] = mpq[0][0];
+        cpq[0][1] = 0;
+        cpq[1][0] = 0;
+        cpq[1][1] = mpq[1][1] - cenX * mpq[0][1];
+        cpq[2][0] = mpq[2][0] - cenX * mpq[1][0];
+        cpq[0][2] = mpq[0][2] - cenY * mpq[0][1];
+        cpq[2][1] = mpq[2][1] - 2 * cenX * mpq[1][1] - cenY * mpq[2][0] + 2 * Math.pow(cenX,2) * mpq[0][1];
+        cpq[1][2] = mpq[1][2] - 2 * cenY * mpq[1][1] - cenX * mpq[0][2] + 2 * Math.pow(cenY,2) * mpq[1][0];
+        cpq[3][0] = mpq[3][0] - 3 * cenY * mpq[2][0] + 2 * Math.pow(cenX,2) * mpq[1][0];
+        cpq[0][3] = mpq[0][3] - 3 * cenY * mpq[0][2] + 2 * Math.pow(cenY,2) * mpq[0][1];
+
+        // Calculate Scale invariant moments
         double[][] scl = new double[N_ORDER][N_ORDER];
-        for (int i=0; i<N_ORDER; i++)
-            for (int j=0; j<N_ORDER; j++)
-                scl[i][j] = mpq[i][j] / (Math.pow(mpq[0][0], 1+ ((i + j) / 2)));
+        scl[2][0] = cpq[2][0] / Math.pow(cpq[0][0],1+((2+0)/2));
+        scl[0][2] = cpq[0][2] / Math.pow(cpq[0][0],1+((0+2)/2));
+        scl[1][1] = cpq[1][1] / Math.pow(cpq[0][0],1+((1+1)/2));
+        scl[3][0] = cpq[3][0] / Math.pow(cpq[0][0],1+((3+0)/2));
+        scl[0][3] = cpq[0][3] / Math.pow(cpq[0][0],1+((0+3)/2));
+        scl[1][2] = cpq[1][2] / Math.pow(cpq[0][0],1+((1+2)/2));
+        scl[2][1] = cpq[2][1] / Math.pow(cpq[0][0],1+((2+1)/2));
 
+        // Calculate Hu set of invariant moments
         moments[0] = scl[2][0] + scl[0][2];
         moments[1] = Math.pow((scl[2][0] - scl[0][2]),2) + 4 * Math.pow(scl[1][1],2);
         moments[2] = Math.pow((scl[3][0] - 3* scl[1][2]),2) + Math.pow((3 * scl[2][1] - scl[0][3]),2);

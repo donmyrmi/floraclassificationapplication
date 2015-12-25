@@ -16,7 +16,7 @@ public class FlowerInDB_Repo extends AbstractFlower_Repo{
     public FlowerInDB_Repo(Context context) {
         dbHelper = new DBController(context);
     }
-    public ArrayList<AbstractDBFlower> getFlowerByLocation(Location requestedLocation)
+    public ArrayList<AbstractDBFlower> getFlowerByLocation(FloweringLocation requestedLocation)
     {
         int id;
         ArrayList<AbstractDBFlower> flowersByLocation = new ArrayList<AbstractDBFlower>();

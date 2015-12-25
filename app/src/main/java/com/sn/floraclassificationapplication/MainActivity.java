@@ -13,7 +13,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import com.sn.floraclassificationapplication.segmenter.ImageController;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_CAMERA_IMAGE = 1;
     static final int REQUEST_GALLERY_IMAGE = 2;
     private File imageFile;
+    private ImageController ic = ImageController.getInstance();
 
 
     @Override
@@ -93,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK ) {
             if (requestCode == REQUEST_CAMERA_IMAGE) {
                 Bitmap imageBitmap = ConvertFileToBitMap(imageFile);
+
+                if (imageBitmap.getHeight() < imageBitmap.getWidth())
+                    imageBitmap = ic.rotateImage(90, imageBitmap);
+
                 segmentedFlower.setFlowerImage(imageBitmap);
                 segmentedFlower.segmentAndClassify();
             } else {
@@ -165,8 +171,6 @@ public class MainActivity extends AppCompatActivity {
         result = new Double(FloatD + (FloatM/60) + (FloatS/3600));
 
         return result;
-
-
     };
 
     public Bitmap ConvertFileToBitMap(File file){
