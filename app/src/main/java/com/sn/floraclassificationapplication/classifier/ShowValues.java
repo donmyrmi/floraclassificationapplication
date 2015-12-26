@@ -23,6 +23,7 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by Nadav on 19-Nov-15.
@@ -50,7 +51,7 @@ public class ShowValues {
 
 
         DBController dbc = new DBController(mainActivity);
-        dbc.loadTestFlowerDB();
+        dbc.loadTestFlowerDB(flower);
 
         List<FlowerInDB> dbFLowers = dbc.getFlowerInDB();
         int dbFlowerSize = dbFLowers.size();
@@ -63,12 +64,14 @@ public class ShowValues {
         double[] moments = flower.getHu8Moments();
         boolean[] isRGBs = new boolean[numberOfFlowers];
         int i = 0;
-
+        Random rand = new Random();
         for (FlowerInDB f : dbFLowers) {
             strUpValues[i] = f.getName();
-            strDownValues[i] = "angle = " + f.getAngle();
+            String fImage = "drawable/f" + (rand.nextInt(7) + 1);
+            imgValues[i] = mainActivity.getResources().getIdentifier(fImage, null, mainActivity.getPackageName());
+            //imgValues[i] = R.mipmap.f1;
+            strDownValues[i] = "angle = " + f.getAngle() + " mip = " + imgValues[i];
             isRGBs[i] = false;
-            imgValues[i] = R.mipmap.f1;
             strRankValues[i] = String.valueOf((int)f.getRank());
             i++;
         }
@@ -110,7 +113,7 @@ public class ShowValues {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
+                /*
                 // ListView Clicked item index
                 int itemPosition = position;
 
@@ -120,7 +123,7 @@ public class ShowValues {
                 // Show Alert
                 Toast.makeText(mainActivity.getApplicationContext(),
                         "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();
+                        .show();*/
 
             }
         });

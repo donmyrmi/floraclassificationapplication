@@ -7,9 +7,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.sn.floraclassificationapplication.Flower;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -22,9 +25,9 @@ public class DBController extends SQLiteOpenHelper{
     // Database Name
     private static final String DATABASE_NAME = "FlowersCRUD.db";
 
-    public DBController(Context context ) {
+    public DBController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        loadTestFlowerDB();
+        //loadTestFlowerDB();
     }
 
     @Override
@@ -95,22 +98,20 @@ public class DBController extends SQLiteOpenHelper{
 //            flowerInDB[i] = new FlowerInDB(i);
 //    }
 
-    public void loadTestFlowerDB() {
+    public void loadTestFlowerDB(Flower flower) {
         flowerInDB = new ArrayList<FlowerInDB>();
         for (int i=0; i<10; i++) {
-            flowerInDB.add(testFlowerInDB(i,1));
-            flowerInDB.add(testFlowerInDB(i,2));
+            flowerInDB.add(testFlowerInDB(i,1, flower));
+            flowerInDB.add(testFlowerInDB(i,2, flower));
         }
         Collections.sort(flowerInDB, new Comparator<FlowerInDB>() {
             public int compare(FlowerInDB o1, FlowerInDB o2) {
                 return (int) (o2.getRank() - o1.getRank());
             }
         });
-
-
     }
 
-    private FlowerInDB testFlowerInDB(int fid, int angle)  {
+    private FlowerInDB testFlowerInDB(int fid, int angle, Flower flower)  {
         Random rand = new Random();
         FlowerInDB testF = new FlowerInDB(fid);
 
@@ -148,12 +149,11 @@ public class DBController extends SQLiteOpenHelper{
         double lon = 28 + Math.random() * 4;
         double lat = 28 + Math.random() * 4;
         double rad = 0.2 + Math.random();
-        locations.add(new FloweringLocation(lon,lat,rad));
+        locations.add(new FloweringLocation(lon, lat, rad));
 
         testF.setLocations(locations);
 
-        num = rand.nextInt(100);
-        testF.setRank(num);
+        testF.calculateRankFromFlower(flower);
 
         return testF;
     }

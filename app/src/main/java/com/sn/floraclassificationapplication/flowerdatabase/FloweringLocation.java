@@ -38,7 +38,7 @@ public class FloweringLocation {
         this.radius = radius;
     }
 
-    public double checkDistance(double lon, double lati) {
+    public double checkDistance(double lati, double lon) {
         Double dist = Math.pow(lon-longitude,2) + Math.pow(lati - latitude, 2);
         Math.sqrt(dist);
         if (radius >= dist)

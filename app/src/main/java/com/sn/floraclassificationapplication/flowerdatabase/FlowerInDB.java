@@ -54,8 +54,11 @@ public class FlowerInDB extends AbstractDBFlower{
     private int blueMin;
     private List<FloweringLocation> locations;
     private  int months;
+
     private float[] momentsWeight;
-    private float[] colorWeight;
+    private float colorWeight;
+    private float dateWeight;
+    private float locationWeight;
 
     private float rank;
 
@@ -64,7 +67,7 @@ public class FlowerInDB extends AbstractDBFlower{
         hu8MomentsMax = new double[HU_MOMENTS_NUM];
         hu8MomentsMin = new double[HU_MOMENTS_NUM];
         momentsWeight = new float[HU_MOMENTS_NUM];
-        colorWeight = new float[NUM_OF_COLORS];
+        testWeights();
     }
 
     public boolean checkMonth(int checkedMonth)
@@ -72,65 +75,43 @@ public class FlowerInDB extends AbstractDBFlower{
         return ((months & 1 << checkedMonth) != 0);
     }
 
-    public double[] getHu8MomentsMax() {
-        return hu8MomentsMax;
+    private void testWeights() {
+        for (int i=0 ; i < 8; i++)
+            momentsWeight[i] = 0.075f;
+        colorWeight = 0.15f;
+        dateWeight = 0.1f;
+        locationWeight = 0.15f;
+
     }
 
     public void setHu8MomentsMax(double[] hu8MomentsMax) {
         this.hu8MomentsMax = hu8MomentsMax;
     }
 
-    public double[] getHu8MomentsMin() {
-        return hu8MomentsMin;
-    }
-
     public void setHu8MomentsMin(double[] hu8MomentsMin) {
         this.hu8MomentsMin = hu8MomentsMin;
-    }
-
-    public int getRedMax() {
-        return redMax;
     }
 
     public void setRedMax(int redMax) {
         this.redMax = redMax;
     }
 
-    public int getRedMin() {
-        return redMin;
-    }
-
     public void setRedMin(int redMin) {
         this.redMin = redMin;
-    }
-
-    public int getGreenMax() {
-        return greenMax;
     }
 
     public void setGreenMax(int greenMax) {
         this.greenMax = greenMax;
     }
 
-    public int getGreenMin() {
-        return greenMin;
-    }
-
     public void setGreenMin(int greenMin) {
         this.greenMin = greenMin;
-    }
-
-    public int getBlueMax() {
-        return blueMax;
     }
 
     public void setBlueMax(int blueMax) {
         this.blueMax = blueMax;
     }
 
-    public int getBlueMin() {
-        return blueMin;
-    }
 
     public void setBlueMin(int blueMin) {
         this.blueMin = blueMin;
@@ -144,11 +125,11 @@ public class FlowerInDB extends AbstractDBFlower{
         this.momentsWeight = momentsWeight;
     }
 
-    public float[] getColorWeight() {
+    public float getColorWeight() {
         return colorWeight;
     }
 
-    public void setColorWeight(float[] colorWeight) {
+    public void setColorWeight(float colorWeight) {
         this.colorWeight = colorWeight;
     }
 
@@ -200,10 +181,76 @@ public class FlowerInDB extends AbstractDBFlower{
         this.flowerImage = flowerImage;
     }
 
+    public void setDateWeight(float dateWeight) {
+        this.dateWeight = dateWeight;
+    }
+
+    public void setLocationWeight(float locationWeight) {
+        this.locationWeight = locationWeight;
+    }
+
     public class CustomComparator implements Comparator<FlowerInDB> {
         @Override
         public int compare(FlowerInDB o1, FlowerInDB o2) {
             return (int) (o1.getRank() - o2.getRank());
         }
     }
+
+    public void calculateRankFromFlower(Flower flower) {
+        float temp = 0;
+        double [] flowerHues = flower.getHu8Moments();
+
+        // calculate rank of hu moments by weights
+        for (int i = 0; i < 8; i++) {
+            temp += calculateHuDistanceWeight(flowerHues[i], hu8MomentsMin[i], hu8MomentsMax[i], momentsWeight[i]);
+        }
+        // calculate rank of RGB colors by weights
+        temp += calculateDistanceWeight(Color.red(flower.getColor()),redMin, redMax, colorWeight);
+        temp += calculateDistanceWeight(Color.green(flower.getColor()),greenMin, greenMax, colorWeight);
+        temp += calculateDistanceWeight(Color.blue(flower.getColor()),blueMin, blueMax, colorWeight);
+
+        // calculate rank of flowering dates
+        //if (flower.getMonth())
+        if (checkMonth(flower.getMonth()))
+            temp += dateWeight;
+
+        // calculate rank of GPS location
+        double locMin = Double.MAX_VALUE;
+        for (FloweringLocation floweringLocation : locations) {
+            double dist = floweringLocation.checkDistance(flower.getLatitude(), flower.getLongitude());
+            if (dist < locMin)
+                locMin = dist;
+        }
+        temp += Math.pow(2, locMin) * locationWeight;
+        rank = temp * 100;
+    }
+
+    private double calculateDistanceWeight(int value, int min, int max, double weight) {
+        double temp = 0;
+        int range = max - min;
+        if (value < min) {
+            int dist = min - value;
+            temp =  1 / Math.pow(2, dist / range) * weight;
+        } else if (value > max) {
+            int dist = value - max;
+            temp =  1 / Math.pow(2, dist / range) * weight;
+        } else
+            temp =  weight;
+        return temp;
+    }
+
+    private double calculateHuDistanceWeight(double value, double min, double max, double weight) {
+        double temp = 0;
+        double range = max - min;
+        if (value < min) {
+            double dist = min - value;
+            temp = 1 / Math.pow(2, dist / range) * weight;
+        } else if (value > max) {
+            double dist = value - max;
+            temp = 1 / Math.pow(2, dist / range) * weight;
+        } else
+            temp =  weight;
+        return temp;
+    }
+
 }

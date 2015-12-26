@@ -51,7 +51,9 @@ public class ResultList extends ArrayAdapter<String> {
         if (isRGB[position]) {
             tempBi = ic.createImage(64,64,imageId[position]);
         } else {
-            tempBi = BitmapFactory.decodeResource(context.getResources(), imageId[position]);
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inSampleSize = 8;
+            tempBi = BitmapFactory.decodeResource(context.getResources(), imageId[position], options);
         }
         //tempBi = ic.getRoundedShape(tempBi);
 

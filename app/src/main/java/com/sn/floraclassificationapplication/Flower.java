@@ -79,8 +79,8 @@ public class Flower {
     }
 
     public void setFlowerImage(Bitmap flowerImage) {
-        if (flowerImage.getWidth() > 1280) {
-            flowerImage = ic.getResizedBitmap(flowerImage,1280 *flowerImage.getHeight()/flowerImage.getWidth(), 1280 );
+        if (flowerImage.getWidth() > 1920) {
+            flowerImage = ic.getResizedBitmap(flowerImage,1920 *flowerImage.getHeight()/flowerImage.getWidth(), 1920 );
         }
         this.flowerImage = flowerImage.copy(flowerImage.getConfig(),true);
     }
