@@ -79,7 +79,8 @@ public class ShowValues {
         for (int j = 0; j<8; j++)
         {
             strUpValues[j + dbFlowerSize] = "HU"+(i+1);
-            strDownValues[j + dbFlowerSize] = String.format("%.24f", moments[j]);
+            //strDownValues[j + dbFlowerSize] = String.format("%.24f", moments[j]);
+            strDownValues[j + dbFlowerSize] = String.valueOf(moments[j]);
             isRGBs[j + dbFlowerSize] = false;
             imgValues[j + dbFlowerSize] = R.mipmap.f1;
             strRankValues[j+dbFlowerSize] = "0";

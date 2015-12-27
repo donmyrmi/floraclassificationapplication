@@ -4,45 +4,47 @@ package com.sn.floraclassificationapplication.flowerdatabase;
  * Created by Nadav on 25-Dec-15.
  */
 public class FloweringLocation {
-    private double longitude;
-    private double latitude;
-    private double radius;
+    private double longitudeMax;
+    private double longitudeMin;
+    private double latitudeMax;
+    private double latitudeMin;
 
-    public FloweringLocation(double lon, double lat, double rad) {
-        longitude = lon;
-        latitude = lat;
-        radius = rad;
+    public FloweringLocation(double lonMin, double latMin, double lonMax, double latMax) {
+        longitudeMax = lonMax;
+        latitudeMax = latMax;
+        longitudeMin = lonMin;
+        latitudeMin = latMin;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public double getLongitudeMax() {
+        return longitudeMax;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public void setLongitudeMax(double longitudeMax) {
+        this.longitudeMax = longitudeMax;
     }
 
-    public void setLongitude(double longtitude) {
-        this.longitude = longtitude;
+    public double getLongitudeMin() {
+        return longitudeMin;
     }
 
-    public double getLongitude() {
-        return longitude;
+    public void setLongitudeMin(double longitudeMin) {
+        this.longitudeMin = longitudeMin;
     }
 
-    public double getRadius() {
-        return radius;
+    public double getLatitudeMax() {
+        return latitudeMax;
     }
 
-    public void setRadius(double radius) {
-        this.radius = radius;
+    public void setLatitudeMax(double latitudeMax) {
+        this.latitudeMax = latitudeMax;
     }
 
-    public double checkDistance(double lati, double lon) {
-        Double dist = Math.pow(lon-longitude,2) + Math.pow(lati - latitude, 2);
-        Math.sqrt(dist);
-        if (radius >= dist)
-            return 1;
-        return radius/dist;
+    public double getLatitudeMin() {
+        return latitudeMin;
+    }
+
+    public void setLatitudeMin(double latitudeMin) {
+        this.latitudeMin = latitudeMin;
     }
 }

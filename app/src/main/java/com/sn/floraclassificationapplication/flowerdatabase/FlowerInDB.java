@@ -209,7 +209,7 @@ public class FlowerInDB extends AbstractDBFlower{
 
         // calculate rank of hu moments by weights
         for (int i = 0; i < 8; i++) {
-            temp += calculateHuDistanceWeight(flowerHues[i], hu8MomentsMin[i], hu8MomentsMax[i], momentsWeight[i]);
+            temp += calculateDoubleDistanceWeight(flowerHues[i], hu8MomentsMin[i], hu8MomentsMax[i], momentsWeight[i]);
         }
         // calculate rank of RGB colors by weights
         temp += calculateDistanceWeight(Color.red(flower.getColor()),redMin, redMax, colorWeight);
@@ -222,13 +222,12 @@ public class FlowerInDB extends AbstractDBFlower{
             temp += dateWeight;
 
         // calculate rank of GPS location
-        double locMin = Double.MAX_VALUE;
+
         for (FloweringLocation floweringLocation : locations) {
-            double dist = floweringLocation.checkDistance(flower.getLatitude(), flower.getLongitude());
-            if (dist < locMin)
-                locMin = dist;
+            temp += calculateDoubleDistanceWeight(flower.getLatitude(), floweringLocation.getLatitudeMin(), floweringLocation.getLatitudeMax(), locationWeight / 2);
+            temp += calculateDoubleDistanceWeight(flower.getLongitude(), floweringLocation.getLongitudeMin(), floweringLocation.getLongitudeMax(), locationWeight/2);
         }
-        temp += Math.pow(2, locMin) * locationWeight;
+
         rank = temp * 100;
     }
 
@@ -246,7 +245,7 @@ public class FlowerInDB extends AbstractDBFlower{
         return temp;
     }
 
-    private double calculateHuDistanceWeight(double value, double min, double max, double weight) {
+    private double calculateDoubleDistanceWeight(double value, double min, double max, double weight) {
         double temp = 0;
         double range = max - min;
         if (value < min) {

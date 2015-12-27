@@ -156,10 +156,12 @@ public class DBController extends SQLiteOpenHelper{
 
         List<FloweringLocation> locations = new ArrayList<FloweringLocation>();
 
-        double lon = 28 + Math.random() * 4;
-        double lat = 28 + Math.random() * 4;
+        double lonMin = 28 + Math.random() * 4;
+        double lonMax =  lonMin * 1.05;
+        double latMin = 28 + Math.random() * 4;
+        double latMax =  latMin * 1.05;
         double rad = 0.2 + Math.random();
-        locations.add(new FloweringLocation(lon, lat, rad));
+        locations.add(new FloweringLocation(lonMin, latMin, lonMax, latMax));
 
         testF.setLocations(locations);
 
