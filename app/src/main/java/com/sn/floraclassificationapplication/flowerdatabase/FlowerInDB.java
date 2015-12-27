@@ -220,14 +220,21 @@ public class FlowerInDB extends AbstractDBFlower{
         //if (flower.getMonth())
         if (checkMonth(flower.getMonth()))
             temp += dateWeight;
+        else if (checkMonth(flower.getMonth()+1%12) || checkMonth(flower.getMonth()-1%12))
+            temp += (dateWeight/2);
 
         // calculate rank of GPS location
 
+        double maxLocationRank = 0;
         for (FloweringLocation floweringLocation : locations) {
-            temp += calculateDoubleDistanceWeight(flower.getLatitude(), floweringLocation.getLatitudeMin(), floweringLocation.getLatitudeMax(), locationWeight / 2);
-            temp += calculateDoubleDistanceWeight(flower.getLongitude(), floweringLocation.getLongitudeMin(), floweringLocation.getLongitudeMax(), locationWeight/2);
+            double tempLocationRank = 0;
+            tempLocationRank += calculateDoubleDistanceWeight(flower.getLatitude(), floweringLocation.getLatitudeMin(), floweringLocation.getLatitudeMax(), locationWeight / 2);
+            tempLocationRank += calculateDoubleDistanceWeight(flower.getLongitude(), floweringLocation.getLongitudeMin(), floweringLocation.getLongitudeMax(), locationWeight/2);
+            if (tempLocationRank > maxLocationRank)
+                maxLocationRank = tempLocationRank;
         }
-
+        temp += maxLocationRank;
+        
         rank = temp * 100;
     }
 
