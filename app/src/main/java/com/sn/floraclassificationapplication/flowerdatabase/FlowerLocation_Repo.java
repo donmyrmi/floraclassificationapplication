@@ -136,5 +136,12 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
             }
         }
     }
+
+    public void setParams(AbstractDBFlower DBFlower,Cursor cursor)
+    {
+        FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
+        flowerLocation.id = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
+        convertToLocation(cursor.getBlob((cursor.getColumnIndex(FlowerLocation.KEY_locations))), flowerLocation);
+    }
 }
 

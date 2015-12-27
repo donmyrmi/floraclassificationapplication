@@ -20,13 +20,17 @@ public class FlowerGeneralAtt extends AbstractDBFlower {
     public static final String KEY_months = "months";
     public static final String KEY_momentsWeight = "momentsWeight";
     public static final String KEY_colorWeight = "colorWeight";
+    public static final String KEY_dateWeight = "dateWeight";
+    public static final String KEY_locationWeight = "locationWeight";
 
     //attributes to keep data
     public int flower_ID;
     public String name;
-    public byte[] months;
+    public int months;
     public float[] momentsWeight;
     public float[] colorWeight;
+    public float dateWeight;
+    public float locationWeight;
 
     public FlowerGeneralAtt(){
         momentsWeight = new float[HU_MOMENTS_NUM];

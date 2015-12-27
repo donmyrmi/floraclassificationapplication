@@ -40,6 +40,8 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         values.put(FlowerGeneralAtt.KEY_months,flowerGeneralAtt.months);
         values.put(FlowerGeneralAtt.KEY_momentsWeight,momentsWeightString);
         values.put(FlowerGeneralAtt.KEY_colorWeight,colorsWeightString);
+        values.put(FlowerGeneralAtt.KEY_dateWeight,flowerGeneralAtt.dateWeight);
+        values.put(FlowerGeneralAtt.KEY_locationWeight,flowerGeneralAtt.locationWeight);
         // Inserting Row
         long FlowerGeneralAtt_Id = db.insert(FlowerGeneralAtt.TABLE, null, values);
         db.close(); // Closing database connection
@@ -78,7 +80,9 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
                 FlowerGeneralAtt.KEY_NAME + "," +
                 FlowerGeneralAtt.KEY_months + "," +
                 FlowerGeneralAtt.KEY_momentsWeight + "," +
-                FlowerGeneralAtt.KEY_colorWeight +
+                FlowerGeneralAtt.KEY_colorWeight + "," +
+                FlowerGeneralAtt.KEY_dateWeight + "," +
+                FlowerGeneralAtt.KEY_locationWeight +
                 " FROM " + FlowerGeneralAtt.TABLE;
 
         //FlowerInDB FlowerInDB = new FlowerInDB();
@@ -92,11 +96,13 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
                 HashMap<String, Object> flowerGeneralAtt = new HashMap<String, Object>();
                 flowerGeneralAtt.put("id", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID)));
                 flowerGeneralAtt.put("name", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME)));
-                flowerGeneralAtt.put("months", cursor.getBlob(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months)));
+                flowerGeneralAtt.put("months", cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months)));
                 convertStringToArray(flower, cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight)), HU_WEIGHT);
                 flowerGeneralAtt.put("momemtsWeight", flower.momentsWeight);
                 convertStringToArray(flower, cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight)), COLORS);
                 flowerGeneralAtt.put("colorWeight", flower.colorWeight);
+                flowerGeneralAtt.put("dateWeight",cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_dateWeight)));
+                flowerGeneralAtt.put("locationWeight",cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_locationWeight)));
                 FlowerInDBList.add(flowerGeneralAtt);
 
             } while (cursor.moveToNext());
@@ -114,25 +120,28 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
                 FlowerInDB.KEY_NAME + "," +
                 FlowerGeneralAtt.KEY_months + "," +
                 FlowerGeneralAtt.KEY_momentsWeight + "," +
-                FlowerGeneralAtt.KEY_colorWeight +
+                FlowerGeneralAtt.KEY_colorWeight + "," +
+                FlowerGeneralAtt.KEY_dateWeight + "," +
+                FlowerGeneralAtt.KEY_locationWeight +
                 " FROM " + FlowerGeneralAtt.TABLE
                 + " WHERE " +
                 FlowerGeneralAtt.KEY_ID + "=?";
 
-        int iCount = 0;
         FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
 
         Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(Id) } );
 
         if (cursor.moveToFirst()) {
             do {
-                flowerGeneralAtt.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerInDB.KEY_ID));
-                flowerGeneralAtt.name = cursor.getString(cursor.getColumnIndex(FlowerInDB.KEY_NAME));
-                flowerGeneralAtt.months = cursor.getBlob(cursor.getColumnIndex(FlowerInDB.KEY_months));
+                flowerGeneralAtt.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID));
+                flowerGeneralAtt.name = cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME));
+                flowerGeneralAtt.months = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months));
                 convertStringToArray(flowerGeneralAtt,momentsWeightString,HU_WEIGHT);
-                convertStringToArray(flowerGeneralAtt,colorsWeightString,COLORS);
+                convertStringToArray(flowerGeneralAtt, colorsWeightString, COLORS);
 //                flowerGeneralAtt.momentsWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight));
 //                flowerGeneralAtt.colorWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight));
+                flowerGeneralAtt.dateWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_dateWeight));
+                flowerGeneralAtt.locationWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_locationWeight));
             } while (cursor.moveToNext());
         }
 
@@ -170,6 +179,20 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
     public HashMap<String,Object> getTempFlowerTable()
     {
         return tempFlowerTable;
+    }
+
+    public void setParams(AbstractDBFlower DBFlower, Cursor cursor)
+    {
+        FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;
+
+        flowerGeneralAtt.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID));
+        flowerGeneralAtt.name = cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME));
+        flowerGeneralAtt.months = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months));
+        convertStringToArray(flowerGeneralAtt,momentsWeightString,HU_WEIGHT);
+        convertStringToArray(flowerGeneralAtt, colorsWeightString, COLORS);
+        flowerGeneralAtt.dateWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_dateWeight));
+        flowerGeneralAtt.locationWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_locationWeight));
+
     }
 
     public void convertArrayToString(FlowerGeneralAtt flowerGenAtt){
