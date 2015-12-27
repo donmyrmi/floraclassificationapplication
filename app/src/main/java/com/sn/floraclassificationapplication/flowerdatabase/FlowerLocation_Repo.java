@@ -36,8 +36,10 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         //put flower locations in values
         for (FloweringLocation loc :
                 flowerLocation.locations) {
-            values.put(flowerLocation.KEY_locations,loc.getLatitude());
-            values.put(flowerLocation.KEY_locations,loc.getLongitude());
+            values.put(flowerLocation.KEY_locations,loc.getLongitudeMax());
+            values.put(flowerLocation.KEY_locations,loc.getLongitudeMin());
+            values.put(flowerLocation.KEY_locations,loc.getLatitudeMax());
+            values.put(flowerLocation.KEY_locations,loc.getLatitudeMin());
         }
 
 
@@ -103,7 +105,6 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
                 + " WHERE " +
                 FlowerLocation.KEY_ID + "=?";
 
-        int iCount =0;
         FlowerLocation flowerLocation = new FlowerLocation();
 
         Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(Id) } );
@@ -129,9 +130,13 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         {
             for (FloweringLocation loc :
                     flowerLocation.locations) {
-                loc.setLongitude(ByteBuffer.wrap(bytes).getDouble(j));
+                loc.setLongitudeMax(ByteBuffer.wrap(bytes).getDouble(j));
                 j += 8;
-                loc.setLatitude(ByteBuffer.wrap(bytes).getDouble(j));
+                loc.setLatitudeMax(ByteBuffer.wrap(bytes).getDouble(j));
+                j += 8;
+                loc.setLongitudeMin(ByteBuffer.wrap(bytes).getDouble(j));
+                j += 8;
+                loc.setLatitudeMin(ByteBuffer.wrap(bytes).getDouble(j));
                 j += 8;
             }
         }

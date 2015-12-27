@@ -17,7 +17,6 @@ public class FlowerAttributes extends AbstractDBFlower{
     //Label table column names
     public static final String KEY_ID = "id";
     public static final String KEY_angle = "angle";
-    public static final String KEY_flowerImage = "flowerImage";
     public static final String KEY_hu8MomentsMax = "hu8MomentsMax";
     public static final String KEY_hu8MomentsMin = "hu8MomentsMin";
     public static final String KEY_redMin = "redMin";
@@ -30,7 +29,6 @@ public class FlowerAttributes extends AbstractDBFlower{
     //attributes to keep data
     public  int flower_ID;
     public  int angle;
-    public int flowerImageIndex;//public byte[] flowerImage;//public Bitmap flowerImage;
     double[] hu8MomentsMax;
     double[] hu8MomentsMin;
     public int redMax;

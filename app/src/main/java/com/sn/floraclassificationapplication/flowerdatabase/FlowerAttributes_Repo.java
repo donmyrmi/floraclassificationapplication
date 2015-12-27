@@ -37,7 +37,6 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
 
         values.put(flowerAttributes.KEY_ID, flowerAttributes.flower_ID);
         values.put(flowerAttributes.KEY_angle, flowerAttributes.angle);
-        values.put(flowerAttributes.KEY_flowerImage,flowerAttributes.flowerImageIndex);
         values.put(flowerAttributes.KEY_hu8MomentsMax,hu8MomentsMaxString);
         values.put(flowerAttributes.KEY_hu8MomentsMin,hu8MomentsMinString);
 
@@ -84,7 +83,6 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         String selectQuery =  "SELECT  " +
                 FlowerAttributes.KEY_ID + "," +
                 FlowerAttributes.KEY_angle + "," +
-                FlowerAttributes.KEY_flowerImage + "," +
                 FlowerAttributes.KEY_hu8MomentsMax + "," +
                 FlowerAttributes.KEY_hu8MomentsMin + "," +
                 FlowerAttributes.KEY_redMax + "," +
@@ -106,7 +104,6 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
                 HashMap<String, Object> flowerAttributes = new HashMap<String, Object>();
                 flowerAttributes.put("id", cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ID)));
                 flowerAttributes.put("angle", cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_angle)));
-                flowerAttributes.put("flowerImage", cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_flowerImage)));
                 flowerAttributes.put("hu8MomentsMax", cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMax)));//TODO::SAPIR: CHECK, returns byte[]
                 flowerAttributes.put("hu8MomentsMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMin)));//TODO::SAPIR: CHECK, returns byte[]
                 flowerAttributes.put("redMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_redMin)));
@@ -129,7 +126,6 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         String selectQuery =  "SELECT  " +
                 FlowerAttributes.KEY_ID + "," +
                 FlowerAttributes.KEY_angle + "," +
-                FlowerAttributes.KEY_flowerImage + "," +
                 FlowerAttributes.KEY_hu8MomentsMax + "," +
                 FlowerAttributes.KEY_hu8MomentsMin + "," +
                 FlowerAttributes.KEY_redMax + "," +
@@ -150,7 +146,6 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
             do {
                 flowerAttributes.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ID));
                 flowerAttributes.angle = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_angle));
-                flowerAttributes.flowerImageIndex = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_flowerImage));
                 convertStringToArray(flowerAttributes, cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMax)), HU_SET_MAX);
                 convertStringToArray(flowerAttributes, cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMin)), HU_SET_MIN);
                 flowerAttributes.redMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_redMin));
@@ -207,7 +202,6 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         FlowerAttributes flowerAttributes = (FlowerAttributes) DBFlower;
 
         flowerAttributes.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ID));
-        flowerAttributes.flowerImageIndex = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_flowerImage));
         convertStringToArray(flowerAttributes, cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMax)), HU_SET_MAX);
         convertStringToArray(flowerAttributes, cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMin)), HU_SET_MIN);
         flowerAttributes.redMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_redMin));

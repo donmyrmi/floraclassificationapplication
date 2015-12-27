@@ -49,7 +49,7 @@ public class DBController extends SQLiteOpenHelper{
         //Create all necessary tables
 
         String CREATE_TABLE_FlowerGeneralAtt = "CREATE TABLE " + FlowerGeneralAtt.TABLE  + "("
-                + FlowerGeneralAtt.KEY_ID  + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                + FlowerGeneralAtt.KEY_ID  + " INTEGER PRIMARY, "
                 + FlowerGeneralAtt.KEY_NAME + " TEXT PRIMARY KEY, "
                 + FlowerGeneralAtt.KEY_months + " INTEGER, "
                 + FlowerGeneralAtt.KEY_momentsWeight + " REAL, "
@@ -60,14 +60,14 @@ public class DBController extends SQLiteOpenHelper{
         database.execSQL(CREATE_TABLE_FlowerGeneralAtt);
 
         String CREATE_TABLE_FlowerLocation = "CREATE TABLE " + FlowerLocation.TABLE + "("
-                + FlowerLocation.KEY_ID  + " INTEGER, "
+                + FlowerLocation.KEY_ID  + " INTEGER PRIMARY, "
                 + FlowerLocation.KEY_locations + " BLOB, ";
 
         database.execSQL(CREATE_TABLE_FlowerLocation);
 
         String CREATE_TABLE_FlowerAttributes = "CREATE TABLE " + FlowerAttributes.TABLE + "("
                 + FlowerAttributes.KEY_ID + "INTEGER PRIMARY KEY, "
-                + FlowerAttributes.KEY_flowerImage + "INTEGER, "
+                + FlowerAttributes.KEY_angle + "INTEGER PRIMARY KEY, "
                 + FlowerAttributes.KEY_hu8MomentsMax + "DOUBLE[], "
                 + FlowerAttributes.KEY_hu8MomentsMin + "DOUBLE[], "
                 + FlowerAttributes.KEY_redMax + "INTEGER, "
@@ -195,7 +195,6 @@ public class DBController extends SQLiteOpenHelper{
                 flowerLocation_repo.setParams(flowerLocation,cursor);
                 flower.flower_ID = flowerGeneralAtt.flower_ID;
                 flower.setName(flowerGeneralAtt.name);
-                flower.setFlowerImage(flowerAttributes.flowerImageIndex);
                 flower.setHu8MomentsMax(flowerAttributes.hu8MomentsMax);
                 flower.setHu8MomentsMin(flowerAttributes.hu8MomentsMin);
                 flower.setRedMax(flowerAttributes.redMax);

@@ -104,7 +104,8 @@ public class GPSTracker extends Service implements LocationListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        if(location == null)
+            location = new Location("dummyprovider");
         return location;
     }
     @Override
