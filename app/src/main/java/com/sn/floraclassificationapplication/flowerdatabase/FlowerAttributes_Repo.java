@@ -23,7 +23,7 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
     private String hu8MomentsMinString;
 
     public FlowerAttributes_Repo(Context context) {
-        dbHelper = new DBController(context);
+        dbHelper = DBController.getInstance(context);
     }
 
     public int insert(AbstractDBFlower DBFlower){

@@ -70,6 +70,13 @@ public class FlowerInDB extends AbstractDBFlower{
         testWeights();
     }
 
+    public FlowerInDB() {
+        hu8MomentsMax = new double[HU_MOMENTS_NUM];
+        hu8MomentsMin = new double[HU_MOMENTS_NUM];
+        momentsWeight = new float[HU_MOMENTS_NUM];
+        testWeights();
+    }
+
     public boolean checkMonth(int checkedMonth)
     {
         return ((months & 1 << checkedMonth) != 0);

@@ -25,7 +25,7 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
     private String colorsWeightString;
 
     public FlowerGeneralAtt_Repo(Context context) {
-        dbHelper = new DBController(context);
+        dbHelper = DBController.getInstance(context);
     }
 
     public int insert(AbstractDBFlower DBFlower) {

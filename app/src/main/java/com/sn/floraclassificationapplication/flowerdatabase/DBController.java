@@ -13,7 +13,6 @@ import com.sn.floraclassificationapplication.Flower;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -22,21 +21,27 @@ public class DBController extends SQLiteOpenHelper{
     //each time if you Add, Edit table, you need to change the
     //version number.
     private List<FlowerInDB> flowerInDB;
+    private static DBController ourInstance;
     private static final int DATABASE_VERSION = 1;
-    private FlowerGeneralAtt_Repo flowerGeneralAtt_repo;
-    private FlowerAttributes_Repo flowerAttributes_repo;
-    private FlowerLocation_Repo flowerLocation_repo;
+    private static FlowerGeneralAtt_Repo flowerGeneralAtt_repo;
+    private static FlowerAttributes_Repo flowerAttributes_repo;
+    private static FlowerLocation_Repo flowerLocation_repo;
     // Database Name
     private static final String DATABASE_NAME = "FlowersCRUD.db";
-    private DBController dbHelper;
 
-    public DBController(Context context) {
+    private DBController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        dbHelper = new DBController(context);
-        flowerGeneralAtt_repo = new FlowerGeneralAtt_Repo(context);
-        flowerAttributes_repo = new FlowerAttributes_Repo(context);
-        flowerLocation_repo = new FlowerLocation_Repo(context);
         //loadTestFlowerDB();
+    }
+
+    public static DBController getInstance(Context context) {
+        if (ourInstance == null) {
+            ourInstance = new DBController(context);
+            flowerGeneralAtt_repo = new FlowerGeneralAtt_Repo(context);
+            flowerAttributes_repo = new FlowerAttributes_Repo(context);
+            flowerLocation_repo = new FlowerLocation_Repo(context);
+        }
+        return ourInstance;
     }
 
     @Override
@@ -174,7 +179,8 @@ public class DBController extends SQLiteOpenHelper{
         FlowerAttributes flowerAttributes = new FlowerAttributes();
         FlowerLocation flowerLocation = new FlowerLocation();
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
+
         ArrayList<FlowerInDB> flowersList = new ArrayList<FlowerInDB>();
         String selectQuery = "SELECT * FROM " + FlowerGeneralAtt.TABLE + "NATURAL JOIN " + FlowerAttributes.TABLE
                         + "NATURAL JOIN " + FlowerLocation.TABLE;

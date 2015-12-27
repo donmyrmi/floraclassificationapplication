@@ -50,7 +50,7 @@ public class ShowValues {
     {
 
 
-        DBController dbc = new DBController(mainActivity);
+        DBController dbc = DBController.getInstance(mainActivity);
         dbc.loadTestFlowerDB(flower);
 
         List<FlowerInDB> dbFLowers = dbc.getFlowerInDB();

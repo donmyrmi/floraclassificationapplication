@@ -23,7 +23,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
     private DBController dbHelper;
 
     public FlowerLocation_Repo(Context context) {
-        dbHelper = new DBController(context);
+        dbHelper = DBController.getInstance(context);
     }
 
     public int insert(AbstractDBFlower DBFlower) {
