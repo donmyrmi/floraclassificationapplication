@@ -121,6 +121,19 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         return flowerLocation;
     }
 
+    public void addLocation(int flowerId,FloweringLocation loc)
+    {
+        FlowerLocation flowerLoc = getAttributesById(flowerId);
+        FloweringLocation location = new FloweringLocation(loc.getLongitudeMin(),loc.getLatitudeMin(),loc.getLongitudeMax(),loc.getLatitudeMin());
+        flowerLoc.locations.add(location);
+        updateRaw(flowerLoc);
+    }
+
+    public void updateRaw(FlowerLocation flowerLoc)
+    {
+        delete(flowerLoc.id);
+        insert(flowerLoc);
+    }
     public void convertToLocation(byte[] bytes,FlowerLocation flowerLocation) {
         int numOfLocations = bytes.length/2;
         int i = 0;
