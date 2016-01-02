@@ -25,6 +25,9 @@ public class FlowerAttributes extends AbstractDBFlower{
     public static final String KEY_greenMax = "greenMax";
     public static final String KEY_blueMin = "blueMin";
     public static final String KEY_blueMax = "blueMax";
+    public static final String KEY_momentsWeight = "momentsWeight";
+    public static final String KEY_colorWeight = "colorWeight";
+
 
     //attributes to keep data
     public  int flower_ID;
@@ -37,4 +40,11 @@ public class FlowerAttributes extends AbstractDBFlower{
     public int greenMin;
     public int blueMax;
     public int blueMin;
+    public float[] momentsWeight;
+    public float colorWeight;
+
+    public FlowerAttributes()
+    {
+        momentsWeight = new float[HU_MOMENTS_NUM];
+    }
 }

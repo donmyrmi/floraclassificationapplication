@@ -15,7 +15,6 @@ import java.util.HashMap;
 abstract class AbstractDBFlower {
 
     protected final int HU_MOMENTS_NUM = 8;
-    protected final int NUM_OF_COLORS = 3;
 
     // convert from bitmap to byte array
     public static byte[] getBytes(Bitmap bitmap) {

@@ -10,6 +10,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.sn.floraclassificationapplication.Flower;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,11 +31,15 @@ public class DBController extends SQLiteOpenHelper{
     private static FlowerGeneralAtt_Repo flowerGeneralAtt_repo;
     private static FlowerAttributes_Repo flowerAttributes_repo;
     private static FlowerLocation_Repo flowerLocation_repo;
-    // Database Name
+    // Database Name & path
     private static final String DATABASE_NAME = "FlowersCRUD.db";
+    private static String DB_FILEPATH = "/data/data/com.sn.floraclassificationapplication.flowerdatabase/databases/database.db";
+    private static SQLiteDatabase db;
+    public static boolean dbSuccess;
 
     private DBController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        db = getWritableDatabase();
         //loadTestFlowerDB();
     }
 
@@ -40,6 +49,15 @@ public class DBController extends SQLiteOpenHelper{
             flowerGeneralAtt_repo = new FlowerGeneralAtt_Repo(context);
             flowerAttributes_repo = new FlowerAttributes_Repo(context);
             flowerLocation_repo = new FlowerLocation_Repo(context);
+            try
+            {
+                dbSuccess = ourInstance.importDatabase("G:/GitHub_Projects/floraclassificationapplication/app/src/main/java/com/sn/floraclassificationapplication/flowerdatabase/FlowersCRUD.sql");
+            }
+            catch (Exception IOException)
+            {
+                System.out.print("IOExecption occurred");
+            }
+
         }
         return ourInstance;
     }
@@ -47,35 +65,34 @@ public class DBController extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase database) {
         //Create all necessary tables
-
         String CREATE_TABLE_FlowerGeneralAtt = "CREATE TABLE " + FlowerGeneralAtt.TABLE  + "("
-                + FlowerGeneralAtt.KEY_ID  + " INTEGER PRIMARY, "
-                + FlowerGeneralAtt.KEY_NAME + " TEXT PRIMARY KEY, "
+                + FlowerGeneralAtt.KEY_ID  + " INTEGER PRIMARY KEY, "
+                + FlowerGeneralAtt.KEY_NAME + " TEXT, "
                 + FlowerGeneralAtt.KEY_months + " INTEGER, "
                 + FlowerGeneralAtt.KEY_momentsWeight + " REAL, "
                 + FlowerGeneralAtt.KEY_colorWeight + " REAL, "
                 + FlowerGeneralAtt.KEY_dateWeight + " REAL, "
-                + FlowerGeneralAtt.KEY_locationWeight + " REAL, ";
+                + FlowerGeneralAtt.KEY_locationWeight + " REAL)";
 
         database.execSQL(CREATE_TABLE_FlowerGeneralAtt);
 
         String CREATE_TABLE_FlowerLocation = "CREATE TABLE " + FlowerLocation.TABLE + "("
-                + FlowerLocation.KEY_ID  + " INTEGER PRIMARY, "
-                + FlowerLocation.KEY_locations + " BLOB, ";
+                + FlowerLocation.KEY_ID  + " INTEGER PRIMARY KEY, "
+                + FlowerLocation.KEY_locations + " BLOB)";
 
         database.execSQL(CREATE_TABLE_FlowerLocation);
 
         String CREATE_TABLE_FlowerAttributes = "CREATE TABLE " + FlowerAttributes.TABLE + "("
                 + FlowerAttributes.KEY_ID + "INTEGER PRIMARY KEY, "
-                + FlowerAttributes.KEY_angle + "INTEGER PRIMARY KEY, "
-                + FlowerAttributes.KEY_hu8MomentsMax + "DOUBLE[], "
-                + FlowerAttributes.KEY_hu8MomentsMin + "DOUBLE[], "
+                + FlowerAttributes.KEY_angle + "INTEGER, "
+                + FlowerAttributes.KEY_hu8MomentsMax + "BLOB, "
+                + FlowerAttributes.KEY_hu8MomentsMin + "BLOB, "
                 + FlowerAttributes.KEY_redMax + "INTEGER, "
                 + FlowerAttributes.KEY_redMin + "INTEGER, "
                 + FlowerAttributes.KEY_greenMax + "INTEGER, "
                 + FlowerAttributes.KEY_greenMin + "INTEGER, "
                 + FlowerAttributes.KEY_blueMax + "INTEGER, "
-                + FlowerAttributes.KEY_blueMin + "INTEGER, ";
+                + FlowerAttributes.KEY_blueMin + "INTEGER)";
 
         database.execSQL(CREATE_TABLE_FlowerAttributes);
     }
@@ -83,11 +100,50 @@ public class DBController extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         // Drop older table if existed, all data will be gone!!!
-        database.execSQL("DROP TABLE IF EXISTS " + FlowerInDB.TABLE);
+        database.execSQL("DROP TABLE IF EXISTS " + FlowerGeneralAtt.TABLE);
+        database.execSQL("DROP TABLE IF EXISTS " + FlowerAttributes.TABLE);
+        database.execSQL("DROP TABLE IF EXISTS " + FlowerLocation.TABLE);
 
         // Create tables again
         onCreate(database);
 
+    }
+
+    public boolean importDatabase(String dbPath) throws IOException {
+
+        // Close the SQLiteOpenHelper so it will commit the created empty
+        // database to internal storage.
+        close();
+        File newDb = new File(dbPath);
+        File oldDb = new File(DB_FILEPATH);
+        if (newDb.exists()) {
+            this.copyFile(new FileInputStream(newDb), new FileOutputStream(oldDb));
+            // Access the copied database so SQLiteHelper will cache it and mark
+            // it as created.
+            getWritableDatabase().close();
+            return true;
+        }
+        return false;
+    }
+
+    public static void copyFile(FileInputStream fromFile, FileOutputStream toFile) throws IOException {
+        FileChannel fromChannel = null;
+        FileChannel toChannel = null;
+        try {
+            fromChannel = fromFile.getChannel();
+            toChannel = toFile.getChannel();
+            fromChannel.transferTo(0, fromChannel.size(), toChannel);
+        } finally {
+            try {
+                if (fromChannel != null) {
+                    fromChannel.close();
+                }
+            } finally {
+                if (toChannel != null) {
+                    toChannel.close();
+                }
+            }
+        }
     }
 
 
@@ -204,7 +260,7 @@ public class DBController extends SQLiteOpenHelper{
                 flower.setBlueMax(flowerAttributes.blueMax);
                 flower.setBlueMin(flowerAttributes.blueMin);
                 flower.setMonths(flowerGeneralAtt.months);
-                flower.setMomentsWeight(flowerGeneralAtt.momentsWeight);
+                flower.setMomentsWeight(flowerAttributes.momentsWeight);
                 //flower.setColorWeight(flowerGeneralAtt.colorWeight);TODO::SAPIR - VERIFY IF WE NEED WEIGHT FOR EACH RGB COLORS, OR UNITED?
                 flower.setDateWeight(flowerGeneralAtt.dateWeight);
                 flower.setLocations(flowerLocation.locations);

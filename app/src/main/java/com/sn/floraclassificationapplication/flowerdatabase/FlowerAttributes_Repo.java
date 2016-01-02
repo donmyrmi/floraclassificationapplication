@@ -21,6 +21,7 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
     private DBController dbHelper;
     private String hu8MomentsMaxString;
     private String hu8MomentsMinString;
+    private String hu8MomentsWeightsString;
 
     public FlowerAttributes_Repo(Context context) {
         dbHelper = DBController.getInstance(context);
@@ -48,6 +49,9 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
 
         values.put(flowerAttributes.KEY_blueMin,flowerAttributes.blueMin);
         values.put(flowerAttributes.KEY_blueMax,flowerAttributes.blueMax);
+
+        values.put(flowerAttributes.KEY_momentsWeight,hu8MomentsWeightsString);
+        values.put(flowerAttributes.KEY_momentsWeight,flowerAttributes.colorWeight);
 
         // Inserting Row
         long FlowerAttributes_Id = db.insert(FlowerAttributes.TABLE, null, values);
@@ -91,6 +95,8 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
                 FlowerAttributes.KEY_greenMin + "," +
                 FlowerAttributes.KEY_blueMax + "," +
                 FlowerAttributes.KEY_blueMin + "," +
+                FlowerAttributes.KEY_momentsWeight + "," +
+                FlowerAttributes.KEY_colorWeight +
                 " FROM " + FlowerAttributes.TABLE;
 
         //FlowerInDB FlowerInDB = new FlowerInDB();
@@ -112,6 +118,8 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
                 flowerAttributes.put("greenMax",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_greenMax)));
                 flowerAttributes.put("blueMin",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_blueMin)));
                 flowerAttributes.put("blueMax",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_blueMax)));
+                flowerAttributes.put("momentsWeight",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_momentsWeight)));
+                flowerAttributes.put("colorWeight",cursor.getBlob(cursor.getColumnIndex(FlowerAttributes.KEY_colorWeight)));
                 FlowerAttributesList.add(flowerAttributes);
             } while (cursor.moveToNext());
         }
@@ -134,6 +142,8 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
                 FlowerAttributes.KEY_greenMin + "," +
                 FlowerAttributes.KEY_blueMax + "," +
                 FlowerAttributes.KEY_blueMin + "," +
+                FlowerAttributes.KEY_momentsWeight + "," +
+                FlowerAttributes.KEY_colorWeight +
                 " FROM " + FlowerAttributes.TABLE
                 + " WHERE " +
                 FlowerAttributes.KEY_ID + "=?";
@@ -154,6 +164,8 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
                 flowerAttributes.greenMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_greenMax));
                 flowerAttributes.blueMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blueMin));
                 flowerAttributes.blueMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blueMax));
+                convertStringToArray(flowerAttributes,cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_momentsWeight)),HU_WEIGHT);
+                flowerAttributes.colorWeight = cursor.getFloat(cursor.getColumnIndex(FlowerAttributes.KEY_colorWeight));
             } while (cursor.moveToNext());
         }
 
@@ -168,29 +180,37 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         for ( i = 0;i < NUM_OF_MOMENTS;i++){
             hu8MomentsMaxString += String.valueOf(flowerAttributes.hu8MomentsMax[i]);
             hu8MomentsMinString += String.valueOf(flowerAttributes.hu8MomentsMin[i]);
-            if(i < 7){
+            hu8MomentsWeightsString+= String.valueOf(flowerAttributes.momentsWeight);
+
                 hu8MomentsMaxString += "::";
                 hu8MomentsMinString += "::";
-            }
+                hu8MomentsWeightsString += "::";
         }
     }
     //Converting string to double[] method
     public void convertStringToArray(FlowerAttributes flowerAttributes,String str,int type){
-        String[] strToDouble;
+        String[] strToPars;
         int i;
-        strToDouble = str.split("::");
+        strToPars = str.split("::");
         for ( i = 0;i < 8;i++) {
             switch (type){
                 case HU_SET_MAX:
                 {
-                    flowerAttributes.hu8MomentsMax[i] = Double.parseDouble(strToDouble[i]);
+                    flowerAttributes.hu8MomentsMax[i] = Double.parseDouble(strToPars[i]);
                     break;
                 }
                 case HU_SET_MIN:
                 {
-                    flowerAttributes.hu8MomentsMin[i] = Double.parseDouble(strToDouble[i]);
+                    flowerAttributes.hu8MomentsMin[i] = Double.parseDouble(strToPars[i]);
                     break;
                 }
+                case HU_WEIGHT:
+                {
+                    flowerAttributes.momentsWeight[i] = Float.parseFloat(strToPars[i]);
+                    break;
+                }
+                default:
+                    break;
             }
 
         }

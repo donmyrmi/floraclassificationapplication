@@ -1,5 +1,6 @@
 package com.sn.floraclassificationapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.sn.floraclassificationapplication.flowerdatabase.DBController;
 import com.sn.floraclassificationapplication.segmenter.ImageController;
 
 import java.io.File;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btn1;
     private Button btn2;
     private Flower segmentedFlower;
+    private DBController DB_Controller;
 
     static final int REQUEST_CAMERA_IMAGE = 1;
     static final int REQUEST_GALLERY_IMAGE = 2;
@@ -38,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DB_Controller = DBController.getInstance(this);
         ImageView flowerView = (ImageView) findViewById(R.id.flowerView);
         flowerView.setImageResource(R.drawable.daffodil);
+//        DB_Controller.onCreate(DB_Controller.database);
         init();
 
     }

@@ -27,13 +27,8 @@ public class FlowerGeneralAtt extends AbstractDBFlower {
     public int flower_ID;
     public String name;
     public int months;
-    public float[] momentsWeight;
-    public float[] colorWeight;
     public float dateWeight;
     public float locationWeight;
 
-    public FlowerGeneralAtt(){
-        momentsWeight = new float[HU_MOMENTS_NUM];
-        colorWeight = new float[NUM_OF_COLORS];
-    }
+    public FlowerGeneralAtt(){}
 }

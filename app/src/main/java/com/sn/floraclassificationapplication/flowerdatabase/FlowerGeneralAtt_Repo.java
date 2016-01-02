@@ -31,7 +31,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
     public int insert(AbstractDBFlower DBFlower) {
 
         FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;
-        convertArrayToString(flowerGeneralAtt);
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -60,7 +59,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        convertArrayToString(flowerGeneralAtt);
         values.put(FlowerGeneralAtt.KEY_ID,flowerGeneralAtt.flower_ID);
         values.put(FlowerGeneralAtt.KEY_NAME,flowerGeneralAtt.name);
         values.put(FlowerGeneralAtt.KEY_months,flowerGeneralAtt.months);
@@ -97,10 +95,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
                 flowerGeneralAtt.put("id", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID)));
                 flowerGeneralAtt.put("name", cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME)));
                 flowerGeneralAtt.put("months", cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months)));
-                convertStringToArray(flower, cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight)), HU_WEIGHT);
-                flowerGeneralAtt.put("momemtsWeight", flower.momentsWeight);
-                convertStringToArray(flower, cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight)), COLORS);
-                flowerGeneralAtt.put("colorWeight", flower.colorWeight);
                 flowerGeneralAtt.put("dateWeight",cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_dateWeight)));
                 flowerGeneralAtt.put("locationWeight",cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_locationWeight)));
                 FlowerInDBList.add(flowerGeneralAtt);
@@ -136,10 +130,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
                 flowerGeneralAtt.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID));
                 flowerGeneralAtt.name = cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME));
                 flowerGeneralAtt.months = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months));
-                convertStringToArray(flowerGeneralAtt,momentsWeightString,HU_WEIGHT);
-                convertStringToArray(flowerGeneralAtt, colorsWeightString, COLORS);
-//                flowerGeneralAtt.momentsWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_momentsWeight));
-//                flowerGeneralAtt.colorWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_colorWeight));
                 flowerGeneralAtt.dateWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_dateWeight));
                 flowerGeneralAtt.locationWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_locationWeight));
             } while (cursor.moveToNext());
@@ -188,50 +178,8 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         flowerGeneralAtt.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_ID));
         flowerGeneralAtt.name = cursor.getString(cursor.getColumnIndex(FlowerGeneralAtt.KEY_NAME));
         flowerGeneralAtt.months = cursor.getInt(cursor.getColumnIndex(FlowerGeneralAtt.KEY_months));
-        convertStringToArray(flowerGeneralAtt,momentsWeightString,HU_WEIGHT);
-        convertStringToArray(flowerGeneralAtt, colorsWeightString, COLORS);
         flowerGeneralAtt.dateWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_dateWeight));
         flowerGeneralAtt.locationWeight = cursor.getFloat(cursor.getColumnIndex(FlowerGeneralAtt.KEY_locationWeight));
-
-    }
-
-    public void convertArrayToString(FlowerGeneralAtt flowerGenAtt){
-
-        int i;
-        for ( i = 0;i < NUM_OF_MOMENTS;i++){
-            if(i < NUM_OF_COLORS){
-                momentsWeightString += String.valueOf(flowerGenAtt.momentsWeight[i]);
-                colorsWeightString += String.valueOf(flowerGenAtt.colorWeight[i]);
-                momentsWeightString += "::";
-                colorsWeightString += "::";
-            }
-            else
-            {
-                momentsWeightString += String.valueOf(flowerGenAtt.momentsWeight[i]);
-                momentsWeightString += "::";
-            }
-        }
-    }
-
-    public void convertStringToArray(FlowerGeneralAtt flowerGenAtt,String str,int type){
-        String[] strToFloat;
-        int i;
-        strToFloat = str.split("::");
-        for ( i = 0;i < NUM_OF_MOMENTS;i++) {
-            switch (type){
-                case HU_WEIGHT:
-                {
-                    flowerGenAtt.momentsWeight[i] = Float.parseFloat(strToFloat[i]);
-                    break;
-                }
-                case COLORS:
-                {
-                    flowerGenAtt.colorWeight[i] = Float.parseFloat(strToFloat[i]);
-                    break;
-                }
-            }
-
-        }
 
     }
 }
