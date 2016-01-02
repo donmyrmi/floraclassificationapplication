@@ -80,16 +80,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void SelectGalleryImage() {
-        btn1.setVisibility(View.GONE);
-        btn2.setVisibility(View.GONE);
+        //btn1.setVisibility(View.GONE);
+        //btn2.setVisibility(View.GONE);
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_GALLERY_IMAGE);
     }
 
     public void TakePhoto(){
-        btn1.setVisibility(View.GONE);
-        btn2.setVisibility(View.GONE);
+        //btn1.setVisibility(View.GONE);
+        //btn2.setVisibility(View.GONE);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         imageFile = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
         intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

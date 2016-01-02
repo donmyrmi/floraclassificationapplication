@@ -9,17 +9,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.sn.floraclassificationapplication.Flower;
+import com.sn.floraclassificationapplication.R;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class DBController extends SQLiteOpenHelper{
     //version number to upgrade database version
@@ -33,7 +39,7 @@ public class DBController extends SQLiteOpenHelper{
     private static FlowerLocation_Repo flowerLocation_repo;
     // Database Name & path
     private static final String DATABASE_NAME = "FlowersCRUD.db";
-    private static String DB_FILEPATH = "/data/data/com.sn.floraclassificationapplication.flowerdatabase/databases/database.db";
+    private static String DB_FILEPATH;
     private static SQLiteDatabase db;
     public static boolean dbSuccess;
 
@@ -51,7 +57,11 @@ public class DBController extends SQLiteOpenHelper{
             flowerLocation_repo = new FlowerLocation_Repo(context);
             try
             {
-                dbSuccess = ourInstance.importDatabase("G:/GitHub_Projects/floraclassificationapplication/app/src/main/java/com/sn/floraclassificationapplication/flowerdatabase/FlowersCRUD.sql");
+                //dbSuccess = ourInstance.importDatabase("G:/GitHub_Projects/floraclassificationapplication/app/src/main/java/com/sn/floraclassificationapplication/flowerdatabase/FlowersCRUD.sql");
+                DB_FILEPATH = context.getFilesDir().getPath() + "/databases/database.db";
+                //dbSuccess = ourInstance.importDatabase("/data/data/com.sn.floraclassificationapplication/FlowersCRUD.sql");
+
+                insertFromFile(context, R.raw.flowers);
             }
             catch (Exception IOException)
             {
@@ -62,9 +72,32 @@ public class DBController extends SQLiteOpenHelper{
         return ourInstance;
     }
 
+    public static int insertFromFile(Context context, int resourceId) throws IOException {
+        // Reseting Counter
+        int result = 0;
+
+        // Open the resource
+        InputStream insertsStream = context.getResources().openRawResource(resourceId);
+
+        // Iterate through lines (assuming each insert has its own line and theres no other stuff)
+        Scanner scan = new Scanner(new InputStreamReader(insertsStream));
+        scan.useDelimiter(Pattern.compile(";"));
+        while (scan.hasNext()) {
+            String insertStmt = scan.next();
+            db.execSQL(insertStmt);
+            result++;
+            // rest of your logic
+        }
+
+
+        // returning number of inserted rows
+        return result;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase database) {
         //Create all necessary tables
+
         String CREATE_TABLE_FlowerGeneralAtt = "CREATE TABLE " + FlowerGeneralAtt.TABLE  + "("
                 + FlowerGeneralAtt.KEY_ID  + " INTEGER PRIMARY KEY, "
                 + FlowerGeneralAtt.KEY_NAME + " TEXT, "
@@ -95,11 +128,13 @@ public class DBController extends SQLiteOpenHelper{
                 + FlowerAttributes.KEY_blueMin + "INTEGER)";
 
         database.execSQL(CREATE_TABLE_FlowerAttributes);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         // Drop older table if existed, all data will be gone!!!
+
         database.execSQL("DROP TABLE IF EXISTS " + FlowerGeneralAtt.TABLE);
         database.execSQL("DROP TABLE IF EXISTS " + FlowerAttributes.TABLE);
         database.execSQL("DROP TABLE IF EXISTS " + FlowerLocation.TABLE);
@@ -117,7 +152,7 @@ public class DBController extends SQLiteOpenHelper{
         File newDb = new File(dbPath);
         File oldDb = new File(DB_FILEPATH);
         if (newDb.exists()) {
-            this.copyFile(new FileInputStream(newDb), new FileOutputStream(oldDb));
+            copyFile(new FileInputStream(newDb), new FileOutputStream(oldDb));
             // Access the copied database so SQLiteHelper will cache it and mark
             // it as created.
             getWritableDatabase().close();
