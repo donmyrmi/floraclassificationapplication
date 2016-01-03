@@ -33,7 +33,7 @@ public class DBController extends SQLiteOpenHelper{
     private static FlowerLocation_Repo flowerLocation_repo;
     // Database Name & path
     private static final String DATABASE_NAME = "FlowersCRUD.db";
-    private static String DB_FILEPATH = "/data/data/com.sn.floraclassificationapplication.flowerdatabase/databases/database.db";
+    private static String DB_FILEPATH = "/data/data/com.sn.floraclassificationapplication/databases/FlowersCRUD.db";
     private static SQLiteDatabase db;
     public static boolean dbSuccess;
 
@@ -51,7 +51,7 @@ public class DBController extends SQLiteOpenHelper{
             flowerLocation_repo = new FlowerLocation_Repo(context);
             try
             {
-                dbSuccess = ourInstance.importDatabase("G:/GitHub_Projects/floraclassificationapplication/app/src/main/java/com/sn/floraclassificationapplication/flowerdatabase/FlowersCRUD.sql");
+                dbSuccess = ourInstance.importDatabase("/storage/sdcard/FlowersCRUD.sql");
             }
             catch (Exception IOException)
             {
