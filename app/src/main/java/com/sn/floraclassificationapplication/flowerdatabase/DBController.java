@@ -65,7 +65,7 @@ public class DBController extends SQLiteOpenHelper{
             flowerGeneralAtt_repo = new FlowerGeneralAtt_Repo(context);
             flowerAttributes_repo = new FlowerAttributes_Repo(context);
             flowerLocation_repo = new FlowerLocation_Repo(context);
-/*
+
             try
             {
                 insertFromFile(context,R.raw.flowers);
@@ -79,7 +79,7 @@ public class DBController extends SQLiteOpenHelper{
                 IOException.printStackTrace();
                 System.out.print("IOExecption occurred");
             }
-*/
+
         }
         return ourInstance;
     }
@@ -171,7 +171,7 @@ public class DBController extends SQLiteOpenHelper{
 
         flowerAttributes_repo.insert(flowerAttributes);
 
-        flowerLocation.id = 1;
+        flowerLocation.flower_ID = 1;
         flowerLocation.locations.add(new FloweringLocation(33.238661,32.897275,35.834571,35.633367));
         flowerLocation.locations.add(new FloweringLocation(35.55007,32.926326,35.628275,35.506039));
         flowerLocation.locations.add(new FloweringLocation(32.775572,32.641438,35.10391,34.970296));
@@ -383,31 +383,31 @@ public class DBController extends SQLiteOpenHelper{
 
         ArrayList<FlowerInDB> flowersList = new ArrayList<FlowerInDB>();
         //String selectQuery = "SELECT * FROM FlowerLocation, FlowerGeneralAtt WHERE FlowerLocation.id = FlowerGeneralAtt.id";
-        String selectQuery = "SELECT * FROM FlowerGeneralAtt";
+        String selectQuery = "SELECT * FROM FlowerLocation";
         //String selectQuery = "SELECT * FROM FlowerGeneralAtt, FlowerAttributes WHERE FlowerGeneralAtt.flower_ID = FlowerAttributes.flower_ID";
                 //String selectQuery = "SELECT * FROM "+ FlowerGeneralAtt.TABLE;// NATURAL JOIN FlowerAttributes";// JOIN FlowerLocation";
         Cursor cursor = db.rawQuery(selectQuery,null);
         if (cursor.moveToFirst()) {
             do {
                 FlowerInDB flower = new FlowerInDB();
-                flowerGeneralAtt_repo.setParams(flowerGeneralAtt,cursor);
+//                flowerGeneralAtt_repo.setParams(flowerGeneralAtt,cursor);
 //                flowerAttributes_repo.setParams(flowerAttributes, cursor);
-//                flowerLocation_repo.setParams(flowerLocation, cursor);
-                flower.flower_ID = flowerGeneralAtt.flower_ID;
-                flower.setName(flowerGeneralAtt.name);
+                flowerLocation_repo.setParams(flowerLocation, cursor);
+//                flower.flower_ID = flowerGeneralAtt.flower_ID;
+//                flower.setName(flowerGeneralAtt.name);
 //                flower.setHu8MomentsMax(flowerAttributes.hu8MomentsMax);
 //                flower.setHu8MomentsMin(flowerAttributes.hu8MomentsMin);
 //                flower.setRedMax(flowerAttributes.redMax);
 //                flower.setRedMin(flowerAttributes.redMin);
-//                flower.setGreenMax(flowerAttributes.greenMax);
+//               flower.setGreenMax(flowerAttributes.greenMax);
 //                flower.setGreenMin(flowerAttributes.greenMin);
 //                flower.setBlueMax(flowerAttributes.blueMax);
 //                flower.setBlueMin(flowerAttributes.blueMin);
-                flower.setMonths(flowerGeneralAtt.months);
+//                flower.setMonths(flowerGeneralAtt.months);
 //                flower.setMomentsWeight(flowerAttributes.momentsWeight);
 //                flower.setColorWeight(flowerAttributes.colorWeight);
-                flower.setDateWeight(flowerGeneralAtt.dateWeight);
-//                flower.setLocations(flowerLocation.locations);
+//                flower.setDateWeight(flowerGeneralAtt.dateWeight);
+                flower.setLocations(flowerLocation.locations);
                 flowersList.add(flower);
             } while (cursor.moveToNext());
 

@@ -33,7 +33,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(flowerLocation.KEY_ID,flowerLocation.id);
+        values.put(flowerLocation.KEY_ID,flowerLocation.flower_ID);
         values.put(flowerLocation.KEY_locations,floweringLocationsString);
 
         // Inserting Row
@@ -108,7 +108,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
 
         if (cursor.moveToFirst()) {
             do {
-                flowerLocation.id = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
+                flowerLocation.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
                 tempStr = cursor.getString((cursor.getColumnIndex(FlowerLocation.KEY_locations)));
                 convertStringToFloweringLocations(flowerLocation, tempStr);
             } while (cursor.moveToNext());
@@ -129,7 +129,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
 
     public void updateRaw(FlowerLocation flowerLoc)
     {
-        delete(flowerLoc.id);
+        delete(flowerLoc.flower_ID);
         insert(flowerLoc);
     }
     public void convertToLocation(byte[] bytes,FlowerLocation flowerLocation) {
@@ -157,7 +157,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
     {
         String tempStr;
         FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
-        flowerLocation.id = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
+        flowerLocation.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
         tempStr = cursor.getString((cursor.getColumnIndex(FlowerLocation.KEY_locations)));
         convertStringToFloweringLocations(flowerLocation,tempStr);
     }

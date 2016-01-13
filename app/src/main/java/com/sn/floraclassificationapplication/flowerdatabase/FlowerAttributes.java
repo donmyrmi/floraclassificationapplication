@@ -15,7 +15,7 @@ public class FlowerAttributes extends AbstractDBFlower{
     //Labels table name
     public static final String TABLE = "FlowerAttributes";
     //Label table column names
-    public static final String KEY_ID = "id";
+    public static final String KEY_ID = "flower_ID";
     public static final String KEY_angle = "angle";
     public static final String KEY_hu8MomentsMax = "hu8MomentsMax";
     public static final String KEY_hu8MomentsMin = "hu8MomentsMin";

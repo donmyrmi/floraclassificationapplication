@@ -12,10 +12,10 @@ public class FlowerLocation extends AbstractDBFlower{
     //Labels table name
     public static final String TABLE = "FlowerLocation";
     //Label table column names
-    public static final String KEY_ID = "id";
+    public static final String KEY_ID = "flower_ID";
     public static final String KEY_locations = "locations";
 
-    public int id;
+    public int flower_ID;
     public ArrayList<FloweringLocation> locations;
 
     public FlowerLocation()

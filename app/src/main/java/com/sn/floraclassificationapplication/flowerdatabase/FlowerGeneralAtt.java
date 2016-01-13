@@ -15,7 +15,7 @@ public class FlowerGeneralAtt extends AbstractDBFlower {
     //Labels table name
     public static final String TABLE = "FlowerGeneralAtt";
     //Label table column names
-    public static final String KEY_ID = "id";
+    public static final String KEY_ID = "flower_ID";
     public static final String KEY_NAME = "name";
     public static final String KEY_months = "months";
     public static final String KEY_dateWeight = "dateWeight";
