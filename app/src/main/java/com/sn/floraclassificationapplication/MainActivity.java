@@ -19,6 +19,7 @@ import com.sn.floraclassificationapplication.flowerdatabase.DBController;
 import com.sn.floraclassificationapplication.segmenter.ImageController;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,9 +45,10 @@ public class MainActivity extends AppCompatActivity {
         DB_Controller = DBController.getInstance(this);
         ImageView flowerView = (ImageView) findViewById(R.id.flowerView);
         flowerView.setImageResource(R.drawable.daffodil);
-        DB_Controller.getFlowers();
+        //DB_Controller.getFlowers();
 
         init();
+        //getRoundedImageAndSave();
 
     }
 
@@ -81,16 +83,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void SelectGalleryImage() {
-        btn1.setVisibility(View.GONE);
-        btn2.setVisibility(View.GONE);
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_GALLERY_IMAGE);
     }
 
     public void TakePhoto(){
-        btn1.setVisibility(View.GONE);
-        btn2.setVisibility(View.GONE);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         imageFile = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
         intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -101,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK ) {
+            btn1.setVisibility(View.GONE);
+            btn2.setVisibility(View.GONE);
             if (requestCode == REQUEST_CAMERA_IMAGE) {
                 Bitmap imageBitmap = ConvertFileToBitMap(imageFile);
 
@@ -195,6 +195,20 @@ public class MainActivity extends AppCompatActivity {
         file.delete();
         return bitmap;
     }
+
+    public void getRoundedImageAndSave() {
+        int [] flowers = {1,2,4,5,6};
+        for (int i : flowers) {
+            String fImage = "mipmap/fl" + i;
+            String outFilename = "fl" + i + "c.png";
+            File file = new File(getFilesDir(), outFilename);
+            int rid = getResources().getIdentifier(fImage, null, getPackageName());
+            Bitmap tempBi = ic.decodeSampledBitmapFromResource(getResources(), rid, 256, 256);
+            tempBi = ic.getRoundedShape(tempBi);
+            ic.saveImageToDevice(tempBi, file);
+        }
+    }
+
 
     public Flower TestFlower()
     {
