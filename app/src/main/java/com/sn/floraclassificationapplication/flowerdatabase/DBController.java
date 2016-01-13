@@ -382,9 +382,9 @@ public class DBController extends SQLiteOpenHelper{
     public void getFlowers()
     {
 
-        FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
-        FlowerAttributes flowerAttributes = new FlowerAttributes();
-        FlowerLocation flowerLocation = new FlowerLocation();
+//        FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
+//        FlowerAttributes flowerAttributes = new FlowerAttributes();
+//        FlowerLocation flowerLocation = new FlowerLocation();
 
         SQLiteDatabase db = getReadableDatabase();
 
@@ -399,6 +399,9 @@ public class DBController extends SQLiteOpenHelper{
         if (cursor1.moveToFirst() && cursor2.moveToFirst() && cursor3.moveToFirst()) {
             do {
                 FlowerInDB flower = new FlowerInDB();
+                FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
+                FlowerAttributes flowerAttributes = new FlowerAttributes();
+                FlowerLocation flowerLocation = new FlowerLocation();
                 flowerGeneralAtt_repo.setParams(flowerGeneralAtt,cursor1);
                 flowerAttributes_repo.setParams(flowerAttributes, cursor2);
                 flowerLocation_repo.setParams(flowerLocation, cursor3);
@@ -418,7 +421,7 @@ public class DBController extends SQLiteOpenHelper{
                 flower.setDateWeight(flowerGeneralAtt.dateWeight);
                 flower.setLocations(flowerLocation.locations);
                 flowersList.add(flower);
-            } while (cursor1.moveToNext());
+            } while (cursor1.moveToNext() &&cursor2.moveToNext() && cursor3.moveToNext());
 
             Collections.sort(flowersList, new Comparator<FlowerInDB>() {
                 public int compare(FlowerInDB o1, FlowerInDB o2) {

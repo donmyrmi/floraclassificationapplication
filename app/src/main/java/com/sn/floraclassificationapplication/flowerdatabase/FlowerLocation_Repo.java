@@ -199,7 +199,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         double latitudeMin;
         strToPars = strToConvert.split("\t|\r\n");
         int numOfLocations = strToPars.length/4;
-        for(i=0,j=0; i < numOfLocations; i+=4)
+        for(i=0,j=0; i < numOfLocations; i++)
         {
             longitudeMax = Double.parseDouble(strToPars[j++]);
             longitudeMin = Double.parseDouble(strToPars[j++]);
