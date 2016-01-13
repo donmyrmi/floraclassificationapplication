@@ -2,6 +2,7 @@ package com.sn.floraclassificationapplication.flowerdatabase;
 
 import android.location.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,5 +16,11 @@ public class FlowerLocation extends AbstractDBFlower{
     public static final String KEY_locations = "locations";
 
     public int id;
-        public List<FloweringLocation> locations;
+    public ArrayList<FloweringLocation> locations;
+
+    public FlowerLocation()
+    {
+        locations = new ArrayList<FloweringLocation>();
+
+    }
 }

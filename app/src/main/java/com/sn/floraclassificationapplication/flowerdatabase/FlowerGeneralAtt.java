@@ -18,8 +18,6 @@ public class FlowerGeneralAtt extends AbstractDBFlower {
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_months = "months";
-    public static final String KEY_momentsWeight = "momentsWeight";
-    public static final String KEY_colorWeight = "colorWeight";
     public static final String KEY_dateWeight = "dateWeight";
     public static final String KEY_locationWeight = "locationWeight";
 

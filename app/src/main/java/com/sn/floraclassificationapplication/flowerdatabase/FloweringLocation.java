@@ -9,7 +9,7 @@ public class FloweringLocation {
     private double latitudeMax;
     private double latitudeMin;
 
-    public FloweringLocation(double lonMin, double latMin, double lonMax, double latMax) {
+    public FloweringLocation(double lonMax, double lonMin, double latMax, double latMin) {
         longitudeMax = lonMax;
         latitudeMax = latMax;
         longitudeMin = lonMin;

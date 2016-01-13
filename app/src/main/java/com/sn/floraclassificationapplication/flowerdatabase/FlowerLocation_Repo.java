@@ -21,7 +21,7 @@ import java.util.HashMap;
 public class FlowerLocation_Repo extends AbstractFlower_Repo implements RepositoryController{
 
     private DBController dbHelper;
-
+    private String floweringLocationsString;
     public FlowerLocation_Repo(Context context) {
         dbHelper = DBController.getInstance(context);
     }
@@ -29,19 +29,12 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
     public int insert(AbstractDBFlower DBFlower) {
 
         FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
+        convertFloweringLocationToString(flowerLocation.locations);
         //Open connection to write data
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(flowerLocation.KEY_ID,flowerLocation.id);
-        //put flower locations in values
-        for (FloweringLocation loc :
-                flowerLocation.locations) {
-            values.put(flowerLocation.KEY_locations,loc.getLongitudeMax());
-            values.put(flowerLocation.KEY_locations,loc.getLongitudeMin());
-            values.put(flowerLocation.KEY_locations,loc.getLatitudeMax());
-            values.put(flowerLocation.KEY_locations,loc.getLatitudeMin());
-        }
-
+        values.put(flowerLocation.KEY_locations,floweringLocationsString);
 
         // Inserting Row
         long FlowerLocation_Id = db.insert(flowerLocation.TABLE, null, values);
@@ -78,7 +71,8 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
 
         //FlowerInDB FlowerInDB = new FlowerInDB();
         ArrayList<HashMap<String, Object>> Flower_Location = new ArrayList<HashMap<String, Object>>();
-
+        FlowerLocation tempLoc = new FlowerLocation();
+        String tempStr;
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
@@ -86,7 +80,9 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
             do {
                 HashMap<String, Object> flowerLocation = new HashMap<String, Object>();
                 flowerLocation.put("id", cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID)));
-                flowerLocation.put("locations", cursor.getBlob(cursor.getColumnIndex(FlowerLocation.KEY_locations)));//TODO::SAPIR:the calling method will need to convert byte[] into Location class- double,double
+                tempStr = cursor.getString(cursor.getColumnIndex(FlowerLocation.KEY_locations));
+                convertStringToFloweringLocations(tempLoc,tempStr);
+                flowerLocation.put("locations",tempLoc.locations);
                 Flower_Location.add(flowerLocation);
             } while (cursor.moveToNext());
         }
@@ -106,13 +102,15 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
                 FlowerLocation.KEY_ID + "=?";
 
         FlowerLocation flowerLocation = new FlowerLocation();
+        String tempStr;
 
         Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(Id) } );
 
         if (cursor.moveToFirst()) {
             do {
                 flowerLocation.id = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
-                convertToLocation(cursor.getBlob((cursor.getColumnIndex(FlowerLocation.KEY_locations))), flowerLocation);
+                tempStr = cursor.getString((cursor.getColumnIndex(FlowerLocation.KEY_locations)));
+                convertStringToFloweringLocations(flowerLocation, tempStr);
             } while (cursor.moveToNext());
         }
 
@@ -157,9 +155,65 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
 
     public void setParams(AbstractDBFlower DBFlower,Cursor cursor)
     {
+        String tempStr;
         FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
         flowerLocation.id = cursor.getInt(cursor.getColumnIndex(FlowerLocation.KEY_ID));
-        convertToLocation(cursor.getBlob((cursor.getColumnIndex(FlowerLocation.KEY_locations))), flowerLocation);
+        tempStr = cursor.getString((cursor.getColumnIndex(FlowerLocation.KEY_locations)));
+        convertStringToFloweringLocations(flowerLocation,tempStr);
     }
+
+    public void convertFloweringLocationToString(ArrayList<FloweringLocation> floweringLocations)
+    {
+        int i = 1;
+        for (FloweringLocation fl :
+                floweringLocations) {
+            if(i == 1)
+            {
+                floweringLocationsString = String.valueOf(fl.getLongitudeMax());
+                i = 0;
+            }
+            else
+            {
+                floweringLocationsString += String.valueOf(fl.getLongitudeMax());
+            }
+            floweringLocationsString += "::";
+            floweringLocationsString += String.valueOf(fl.getLongitudeMin());
+            floweringLocationsString += "::";
+            floweringLocationsString += String.valueOf(fl.getLatitudeMax());
+            floweringLocationsString += "::";
+            floweringLocationsString += String.valueOf(fl.getLatitudeMin());
+            floweringLocationsString += "::";
+
+
+        }
+
+    }
+
+    public void convertStringToFloweringLocations(FlowerLocation flowerLocation, String strToConvert)
+    {
+        String[] strToPars;
+        int i,j;
+        double longitudeMax;
+        double longitudeMin;
+        double latitudeMax;
+        double latitudeMin;
+        strToPars = strToConvert.split("::");
+        int numOfLocations = strToPars.length/4;
+        for(i=0,j=0; i < numOfLocations; i+=4)
+        {
+            longitudeMax = Double.parseDouble(strToPars[j++]);
+            longitudeMin = Double.parseDouble(strToPars[j++]);
+            latitudeMax = Double.parseDouble(strToPars[j++]);
+            latitudeMin = Double.parseDouble(strToPars[j++]);
+            FloweringLocation fl = new FloweringLocation(longitudeMax,longitudeMin,latitudeMax,latitudeMin);
+            flowerLocation.locations.add(fl);
+
+        }
+    }
+
+public String getFloweringLocationsString()
+{
+    return floweringLocationsString;
+}
 }
 

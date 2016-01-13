@@ -37,8 +37,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         values.put(FlowerGeneralAtt.KEY_ID,flowerGeneralAtt.flower_ID);
         values.put(FlowerGeneralAtt.KEY_NAME,flowerGeneralAtt.name);
         values.put(FlowerGeneralAtt.KEY_months,flowerGeneralAtt.months);
-        values.put(FlowerGeneralAtt.KEY_momentsWeight,momentsWeightString);
-        values.put(FlowerGeneralAtt.KEY_colorWeight,colorsWeightString);
         values.put(FlowerGeneralAtt.KEY_dateWeight,flowerGeneralAtt.dateWeight);
         values.put(FlowerGeneralAtt.KEY_locationWeight,flowerGeneralAtt.locationWeight);
         // Inserting Row
@@ -62,8 +60,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         values.put(FlowerGeneralAtt.KEY_ID,flowerGeneralAtt.flower_ID);
         values.put(FlowerGeneralAtt.KEY_NAME,flowerGeneralAtt.name);
         values.put(FlowerGeneralAtt.KEY_months,flowerGeneralAtt.months);
-        values.put(FlowerGeneralAtt.KEY_momentsWeight,momentsWeightString);
-        values.put(FlowerGeneralAtt.KEY_colorWeight,colorsWeightString);
 
         //update Row
         db.update(FlowerGeneralAtt.TABLE, values, FlowerGeneralAtt.KEY_ID + "= ?", new String[]{String.valueOf(FlowerGeneralAtt.KEY_ID)});
@@ -77,8 +73,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
                 FlowerGeneralAtt.KEY_ID + "," +
                 FlowerGeneralAtt.KEY_NAME + "," +
                 FlowerGeneralAtt.KEY_months + "," +
-                FlowerGeneralAtt.KEY_momentsWeight + "," +
-                FlowerGeneralAtt.KEY_colorWeight + "," +
                 FlowerGeneralAtt.KEY_dateWeight + "," +
                 FlowerGeneralAtt.KEY_locationWeight +
                 " FROM " + FlowerGeneralAtt.TABLE;
@@ -113,8 +107,6 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
                 FlowerInDB.KEY_ID + "," +
                 FlowerInDB.KEY_NAME + "," +
                 FlowerGeneralAtt.KEY_months + "," +
-                FlowerGeneralAtt.KEY_momentsWeight + "," +
-                FlowerGeneralAtt.KEY_colorWeight + "," +
                 FlowerGeneralAtt.KEY_dateWeight + "," +
                 FlowerGeneralAtt.KEY_locationWeight +
                 " FROM " + FlowerGeneralAtt.TABLE

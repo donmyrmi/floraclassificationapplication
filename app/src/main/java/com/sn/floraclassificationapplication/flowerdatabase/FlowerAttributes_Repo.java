@@ -176,15 +176,21 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
     //Converting double[] to string method
     public void convertArrayToString(FlowerAttributes flowerAttributes){
 
-        int i;
-        for ( i = 0;i < NUM_OF_MOMENTS;i++){
+        int i = 0;
+        hu8MomentsMaxString = String.valueOf(flowerAttributes.hu8MomentsMax[i]);
+        hu8MomentsMinString = String.valueOf(flowerAttributes.hu8MomentsMin[i]);
+        hu8MomentsWeightsString = String.valueOf(flowerAttributes.momentsWeight[i++]);
+        hu8MomentsMaxString += "::";
+        hu8MomentsMinString += "::";
+        hu8MomentsWeightsString += "::";
+        for (;i < NUM_OF_MOMENTS;i++){
             hu8MomentsMaxString += String.valueOf(flowerAttributes.hu8MomentsMax[i]);
             hu8MomentsMinString += String.valueOf(flowerAttributes.hu8MomentsMin[i]);
-            hu8MomentsWeightsString+= String.valueOf(flowerAttributes.momentsWeight);
+            hu8MomentsWeightsString += String.valueOf(flowerAttributes.momentsWeight[i]);
 
-                hu8MomentsMaxString += "::";
-                hu8MomentsMinString += "::";
-                hu8MomentsWeightsString += "::";
+            hu8MomentsMaxString += "::";
+            hu8MomentsMinString += "::";
+            hu8MomentsWeightsString += "::";
         }
     }
     //Converting string to double[] method
