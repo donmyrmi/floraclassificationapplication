@@ -382,34 +382,36 @@ public class DBController extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
 
         ArrayList<FlowerInDB> flowersList = new ArrayList<FlowerInDB>();
-        //String selectQuery = "SELECT * FROM FlowerLocation, FlowerGeneralAtt WHERE FlowerLocation.id = FlowerGeneralAtt.id";
-        String selectQuery = "SELECT * FROM FlowerLocation";
-        //String selectQuery = "SELECT * FROM FlowerGeneralAtt, FlowerAttributes WHERE FlowerGeneralAtt.flower_ID = FlowerAttributes.flower_ID";
-                //String selectQuery = "SELECT * FROM "+ FlowerGeneralAtt.TABLE;// NATURAL JOIN FlowerAttributes";// JOIN FlowerLocation";
-        Cursor cursor = db.rawQuery(selectQuery,null);
-        if (cursor.moveToFirst()) {
+        String selectQuery1 = "SELECT * FROM FlowerGeneralAtt";
+        String selectQuery2 = "SELECT * FROM FlowerAttributes";
+        String selectQuery3 = "SELECT * FROM FlowerLocation";
+
+        Cursor cursor1 = db.rawQuery(selectQuery1,null);
+        Cursor cursor2 = db.rawQuery(selectQuery2,null);
+        Cursor cursor3 = db.rawQuery(selectQuery3,null);
+        if (cursor1.moveToFirst() && cursor2.moveToFirst() && cursor3.moveToFirst()) {
             do {
                 FlowerInDB flower = new FlowerInDB();
-//                flowerGeneralAtt_repo.setParams(flowerGeneralAtt,cursor);
-//                flowerAttributes_repo.setParams(flowerAttributes, cursor);
-                flowerLocation_repo.setParams(flowerLocation, cursor);
-//                flower.flower_ID = flowerGeneralAtt.flower_ID;
-//                flower.setName(flowerGeneralAtt.name);
-//                flower.setHu8MomentsMax(flowerAttributes.hu8MomentsMax);
-//                flower.setHu8MomentsMin(flowerAttributes.hu8MomentsMin);
-//                flower.setRedMax(flowerAttributes.redMax);
-//                flower.setRedMin(flowerAttributes.redMin);
-//               flower.setGreenMax(flowerAttributes.greenMax);
-//                flower.setGreenMin(flowerAttributes.greenMin);
-//                flower.setBlueMax(flowerAttributes.blueMax);
-//                flower.setBlueMin(flowerAttributes.blueMin);
-//                flower.setMonths(flowerGeneralAtt.months);
-//                flower.setMomentsWeight(flowerAttributes.momentsWeight);
-//                flower.setColorWeight(flowerAttributes.colorWeight);
-//                flower.setDateWeight(flowerGeneralAtt.dateWeight);
+                flowerGeneralAtt_repo.setParams(flowerGeneralAtt,cursor1);
+                flowerAttributes_repo.setParams(flowerAttributes, cursor2);
+                flowerLocation_repo.setParams(flowerLocation, cursor3);
+                flower.flower_ID = flowerGeneralAtt.flower_ID;
+                flower.setName(flowerGeneralAtt.name);
+                flower.setHu8MomentsMax(flowerAttributes.hu8MomentsMax);
+                flower.setHu8MomentsMin(flowerAttributes.hu8MomentsMin);
+                flower.setRedMax(flowerAttributes.redMax);
+                flower.setRedMin(flowerAttributes.redMin);
+                flower.setGreenMax(flowerAttributes.greenMax);
+                flower.setGreenMin(flowerAttributes.greenMin);
+                flower.setBlueMax(flowerAttributes.blueMax);
+                flower.setBlueMin(flowerAttributes.blueMin);
+                flower.setMonths(flowerGeneralAtt.months);
+                flower.setMomentsWeight(flowerAttributes.momentsWeight);
+                flower.setColorWeight(flowerAttributes.colorWeight);
+                flower.setDateWeight(flowerGeneralAtt.dateWeight);
                 flower.setLocations(flowerLocation.locations);
                 flowersList.add(flower);
-            } while (cursor.moveToNext());
+            } while (cursor1.moveToNext());
 
             Collections.sort(flowersList, new Comparator<FlowerInDB>() {
                 public int compare(FlowerInDB o1, FlowerInDB o2) {

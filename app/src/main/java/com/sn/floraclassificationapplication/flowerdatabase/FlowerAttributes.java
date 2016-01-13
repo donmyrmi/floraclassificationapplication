@@ -46,5 +46,7 @@ public class FlowerAttributes extends AbstractDBFlower{
     public FlowerAttributes()
     {
         momentsWeight = new float[HU_MOMENTS_NUM];
+        hu8MomentsMax = new double[HU_MOMENTS_NUM];
+        hu8MomentsMin = new double[HU_MOMENTS_NUM];
     }
 }

@@ -197,7 +197,7 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
     public void convertStringToArray(FlowerAttributes flowerAttributes,String str,int type){
         String[] strToPars;
         int i;
-        strToPars = str.split("::");
+        strToPars = str.split("\t|\r\n");
         for ( i = 0;i < 8;i++) {
             switch (type){
                 case HU_SET_MAX:
@@ -230,11 +230,13 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         flowerAttributes.flower_ID = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_ID));
         convertStringToArray(flowerAttributes, cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMax)), HU_SET_MAX);
         convertStringToArray(flowerAttributes, cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_hu8MomentsMin)), HU_SET_MIN);
+        convertStringToArray(flowerAttributes, cursor.getString(cursor.getColumnIndex(FlowerAttributes.KEY_momentsWeight)), HU_WEIGHT);
         flowerAttributes.redMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_redMin));
         flowerAttributes.redMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_redMax));
         flowerAttributes.greenMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_greenMin));
         flowerAttributes.greenMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_greenMax));
         flowerAttributes.blueMin = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blueMin));
         flowerAttributes.blueMax = cursor.getInt(cursor.getColumnIndex(FlowerAttributes.KEY_blueMax));
+        flowerAttributes.colorWeight = cursor.getFloat(cursor.getColumnIndex(FlowerAttributes.KEY_colorWeight));
     }
 }

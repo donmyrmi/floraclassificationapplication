@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         DB_Controller = DBController.getInstance(this);
         ImageView flowerView = (ImageView) findViewById(R.id.flowerView);
         flowerView.setImageResource(R.drawable.daffodil);
-        //DB_Controller.getFlowers();
+        DB_Controller.getFlowers();
 
         init();
         //getRoundedImageAndSave();
