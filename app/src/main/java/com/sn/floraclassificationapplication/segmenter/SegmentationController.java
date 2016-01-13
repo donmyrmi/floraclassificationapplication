@@ -22,7 +22,7 @@ public class SegmentationController {
     private static SegmentationController ourInstance = new SegmentationController();
     private ImageController ic;
     private KMeans km;
-    private static int K = 5;
+    private static int K = 6;
     private int currentSegment;
     private Bitmap output;
     private Bitmap[] flowerSegments;

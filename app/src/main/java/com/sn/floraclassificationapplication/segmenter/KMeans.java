@@ -74,6 +74,7 @@ public class KMeans {
         clusters[2] = new Cluster(0,Color.BLUE);
         clusters[3] = new Cluster(0,Color.BLACK);
         clusters[4] = new Cluster(0,Color.WHITE);
+        clusters[5] = new Cluster(0,Color.YELLOW);
 
         /*for (int i=0; i<k; i++)
         {

@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public void init()
     {
         segmentedFlower = TestFlower();
+        DB_Controller.getFlowers();
         //segmentedFlower.segmentAndClassify();
 
         Button temp = (Button) findViewById(R.id.confYesButton);

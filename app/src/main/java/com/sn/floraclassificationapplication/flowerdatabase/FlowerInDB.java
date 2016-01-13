@@ -70,6 +70,10 @@ public class FlowerInDB extends AbstractDBFlower{
         testWeights();
     }
 
+    public int getFlower_ID() {
+        return flower_ID;
+    }
+
     public FlowerInDB() {
         hu8MomentsMax = new double[HU_MOMENTS_NUM];
         hu8MomentsMin = new double[HU_MOMENTS_NUM];
@@ -235,12 +239,19 @@ public class FlowerInDB extends AbstractDBFlower{
         }
         temp += maxLocationRank;
         
-        rank = temp * 100;
+        rank = temp;
     }
 
-    private double calculateDistanceWeight(int value, int min, int max, double weight) {
+    private double calculateDistanceWeight(int value, int max, int min, double weight) {
         double temp = 0;
+        if (max < min) {
+            int z = max;
+            max = min;
+            min = z;
+        }
         int range = max - min;
+        if (range == 0)
+            range = 1;
         if (value < min) {
             int dist = min - value;
             temp =  1 / Math.pow(2, dist / range) * weight;
@@ -254,6 +265,11 @@ public class FlowerInDB extends AbstractDBFlower{
 
     private double calculateDoubleDistanceWeight(double value, double min, double max, double weight) {
         double temp = 0;
+        if (max < min) {
+            double z = max;
+            max = min;
+            min = z;
+        }
         double range = max - min;
         if (value < min) {
             double dist = min - value;

@@ -55,7 +55,6 @@ public class DBController extends SQLiteOpenHelper{
 //        }
 
         db = getWritableDatabase();
-
         //loadTestFlowerDB();
     }
 
@@ -73,6 +72,7 @@ public class DBController extends SQLiteOpenHelper{
                 //dbSuccess = ourInstance.importDatabase("/data/data/com.sn.floraclassificationapplication/FlowersCRUD.sql");
 
                 insertFromFile(context, R.raw.flowers);
+
             }
             catch (Exception IOException)
             {
@@ -81,6 +81,7 @@ public class DBController extends SQLiteOpenHelper{
             }
 
         }
+
         return ourInstance;
     }
 
@@ -368,11 +369,17 @@ public class DBController extends SQLiteOpenHelper{
         return testF;
     }
 
+    public void calculateFlowerRanks(Flower flower) {
+        for (FlowerInDB fidb : flowerInDB) {
+            fidb.calculateRankFromFlower(flower);
+        }
+    }
+
     public List<FlowerInDB> getFlowerInDB() {
         return flowerInDB;
     }
 
-    public ArrayList<FlowerInDB> getFlowers()
+    public void getFlowers()
     {
 
         FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
@@ -419,8 +426,15 @@ public class DBController extends SQLiteOpenHelper{
                 }
             });
         }
+        flowerInDB = flowersList;
+    }
 
-        return flowersList;
+    public void sortFlowerByRanks() {
+        Collections.sort(flowerInDB, new Comparator<FlowerInDB>() {
+            public int compare(FlowerInDB o1, FlowerInDB o2) {
+                return (int) (o2.getRank() - o1.getRank());
+            }
+        });
     }
 }
 //    public Cursor query (String table, String[] columns, String selection, String[] selectionArgs,

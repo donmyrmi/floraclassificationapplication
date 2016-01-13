@@ -51,7 +51,10 @@ public class ShowValues {
 
 
         DBController dbc = DBController.getInstance(mainActivity);
-        dbc.loadTestFlowerDB(flower);
+        //dbc.loadTestFlowerDB(flower);
+
+        dbc.calculateFlowerRanks(flower);
+        dbc.sortFlowerByRanks();
 
         List<FlowerInDB> dbFLowers = dbc.getFlowerInDB();
         int dbFlowerSize = dbFLowers.size();
@@ -67,10 +70,10 @@ public class ShowValues {
         Random rand = new Random();
         for (FlowerInDB f : dbFLowers) {
             strUpValues[i] = f.getName();
-            String fImage = "drawable/f" + (rand.nextInt(7) + 1);
+            String fImage = "mipmap/fl" + f.getFlower_ID() + "c";
             imgValues[i] = mainActivity.getResources().getIdentifier(fImage, null, mainActivity.getPackageName());
             //imgValues[i] = R.mipmap.f1;
-            strDownValues[i] = "angle = " + f.getAngle() + " mip = " + imgValues[i];
+            strDownValues[i] = "match:";
             isRGBs[i] = false;
             strRankValues[i] = String.valueOf((int)f.getRank());
             i++;
@@ -78,7 +81,7 @@ public class ShowValues {
         // flower details for testing only!
         for (int j = 0; j<8; j++)
         {
-            strUpValues[j + dbFlowerSize] = "HU"+(i+1);
+            strUpValues[j + dbFlowerSize] = "HU"+(j+1);
             //strDownValues[j + dbFlowerSize] = String.format("%.24f", moments[j]);
             strDownValues[j + dbFlowerSize] = String.valueOf(moments[j]);
             isRGBs[j + dbFlowerSize] = false;
