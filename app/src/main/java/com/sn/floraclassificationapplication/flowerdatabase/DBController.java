@@ -113,97 +113,7 @@ public class DBController extends SQLiteOpenHelper{
         return result;
     }
 
-    public static void insertRawData()
-    {
-        FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
-        FlowerAttributes flowerAttributes = new FlowerAttributes();
-        FlowerLocation flowerLocation = new FlowerLocation();
 
-        flowerGeneralAtt.flower_ID = 1;
-        flowerGeneralAtt.name = "Chrysanthemum";
-        flowerGeneralAtt.months = 345;
-        flowerGeneralAtt.dateWeight = 15;
-        flowerGeneralAtt.locationWeight = 15;
-        flowerGeneralAtt_repo.insert(flowerGeneralAtt);
-
-        //FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
-        flowerGeneralAtt.flower_ID = 2;
-        flowerGeneralAtt.name = "Daffodil";
-        flowerGeneralAtt.months = 34;
-        flowerGeneralAtt.dateWeight = 15;
-        flowerGeneralAtt.locationWeight = 15;
-        flowerGeneralAtt_repo.insert(flowerGeneralAtt);
-
-        flowerAttributes.flower_ID = 1;
-        flowerAttributes.angle = 1;
-        flowerAttributes.hu8MomentsMax = new double[]{-6.03126751800736000000E-07,8.48275990428207000000E-13,1.01789823384647000000E-06,
-                2.41835976079770000000E-07,1.30009470618766000000E-14,-4.95032103562413000000E-13,-7.67119056920529000000E-14,
-                2.00329202639408000000E-14};
-        flowerAttributes.hu8MomentsMin = new double[]{-8.60239902834642000000E-07, 3.94094856639998000000E-13, 3.93419949541414000000E-07,
-                5.59498260611137000000E-07, 5.43706328951980000000E-14, -1.46435050359522000000E-13, -1.21162347326806000000E-14,
-                7.15648193836125000000E-14};
-        flowerAttributes.redMax = 236;
-        flowerAttributes.redMin = 231;
-        flowerAttributes.greenMax = 197;
-        flowerAttributes.greenMin = 204;
-        flowerAttributes.blueMax = 4;
-        flowerAttributes.blueMin = 4;
-        flowerAttributes.momentsWeight = new float[]{5,6,8,9,8,8,8,8};
-        flowerAttributes.colorWeight = 10;
-
-        flowerAttributes_repo.insert(flowerAttributes);
-
-        flowerAttributes.flower_ID = 2;
-        flowerAttributes.angle = 2;
-        flowerAttributes.hu8MomentsMax = new double[]{2.86577484287491000000E-13,1.81314723719819000000E-08,1.13231912427245000000E-09,
-                1.07109862767087000000E-20,7.02829923766149000000E-20,-5.65188042713463000000E-21,-1.53670598979889000000E-18,
-                -4.32657778804251000000E-07};
-        flowerAttributes.hu8MomentsMin = new double[]{-4.32657778804251000000E-07,5.23273377645140000000E-15,1.22577864486566000000E-09,
-                4.24981462701810000000E-11,-2.42870363307502000000E-18,-8.05937039883324000000E-17,-4.97090092903131000000E-18,
-                -3.96338816363541000000E-17};
-        flowerAttributes.redMax = 197;
-        flowerAttributes.redMin = 191;
-        flowerAttributes.greenMax = 185;
-        flowerAttributes.greenMin = 180;
-        flowerAttributes.blueMax = 60;
-        flowerAttributes.blueMin = 30;
-        flowerAttributes.momentsWeight = new float[]{4,5,8,8,9,9,8,8};
-        flowerAttributes.colorWeight = 11;
-
-        flowerAttributes_repo.insert(flowerAttributes);
-
-        flowerLocation.flower_ID = 1;
-        flowerLocation.locations.add(new FloweringLocation(33.238661,32.897275,35.834571,35.633367));
-        flowerLocation.locations.add(new FloweringLocation(35.55007,32.926326,35.628275,35.506039));
-        flowerLocation.locations.add(new FloweringLocation(32.775572,32.641438,35.10391,34.970296));
-        flowerLocation.locations.add(new FloweringLocation(32.711398,32.553507,35.561123,35.326272));
-        flowerLocation.locations.add(new FloweringLocation(32.711398,32.553507,35.561123,35.326272));
-        flowerLocation.locations.add(new FloweringLocation(31.961669,31.568318,35.542338,34.900346));
-        flowerLocation.locations.add(new FloweringLocation(32.550571, 32.232837, 35.430345, 35.067797));
-        flowerLocation.locations.add(new FloweringLocation(31.605297,31.321824,35.394926,35.084562));
-        flowerLocation.locations.add(new FloweringLocation(31.333554, 29.521478, 35.415336, 34.226315));
-
-        flowerLocation_repo.insert(flowerLocation);
-
-//        flowerLocation.id = 2;
-//        flowerLocation.locations.add(new FloweringLocation(33.238661,32.897275,35.834571,35.633367));
-//        flowerLocation.locations.add(new FloweringLocation(35.55007,32.926326,35.628275,35.506039));
-//        flowerLocation.locations.add(new FloweringLocation(32.775572,32.641438,35.10391,34.970296));
-//        flowerLocation.locations.add(new FloweringLocation(31.853275, 31.603896, 35.053723, 34.819263));
-//        flowerLocation.locations.add(new FloweringLocation(31.961669, 31.568318, 35.542338, 34.900346));
-//        flowerLocation.locations.add(new FloweringLocation(32.550571, 32.232837, 35.430345, 35.067797));
-//
-//        flowerLocation_repo.insert(flowerLocation);
-        ArrayList<FloweringLocation> arr = new ArrayList();
-        FloweringLocation fl = new FloweringLocation(35.834571,35.633367,33.238661,32.897275);
-        arr.add(fl);
-        flowerLocation_repo.convertFloweringLocationToString(arr);
-        FlowerLocation newFL = new FlowerLocation();
-        flowerLocation_repo.convertStringToFloweringLocations(newFL,flowerLocation_repo.getFloweringLocationsString());
-
-
-
-}
     @Override
     public void onCreate(SQLiteDatabase database) {
         //Create all necessary tables
@@ -250,43 +160,6 @@ public class DBController extends SQLiteOpenHelper{
         // Create tables again
         onCreate(database);
 
-    }
-
-    public boolean importDatabase(String dbPath) throws IOException {
-
-        // Close the SQLiteOpenHelper so it will commit the created empty
-        // database to internal storage.
-        close();
-        File newDb = new File(dbPath);
-        File oldDb = new File(DB_FILEPATH);
-        if (newDb.exists()) {
-            copyFile(new FileInputStream(newDb), new FileOutputStream(oldDb));
-            // Access the copied database so SQLiteHelper will cache it and mark
-            // it as created.
-            getWritableDatabase().close();
-            return true;
-        }
-        return false;
-    }
-
-    public static void copyFile(FileInputStream fromFile, FileOutputStream toFile) throws IOException {
-        FileChannel fromChannel = null;
-        FileChannel toChannel = null;
-        try {
-            fromChannel = fromFile.getChannel();
-            toChannel = toFile.getChannel();
-            fromChannel.transferTo(0, fromChannel.size(), toChannel);
-        } finally {
-            try {
-                if (fromChannel != null) {
-                    fromChannel.close();
-                }
-            } finally {
-                if (toChannel != null) {
-                    toChannel.close();
-                }
-            }
-        }
     }
 
 
@@ -381,11 +254,6 @@ public class DBController extends SQLiteOpenHelper{
 
     public void getFlowers()
     {
-
-//        FlowerGeneralAtt flowerGeneralAtt = new FlowerGeneralAtt();
-//        FlowerAttributes flowerAttributes = new FlowerAttributes();
-//        FlowerLocation flowerLocation = new FlowerLocation();
-
         SQLiteDatabase db = getReadableDatabase();
 
         ArrayList<FlowerInDB> flowersList = new ArrayList<FlowerInDB>();
