@@ -13,7 +13,15 @@ import com.sn.floraclassificationapplication.classifier.Hu8Moments;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Class for each flower in DB.
+ */
 public class FlowerInDB extends AbstractDBFlower{
+
+    /**
+    * SQLite tables and fields
+    */
+
     //Labels table name
     public static final String TABLE = "FlowerInDB";
     //Label table column names
@@ -39,7 +47,7 @@ public class FlowerInDB extends AbstractDBFlower{
     public static final String KEY_momentsWeight = "momentsWeight";
     public static final String KEY_colorWeight = "colorWeight";
 
-    //attributes to keep data
+    //attributes of the flower in DB
     protected int flower_ID;
     private  String name;
     private int flowerImage;
@@ -67,7 +75,6 @@ public class FlowerInDB extends AbstractDBFlower{
         hu8MomentsMax = new double[HU_MOMENTS_NUM];
         hu8MomentsMin = new double[HU_MOMENTS_NUM];
         momentsWeight = new float[HU_MOMENTS_NUM];
-        testWeights();
     }
 
     public int getFlower_ID() {
@@ -78,22 +85,19 @@ public class FlowerInDB extends AbstractDBFlower{
         hu8MomentsMax = new double[HU_MOMENTS_NUM];
         hu8MomentsMin = new double[HU_MOMENTS_NUM];
         momentsWeight = new float[HU_MOMENTS_NUM];
-        testWeights();
     }
 
+    /**
+     * Month is stored in binary. check if checkedMonth bit is enabled on flowers binary array.
+     * @param checkedMonth
+     * @return
+     */
     public boolean checkMonth(int checkedMonth)
     {
         return ((months & 1 << checkedMonth) != 0);
     }
 
-    private void testWeights() {
-        for (int i=0 ; i < 8; i++)
-            momentsWeight[i] = 0.075f;
-        colorWeight = 0.15f;
-        dateWeight = 0.1f;
-        locationWeight = 0.15f;
 
-    }
 
     public void setHu8MomentsMax(double[] hu8MomentsMax) {
         this.hu8MomentsMax = hu8MomentsMax;
@@ -122,7 +126,6 @@ public class FlowerInDB extends AbstractDBFlower{
     public void setBlueMax(int blueMax) {
         this.blueMax = blueMax;
     }
-
 
     public void setBlueMin(int blueMin) {
         this.blueMin = blueMin;
@@ -200,13 +203,10 @@ public class FlowerInDB extends AbstractDBFlower{
         this.locationWeight = locationWeight;
     }
 
-    public class CustomComparator implements Comparator<FlowerInDB> {
-        @Override
-        public int compare(FlowerInDB o1, FlowerInDB o2) {
-            return (int) (o1.getRank() - o2.getRank());
-        }
-    }
-
+    /**
+     * Calculate rank for this flower based on attributes of segmented flower
+     * @param flower - Flower to be classified
+     */
     public void calculateRankFromFlower(Flower flower) {
         float temp = 0;
         double [] flowerHues = flower.getHu8Moments();
@@ -228,7 +228,6 @@ public class FlowerInDB extends AbstractDBFlower{
             temp += (dateWeight/2);
 
         // calculate rank of GPS location
-
         double maxLocationRank = 0;
         for (FloweringLocation floweringLocation : locations) {
             double tempLocationRank = 0;
@@ -242,6 +241,14 @@ public class FlowerInDB extends AbstractDBFlower{
         rank = temp;
     }
 
+    /**
+     * Calculate variable score based on int values
+     * @param value - value to assess
+     * @param max - max limit of 100% score
+     * @param min - min limit of 100% score
+     * @param weight - weight of given attribute
+     * @return - weighted score of given value
+     */
     private double calculateDistanceWeight(int value, int max, int min, double weight) {
         double temp = 0;
         if (max < min) {
@@ -263,6 +270,14 @@ public class FlowerInDB extends AbstractDBFlower{
         return temp;
     }
 
+    /**
+     * Calculate variable score based on double values
+     * @param value - value to assess
+     * @param max - max limit of 100% score
+     * @param min - min limit of 100% score
+     * @param weight - weight of given attribute
+     * @return - weighted score of given value
+     */
     private double calculateDoubleDistanceWeight(double value, double min, double max, double weight) {
         double temp = 0;
         if (max < min) {

@@ -14,7 +14,8 @@ import android.provider.Settings;
 import android.util.Log;
 
 /**
- * Created by Nadav on 19-Nov-15.
+ * GPS tracker.
+ * used to get GPS information of the phone for camera images and gallery images with no EXIF
  */
 public class GPSTracker extends Service implements LocationListener {
 
@@ -47,6 +48,9 @@ public class GPSTracker extends Service implements LocationListener {
     }
 
 
+    /**
+     * @return current GPS Location
+     */
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext
@@ -108,6 +112,11 @@ public class GPSTracker extends Service implements LocationListener {
             location = new Location("dummyprovider");
         return location;
     }
+
+    /**
+     * Update when Location changes
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
@@ -151,6 +160,10 @@ public class GPSTracker extends Service implements LocationListener {
         return longitude;
     }
 
+    /**
+     * Answers if GPS can give current location
+     * @return if location is available
+     */
     public boolean canGetLocation() {
         return this.canGetLocation;
     }
@@ -188,4 +201,34 @@ public class GPSTracker extends Service implements LocationListener {
         // Showing Alert Message
         alertDialog.show();
     }
+
+    /**
+     * Convert GPS DMS reading to double
+     * @param stringDMS
+     * @return
+     */
+    public static double convertToDegree(String stringDMS){
+        double result;
+        String[] DMS = stringDMS.split(",", 3);
+
+        String[] stringD = DMS[0].split("/", 2);
+        Double D0 = new Double(stringD[0]);
+        Double D1 = new Double(stringD[1]);
+        Double FloatD = D0/D1;
+
+        String[] stringM = DMS[1].split("/", 2);
+        Double M0 = new Double(stringM[0]);
+        Double M1 = new Double(stringM[1]);
+        Double FloatM = M0/M1;
+
+        String[] stringS = DMS[2].split("/", 2);
+        Double S0 = new Double(stringS[0]);
+        Double S1 = new Double(stringS[1]);
+        Double FloatS = S0/S1;
+
+        result = new Double(FloatD + (FloatM/60) + (FloatS/3600));
+
+        return result;
+    };
 }
+

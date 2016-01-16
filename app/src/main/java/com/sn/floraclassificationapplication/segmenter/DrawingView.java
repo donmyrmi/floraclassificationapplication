@@ -16,7 +16,8 @@ import android.view.View;
 
 
 /**
- * Created by Nadav on 02-Dec-15.
+ * Drawing view to enable hand drawing on an image.
+ * Used to erase image parts by coloring with transparent color.
  */
 public class DrawingView extends View {
 
@@ -69,7 +70,13 @@ public class DrawingView extends View {
     }
 
 
-
+    /**
+     * Save parameters if image size is changed
+     * @param w - image width
+     * @param h - image height
+     * @param oldw - old width
+     * @param oldh - old height
+     */
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -83,6 +90,10 @@ public class DrawingView extends View {
         }
     }
 
+    /**
+     * Set image for drawing/cleaning
+     * @param image - image to draw on
+     */
     protected  void setImage(Bitmap image) {
         this.image = image;
         mBitmap = image.copy(Bitmap.Config.ARGB_8888, true);
@@ -90,6 +101,10 @@ public class DrawingView extends View {
         invalidate();
     }
 
+    /**
+     * On draw event
+     * @param canvas - canvas to paint on
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -120,6 +135,9 @@ public class DrawingView extends View {
         }
     }
 
+    /**
+     * Hand touch up event. commit changes to canvas.
+     */
     private void touch_up() {
         mPath.lineTo(mX, mY);
         circlePath.reset();
@@ -129,6 +147,11 @@ public class DrawingView extends View {
         mPath.reset();
     }
 
+    /**
+     * start to touch the screen. record movements
+     * @param event
+     * @return true (required)
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
@@ -151,6 +174,9 @@ public class DrawingView extends View {
         return true;
     }
 
+    /**
+     * clear changes.
+     */
     public void clear(){
         mBitmap = image.copy(Bitmap.Config.ARGB_8888, true);
         mBitmap = ic.getResizedBitmap(mBitmap, h, w);
@@ -158,6 +184,10 @@ public class DrawingView extends View {
         invalidate();
     }
 
+    /**
+     * resize the image to it's original size
+     * @return bitmap with changes
+     */
     public Bitmap saveImage() {
         return ic.getResizedBitmap(mBitmap, image.getHeight(), image.getWidth());
     }

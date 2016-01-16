@@ -12,14 +12,15 @@ import com.sn.floraclassificationapplication.R;
 
 
 /**
- * Created by Nadav on 02-Dec-15.
+ * Activity to hand clean segmented flower
  */
 public class CleanActivity extends AppCompatActivity  {
 
     private final AppCompatActivity activity;
     private DrawingView dv ;
     private Bitmap image;
-    private Button cleanCont, cleanReset;
+    private Button cleanCont; // button to confirm cleaning and cotinue to classify stage
+    private Button cleanReset; // button to reset clean changes
     private TextView cleanText;
     private Flower flower;
     ImageController ic = ImageController.getInstance();
@@ -30,6 +31,9 @@ public class CleanActivity extends AppCompatActivity  {
         image = output;
     }
 
+    /**
+     * Show cleaning screen
+     */
     public void show() {
         activity.setContentView(R.layout.clean_flower_layout);
 
@@ -51,7 +55,7 @@ public class CleanActivity extends AppCompatActivity  {
             }
         });
 
-        cleanReset = (Button) activity.findViewById(R.id.cleanResetButton);
+        cleanReset = (Button) activity.findViewById(R.id.cleanResetButton); //
         cleanReset.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dv.clear();

@@ -7,7 +7,8 @@ import android.os.AsyncTask;
 import com.sn.floraclassificationapplication.Flower;
 
 /**
- * Created by Nadav on 19-Nov-15.
+ * RGB color average ASyncTask.
+ * Calculate the RGB averages of a segmented images.
  */
 public class RGBColorAverage extends AsyncTask<Bitmap, Void, Integer> {
 

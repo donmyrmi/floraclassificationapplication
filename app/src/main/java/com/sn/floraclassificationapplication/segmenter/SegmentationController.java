@@ -18,6 +18,7 @@ import com.sn.floraclassificationapplication.R;
 import java.io.ByteArrayOutputStream;
 
 public class SegmentationController {
+    private static final int BACKGROUND_TRANSPARENCY = 33;
     private static int CLEAN_IMAGE_REQUEST = 1;
     private static SegmentationController ourInstance = new SegmentationController();
     private ImageController ic;
@@ -47,6 +48,10 @@ public class SegmentationController {
         km = KMeans.getInstance();
     }
 
+    /**
+     * Start the segmentation process in the segmentation controller
+     * @param segmentedFlower - The flower to be segmented.
+     */
     public void segment(Flower segmentedFlower) {
         init();
         this.segmentedFlower = segmentedFlower;
@@ -57,6 +62,9 @@ public class SegmentationController {
         cutOutImage(bi);
     }
 
+    /**
+     * initialize the controller.
+     */
     public void init()
     {
         currentSegment = 0;
@@ -71,6 +79,9 @@ public class SegmentationController {
         hideDialog();
     }
 
+    /**
+     * Ask confirmation for the combined segments.
+     */
     private void confirmSegmentation() {
         flowerSegments = null;
         bg_bi = null;
@@ -98,6 +109,9 @@ public class SegmentationController {
         buttonNo.setVisibility(Button.VISIBLE);
     }
 
+    /**
+     * Popup cleaning option after segmentation, and setup buttons
+     */
     private void askCleanImage() {
 
         flowerView.setImageBitmap(output);
@@ -126,7 +140,10 @@ public class SegmentationController {
 
     }
 
-
+    /**
+     * Runs after confirmation of the combined segmentation.
+     * hide dialog boxes, and run ASync task to set image and continue.
+     */
     private void continueToClassifier() {
         hideDialog();
         bg_bi = null;
@@ -135,11 +152,14 @@ public class SegmentationController {
         copyAndSet.execute();
     }
 
-
+    /**
+     * create a black and white image for the background, and start ASync task for the segmentation
+     * @param bi the image to cut from.
+     */
     private void cutOutImage(Bitmap bi) {
 
         bg_bi = ic.toGrayscale(bi);
-        bg_bi = ic.makeTransparent(bg_bi, 33);
+        bg_bi = ic.makeTransparent(bg_bi, BACKGROUND_TRANSPARENCY);
         flowerView.setImageBitmap(bg_bi);
 
         CutOutTask copyAndSet = new CutOutTask(bi);
@@ -147,6 +167,9 @@ public class SegmentationController {
 
     }
 
+    /**
+     * Show segmented part on the transparent background, ask if to include this part
+     */
     private void askSegmentPart() {
         Bitmap temp = ic.overlay(flowerSegments[currentSegment], bg_bi);
         flowerView.setImageBitmap(ic.overlay(bg_bi, temp));
@@ -181,18 +204,9 @@ public class SegmentationController {
         buttonNo.setVisibility(Button.VISIBLE);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request it is that we're responding to
-
-        if (resultCode == Activity.RESULT_OK) {
-            hideDialog();
-            byte[] bytes = data.getByteArrayExtra("BMP");
-            Bitmap temp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            segmentedFlower.setFlowerImage(temp);
-            continueToClassifier();
-        }
-    }
-
+    /**
+     * Hide question buttons and text.
+     */
     public void hideDialog() {
         buttonYes.setVisibility(Button.GONE);
         buttonNo.setVisibility(Button.GONE);
@@ -219,8 +233,7 @@ public class SegmentationController {
 
         protected void onPostExecute(Void result) {
             // This method is executed in the UIThread
-            // with access to the result of the long running task
-            //flowerView.setImageBitmap(segmentedFlower.getGrayImage());
+            // Continue to the next segmented part, or finish
             if (currentSegment < K-1)
             {
                 currentSegment++;
@@ -231,13 +244,16 @@ public class SegmentationController {
         }
     }
 
+    /**
+     *
+     */
     private class SetImagesToClassifier extends AsyncTask<String, Void, Bitmap> {
         protected void onPreExecute() {
             Toast.makeText(activity, "Computing... please hold.", Toast.LENGTH_LONG).show();
         }
 
         protected Bitmap doInBackground(String... strings) {
-            // Some long-running task like downloading an image.
+            // save image + BW image.
             segmentedFlower.setFlowerImage(output);
             segmentedFlower.setGrayImage(ic.toGrayscale(segmentedFlower.getFlowerImage()));
             return output;
@@ -246,12 +262,14 @@ public class SegmentationController {
 
         protected void onPostExecute(Bitmap result) {
             // This method is executed in the UIThread
-            // with access to the result of the long running task
-            //flowerView.setImageBitmap(segmentedFlower.getGrayImage());
+            // continue to classify segmented flower
             segmentedFlower.classify();
         }
     }
 
+    /**
+     * run K-Means ASync. continue to ask about parts.
+     */
     private class CutOutTask extends AsyncTask<Void, Void, Void> {
         private Bitmap bi;
 

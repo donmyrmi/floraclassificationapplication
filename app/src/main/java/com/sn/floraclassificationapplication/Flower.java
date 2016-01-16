@@ -12,7 +12,8 @@ import com.sn.floraclassificationapplication.segmenter.SegmentationController;
 
 
 /**
- * Created by Nadav on 19-Nov-15.
+ * Flower - The main flower handler, with all flower variables.
+ * Include calls to segmentation and classification.
  */
 public class Flower {
     private int id;
@@ -107,6 +108,9 @@ public class Flower {
         return hu8Moments;
     }
 
+    /**
+     * Run not immediate classifier extractors
+     */
     public void classify() {
 
         rgbColorAverage = RGBColorAverage.cal_rgb_averages(flowerImage);
@@ -125,6 +129,9 @@ public class Flower {
         return grayImage;
     }
 
+    /**
+     * Start segmentation process.
+     */
     public void segmentAndClassify() {
        sm.segment(this);
     }

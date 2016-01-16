@@ -6,12 +6,16 @@ import android.os.AsyncTask;
 
 import com.sn.floraclassificationapplication.Flower;
 
+/**
+ * Hu 8 moment task
+ * Get a segmented image and calculate the 8 moments of it.
+ */
 public class Hu8Moments extends AsyncTask<Bitmap, Void, double[]> {
 
     private ShowValues showValuesActivity;
     private double[] moments;
-    private static int N_ORDER = 4;
-    private long cenX,cenY;
+    private static int N_ORDER = 4; // necessary order
+    private long cenX,cenY; // centroid X and Y
 
     public Hu8Moments(ShowValues showValues, double[] moments) {
         this.showValuesActivity = showValues;
@@ -92,6 +96,10 @@ public class Hu8Moments extends AsyncTask<Bitmap, Void, double[]> {
         return moments;
     }
 
+    /**
+     * Find the X and Y centroid
+     * @param bi
+     */
     public void find_centroid(Bitmap bi)
     {
         int[][] cpq = new int[][] { {1,0},{0,1} };
@@ -122,7 +130,7 @@ public class Hu8Moments extends AsyncTask<Bitmap, Void, double[]> {
     }
 
     protected void onPostExecute(double... params) {
-        //showValuesActivity.updateMoments();
+        // go to the result screen
         showValuesActivity.show();
     }
 }

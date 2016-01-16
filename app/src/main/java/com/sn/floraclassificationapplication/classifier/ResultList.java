@@ -17,7 +17,7 @@ import com.sn.floraclassificationapplication.segmenter.ImageController;
 import org.w3c.dom.Text;
 
 /**
- * Created by Nadav on 19-Nov-15.
+ * Handle a single line in the result screen
  */
 public class ResultList extends ArrayAdapter<String> {
     private final AppCompatActivity context;
@@ -38,6 +38,13 @@ public class ResultList extends ArrayAdapter<String> {
         this.imageId = imageId;
     }
 
+    /**
+     * Initialize a new line in the result list
+     * @param position Position of the item
+     * @param view default
+     * @param parent default
+     * @return the View of the entry
+     */
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
@@ -60,7 +67,7 @@ public class ResultList extends ArrayAdapter<String> {
 
         upTxtTitle.setText(upTxt[position]);
         downTxtTitle.setText(downTxt[position]);
-        rankTxtTitle.setText(rankText[position]);
+        rankTxtTitle.setText(rankText[position]+'%');
         imageView.setImageBitmap(tempBi);
         //imageView.setImageResource(imageId[position]);
         return rowView;

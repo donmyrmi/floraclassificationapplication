@@ -1,5 +1,6 @@
 package com.sn.floraclassificationapplication.segmenter;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+
+import com.sn.floraclassificationapplication.Flower;
+import com.sn.floraclassificationapplication.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -186,6 +192,33 @@ public class ImageController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public Bitmap ConvertFileToBitMap(File file, AppCompatActivity activity){
+        Bitmap bitmap;
+        Flower flower = new Flower(activity);
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
+                bitmapOptions);
+        ImageView viewImage = (ImageView) activity.findViewById(R.id.flowerView);
+        viewImage.setImageBitmap(bitmap);
+        String path = android.os.Environment.getExternalStorageDirectory() + File.separator
+                + "Phoenix" + File.separator + "default";
+        flower.setFlowerImage(bitmap);
+        file.delete();
+        return bitmap;
+    }
+
+    public void getRoundedImageAndSave(AppCompatActivity activity, int [] flowers) {
+        for (int i : flowers) {
+            String fImage = "mipmap/fl" + i;
+            String outFilename = "fl" + i + "c.png";
+            File file = new File(activity.getFilesDir(), outFilename);
+            int rid = activity.getResources().getIdentifier(fImage, null, activity.getPackageName());
+            Bitmap tempBi = decodeSampledBitmapFromResource(activity.getResources(), rid, 256, 256);
+            tempBi = getRoundedShape(tempBi);
+            saveImageToDevice(tempBi, file);
         }
     }
 }

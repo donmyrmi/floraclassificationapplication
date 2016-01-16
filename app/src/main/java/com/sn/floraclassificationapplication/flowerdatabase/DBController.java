@@ -27,6 +27,10 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * Database controller.
+ * Handles updating DB and getting flower informations
+ */
 public class DBController extends SQLiteOpenHelper{
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
@@ -58,6 +62,11 @@ public class DBController extends SQLiteOpenHelper{
         //loadTestFlowerDB();
     }
 
+    /**
+     * return instance of the DBController. initialize if necessary.
+     * @param context application context
+     * @return
+     */
     public static DBController getInstance(Context context) {
         if (ourInstance == null) {
             ourInstance = new DBController(context);
@@ -85,6 +94,13 @@ public class DBController extends SQLiteOpenHelper{
         return ourInstance;
     }
 
+    /**
+     * Update the mobile DB. should run in first runs and after updates.
+     * @param context appplicaiton context
+     * @param resourceId - sql file to update DB
+     * @return
+     * @throws IOException
+     */
     public static int insertFromFile(Context context, int resourceId) throws IOException {
         // Reseting Counter
         int result = 0;
@@ -114,6 +130,10 @@ public class DBController extends SQLiteOpenHelper{
     }
 
 
+    /**
+     * Create empty tables.
+     * @param database
+     */
     @Override
     public void onCreate(SQLiteDatabase database) {
         //Create all necessary tables
@@ -162,24 +182,10 @@ public class DBController extends SQLiteOpenHelper{
 
     }
 
-
-//    private FlowerInDB[] flowerInDB;
-//    private static DBController ourInstance = new DBController();
-//
-//    public static DBController getInstance() {
-//        return ourInstance;
-//    }
-//
-//    private DBController() {
-//        loadFlowerFromDB();
-//    }
-//
-//    private void loadFlowerFromDB() {
-//        flowerInDB = new FlowerInDB[10];
-//        for (int i=0; i<10; i++)
-//            flowerInDB[i] = new FlowerInDB(i);
-//    }
-
+    /**
+     * for dev purposes, create fake data.
+     * @param flower
+     */
     public void loadTestFlowerDB(Flower flower) {
         flowerInDB = new ArrayList<FlowerInDB>();
         for (int i=0; i<10; i++) {
@@ -193,6 +199,13 @@ public class DBController extends SQLiteOpenHelper{
         });
     }
 
+    /**
+     * create a fake flower
+     * @param fid - flower id to create
+     * @param angle - angle of flower
+     * @param flower - segmented flower for calculating test flower rank.
+     * @return the fake flower
+     */
     private FlowerInDB testFlowerInDB(int fid, int angle, Flower flower)  {
         Random rand = new Random();
         FlowerInDB testF = new FlowerInDB(fid);
@@ -242,6 +255,10 @@ public class DBController extends SQLiteOpenHelper{
         return testF;
     }
 
+    /**
+     * Calculate DB flowers ranks based on the segmented flower values
+     * @param flower - segmented flower for calculating flowers ranks
+     */
     public void calculateFlowerRanks(Flower flower) {
         for (FlowerInDB fidb : flowerInDB) {
             fidb.calculateRankFromFlower(flower);
@@ -252,6 +269,9 @@ public class DBController extends SQLiteOpenHelper{
         return flowerInDB;
     }
 
+    /**
+     * Get flowers from DB
+     */
     public void getFlowers()
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -300,6 +320,9 @@ public class DBController extends SQLiteOpenHelper{
         flowerInDB = flowersList;
     }
 
+    /**
+     * Sort the ListArray of the DB flowers based on the ranks.
+     */
     public void sortFlowerByRanks() {
         Collections.sort(flowerInDB, new Comparator<FlowerInDB>() {
             public int compare(FlowerInDB o1, FlowerInDB o2) {

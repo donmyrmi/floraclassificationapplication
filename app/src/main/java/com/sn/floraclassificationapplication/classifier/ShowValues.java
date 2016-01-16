@@ -26,30 +26,33 @@ import java.util.Locale;
 import java.util.Random;
 
 /**
- * Created by Nadav on 19-Nov-15.
+ * Handles the result screen.
  */
 public class ShowValues {
+    private static final boolean DEVELOPER_MODE = false; // mode to add classified flower details to the end list
     private final Flower flower;
-    private ImageController ic;
-    private List<String> List_file;
     private ListView listView;
     private int numberOfFlowers;
     private ResultList adapter;
 
     private AppCompatActivity mainActivity;
 
+    /**
+     * Initialize the result screen
+     * @param mainActivity
+     * @param currentFlower
+     */
     public ShowValues(AppCompatActivity mainActivity, Flower currentFlower) {
 
         this.mainActivity = mainActivity;
         this.flower = currentFlower;
-        List_file =new ArrayList<String>();
-        ic = ImageController.getInstance();
     }
 
+    /**
+     * Create and fill the result list
+     */
     private void CreateListView()
     {
-
-
         DBController dbc = DBController.getInstance(mainActivity);
         //dbc.loadTestFlowerDB(flower);
 
@@ -58,7 +61,11 @@ public class ShowValues {
 
         List<FlowerInDB> dbFLowers = dbc.getFlowerInDB();
         int dbFlowerSize = dbFLowers.size();
-        numberOfFlowers = dbFlowerSize + 8 + 3;
+        numberOfFlowers = dbFlowerSize;
+
+        if (DEVELOPER_MODE) {
+            numberOfFlowers += 8 + 3; //
+        }
 
         String[] strUpValues = new String[numberOfFlowers];
         String[] strDownValues = new String[numberOfFlowers];
@@ -67,22 +74,62 @@ public class ShowValues {
         double[] moments = flower.getHu8Moments();
         boolean[] isRGBs = new boolean[numberOfFlowers];
         int i = 0;
-        Random rand = new Random();
+
+        // add details for each flower in database.
         for (FlowerInDB f : dbFLowers) {
             strUpValues[i] = f.getName();
             String fImage = "mipmap/fl" + f.getFlower_ID() + "c";
             imgValues[i] = mainActivity.getResources().getIdentifier(fImage, null, mainActivity.getPackageName());
-            //imgValues[i] = R.mipmap.f1;
-            strDownValues[i] = "match:";
+            strDownValues[i] = "";
             isRGBs[i] = false;
             strRankValues[i] = String.valueOf((int)f.getRank());
             i++;
         }
-        // flower details for testing only!
+
+        // add classified flower data is in developr mode
+        if (DEVELOPER_MODE) {
+            fillDeveloperAttributes(dbFlowerSize,strUpValues,strDownValues,strRankValues,moments,isRGBs,imgValues);
+        }
+
+        // initialize result list
+        adapter = new ResultList(mainActivity, strUpValues, imgValues, strDownValues, strRankValues, isRGBs);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                /*
+                // ListView Clicked item index
+                int itemPosition = position;
+
+                // ListView Clicked item value
+                String itemValue = (String) listView.getItemAtPosition(position);
+
+                // Show Alert
+                Toast.makeText(mainActivity.getApplicationContext(),
+                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
+                        .show();*/
+
+            }
+        });
+    }
+
+    /**
+     * FOR DEVELOPER MODE ONLY.
+     * Add developer details - segmented flower attributes.
+     * @param dbFlowerSize - size of the list
+     * @param strUpValues - Upper text
+     * @param strDownValues - Lower text
+     * @param strRankValues - Ranks
+     * @param moments - flower moments to fill
+     * @param isRGBs - boolean of is the image a RGB. if yes color will be shown instead of image
+     * @param imgValues - values of image ids. if isRGB, value of color.
+     */
+    private void fillDeveloperAttributes(int dbFlowerSize, String[] strUpValues, String[] strDownValues, String[] strRankValues, double [] moments, boolean[] isRGBs, int [] imgValues ) {
         for (int j = 0; j<8; j++)
         {
             strUpValues[j + dbFlowerSize] = "HU"+(j+1);
-            //strDownValues[j + dbFlowerSize] = String.format("%.24f", moments[j]);
             strDownValues[j + dbFlowerSize] = String.valueOf(moments[j]);
             isRGBs[j + dbFlowerSize] = false;
             imgValues[j + dbFlowerSize] = R.mipmap.f1;
@@ -107,32 +154,11 @@ public class ShowValues {
         strRankValues[10 + dbFlowerSize] = "0";
         imgValues[10 + dbFlowerSize] = flower.getColor();
         // end of flower details
-
-        adapter = new ResultList(mainActivity, strUpValues, imgValues, strDownValues, strRankValues, isRGBs);
-
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                /*
-                // ListView Clicked item index
-                int itemPosition = position;
-
-                // ListView Clicked item value
-                String itemValue = (String) listView.getItemAtPosition(position);
-
-                // Show Alert
-                Toast.makeText(mainActivity.getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();*/
-
-            }
-        });
     }
 
+    /**
+     * Show the result after initializing
+     */
     public void show() {
 
         mainActivity.setContentView(R.layout.flower_values);
@@ -142,6 +168,7 @@ public class ShowValues {
         CreateListView();
     }
 
+    // get month name for DEV MODE
     public String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month];
     }

@@ -5,6 +5,9 @@ import android.graphics.Color;
 
 import java.util.Random;
 
+/**
+ * K-Means class. runs K-Means algorithm to segment image to K(=6) parts.
+ */
 public class KMeans {
     private static final int MAX_ITERATIONS = 20;
     private static KMeans ourInstance = new KMeans();
@@ -23,6 +26,12 @@ public class KMeans {
 
     public KMeans() {    }
 
+    /**
+     * Get an image and return k segments based on K-Means algorithm.
+     * @param image - to segments
+     * @param k - number of clusters
+     * @return k image segments
+     */
     public Bitmap[] KMeans(Bitmap image, int k) {
         this.image = image;
         w = image.getWidth();
@@ -68,6 +77,9 @@ public class KMeans {
         return result;
     }
 
+    /**
+     * Initialize clusters for K-Means
+     */
     private void initClusters() {
         clusters[0] = new Cluster(0,Color.RED);
         clusters[1] = new Cluster(0,Color.GREEN);
@@ -75,16 +87,12 @@ public class KMeans {
         clusters[3] = new Cluster(0,Color.BLACK);
         clusters[4] = new Cluster(0,Color.WHITE);
         clusters[5] = new Cluster(0,Color.YELLOW);
-
-        /*for (int i=0; i<k; i++)
-        {
-            float tf = (float)(i+1)/(k+2)*256;
-            int t = Math.round(tf);
-            int rgb = ((t&0x0ff)<<16)|(((k-t)&0x0ff)<<8)|(t&0x0ff);
-            clusters[i] = new Cluster(i,rgb);
-        }*/
     }
 
+    /**
+     * re-attach pixel to clusters. if pixel changed clusters, return true for re-calculating centers.
+     * @return
+     */
     private boolean attachPixelsToClusters() {
         boolean pixelChangedCluster = false;
         for (int y=0;y<h;y++) {
@@ -98,6 +106,7 @@ public class KMeans {
                     if (oldCluster != im_clusters[x][y]) {
                         pixelChangedCluster = true;
                         clusters[im_clusters[x][y]].addPixel(pixel);
+                        clusters[oldCluster].removePixel(pixel);
                     }
                 }
             }
@@ -105,6 +114,12 @@ public class KMeans {
         return pixelChangedCluster;
     }
 
+    /**
+     * find min and max values in an image.
+     * @param image segmented image
+     * @param h image height
+     * @param w image width
+     */
     private void findMinMaxClusters(Bitmap image, int h, int w) {
         int min = Color.WHITE;
         int max = Color.BLACK;
@@ -123,6 +138,11 @@ public class KMeans {
         clusters[1] = new Cluster(1,max);
     }
 
+    /**
+     * final the closest cluster to an RGB color
+     * @param rgb color to search
+     * @return closest cluster id
+     */
     public int findMinimalCluster(int rgb) {
         int min = 256;
         int i,minI=0;
@@ -136,17 +156,20 @@ public class KMeans {
         return minI;
     }
 
+    /**
+     * Cluster attributes and methods.
+     */
     class Cluster {
         int id;
-        int pixelCount;
+        int pixelCount; // pixels attached to the cluster.
 
-        int red_center;
-        int green_center;
-        int blue_center;
+        int red_center; // center of red point
+        int green_center; // center of green point
+        int blue_center; // center of blue point
 
-        long reds;
-        long greens;
-        long blues;
+        long reds; // total red values of all pixels attached
+        long greens; // total green values of all pixels attached
+        long blues; // total blue values of all pixels attached
         public boolean pixelAdded;
 
         public Cluster(int id, int color) {
@@ -159,7 +182,10 @@ public class KMeans {
             pixelAdded = true;
         }
 
-
+        /**
+         * Add pixel to cluster
+         * @param color color value of the pixel
+         */
         void addPixel(int color) {
             if (Color.alpha(color) != 0)
                 return;
@@ -173,6 +199,10 @@ public class KMeans {
             pixelAdded = true;
         }
 
+        /**
+         * remove pixel from cluster
+         * @param color
+         */
         void removePixel(int color) {
             if (Color.alpha(color) != 0)
                 return;
@@ -186,8 +216,12 @@ public class KMeans {
             pixelAdded = true;
         }
 
+        /**
+         * calculate distance of a RGB from the cluster centers.
+         * @param rgb
+         * @return
+         */
         int distance(int rgb) {
-
             int r = (rgb>>16)&0x0ff;
             int g=(rgb>>8) &0x0ff;
             int b= (rgb)    &0x0ff;
@@ -198,6 +232,9 @@ public class KMeans {
             return d;
         }
 
+        /**
+         * recalculate new cluster centers.
+         */
         void calculateNewCenter()
         {
             pixelAdded = false;

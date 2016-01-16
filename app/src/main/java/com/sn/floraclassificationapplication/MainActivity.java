@@ -38,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
     private ImageController ic = ImageController.getInstance();
 
 
+    /**
+     * void onCreate(Bundle savedInstanceState)
+     * On application main screen launch. Get main objects and call Init();
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
         ImageView flowerView = (ImageView) findViewById(R.id.flowerView);
         flowerView.setImageResource(R.drawable.daffodil);
         DB_Controller.getFlowers();
-
         init();
-        //getRoundedImageAndSave();
 
     }
 
+    /**
+     * initialize Flower, DB and camera/gallery buttons
+     */
     public void init()
     {
         segmentedFlower = TestFlower();
@@ -83,12 +89,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Start activity to get image from gallery
+     */
     private void SelectGalleryImage() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_GALLERY_IMAGE);
     }
 
+    /**
+     * Start activity to get image from camera
+     */
     public void TakePhoto(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         imageFile = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
@@ -97,13 +109,20 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_CAMERA_IMAGE);
     }
 
+    /**
+     * camera/gallery activity return:
+     * handle returned image.
+     * @param requestCode - RESULT_OK if image got back
+     * @param resultCode - image source - camera/gallery
+     * @param data - image from gallery is exist.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK ) {
             btn1.setVisibility(View.GONE);
             btn2.setVisibility(View.GONE);
             if (requestCode == REQUEST_CAMERA_IMAGE) {
-                Bitmap imageBitmap = ConvertFileToBitMap(imageFile);
+                Bitmap imageBitmap = ic.ConvertFileToBitMap(imageFile,this);
 
                 if (imageBitmap.getHeight() < imageBitmap.getWidth())
                     imageBitmap = ic.rotateImage(90, imageBitmap);
@@ -138,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
                         String latitude = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
                         String longitude = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
                         if (latitude != null) {
-                            segmentedFlower.setLongitude(convertToDegree(longitude));
-                            segmentedFlower.setLatitude(convertToDegree(latitude));
+                            segmentedFlower.setLongitude(GPSTracker.convertToDegree(longitude));
+                            segmentedFlower.setLatitude(GPSTracker.convertToDegree(latitude));
                         }
                         if (datetime != null) {
                             Calendar calendar = Calendar.getInstance();
@@ -158,59 +177,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private double convertToDegree(String stringDMS){
-        double result;
-        String[] DMS = stringDMS.split(",", 3);
-
-        String[] stringD = DMS[0].split("/", 2);
-        Double D0 = new Double(stringD[0]);
-        Double D1 = new Double(stringD[1]);
-        Double FloatD = D0/D1;
-
-        String[] stringM = DMS[1].split("/", 2);
-        Double M0 = new Double(stringM[0]);
-        Double M1 = new Double(stringM[1]);
-        Double FloatM = M0/M1;
-
-        String[] stringS = DMS[2].split("/", 2);
-        Double S0 = new Double(stringS[0]);
-        Double S1 = new Double(stringS[1]);
-        Double FloatS = S0/S1;
-
-        result = new Double(FloatD + (FloatM/60) + (FloatS/3600));
-
-        return result;
-    };
-
-    public Bitmap ConvertFileToBitMap(File file){
-        Bitmap bitmap;
-        Flower flower = new Flower(this);
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
-                bitmapOptions);
-        ImageView viewImage = (ImageView) findViewById(R.id.flowerView);
-        viewImage.setImageBitmap(bitmap);
-        String path = android.os.Environment.getExternalStorageDirectory() + File.separator
-                + "Phoenix" + File.separator + "default";
-        flower.setFlowerImage(bitmap);
-        file.delete();
-        return bitmap;
-    }
-
-    public void getRoundedImageAndSave() {
-        int [] flowers = {1,2,4,5,6};
-        for (int i : flowers) {
-            String fImage = "mipmap/fl" + i;
-            String outFilename = "fl" + i + "c.png";
-            File file = new File(getFilesDir(), outFilename);
-            int rid = getResources().getIdentifier(fImage, null, getPackageName());
-            Bitmap tempBi = ic.decodeSampledBitmapFromResource(getResources(), rid, 256, 256);
-            tempBi = ic.getRoundedShape(tempBi);
-            ic.saveImageToDevice(tempBi, file);
-        }
-    }
-
-
+    /**
+     * Create an empty flower, with current month and location.
+     * In case of no data, this data will be used.
+     * @return the flower
+     */
     public Flower TestFlower()
     {
         GPSTracker gps;
