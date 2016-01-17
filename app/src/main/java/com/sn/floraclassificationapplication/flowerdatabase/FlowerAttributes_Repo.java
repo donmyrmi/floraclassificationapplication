@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Sapir on 05-Dec-15.
+ * Repository of a flower in the databse
  */
 
 public class FlowerAttributes_Repo extends AbstractFlower_Repo implements RepositoryController{
@@ -27,6 +27,11 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         dbHelper = DBController.getInstance(context);
     }
 
+    /**
+     * Insert new row of flower attributes
+     * @param DBFlower flower to insert
+     * @return status
+     */
     public int insert(AbstractDBFlower DBFlower){
         FlowerAttributes flowerAttributes = (FlowerAttributes)DBFlower;
         //Open connection to write data
@@ -60,6 +65,10 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         return (int) FlowerAttributes_Id;
     }
 
+    /**
+     * Delete a row from the db table
+     * @param flower_Id the flower id to delete
+     */
     public void delete(int flower_Id) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -67,6 +76,10 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         db.close(); // Closing database connection
     }
 
+    /**
+     * Update a table entry of a flower
+     * @param DBFlower the flower to update
+     */
     public void update(AbstractDBFlower DBFlower) {
 //        FlowerAttributes flowerAttributes = (FlowerAttributes) DBFlower;
 //        SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -81,6 +94,11 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
 //        db.close(); // Closing database connection
     }
 
+
+    /**
+     * Retrieve flower attributes from the database to ArrayList of <String, Object>
+     * @return the ArrayList of data
+     */
     public ArrayList<HashMap<String, Object>> getAttributesList() {
         //Open connection to read only
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -129,6 +147,11 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         return FlowerAttributesList;
     }
 
+    /**
+     * retrieve flower attributes from the db
+     * @param Id id of the flower
+     * @return FlowerAttributes class
+     */
     public FlowerAttributes getAttributesById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -173,7 +196,12 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
         db.close();
         return flowerAttributes;
     }
-    //Converting double[] to string method
+
+    /**
+     * Converting double[] to string method
+     *  Used for insertion of Hu moments min, max and weights to the db
+     * @param flowerAttributes attributes to convert
+     */
     public void convertArrayToString(FlowerAttributes flowerAttributes){
 
         int i = 0;
@@ -193,7 +221,14 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
             hu8MomentsWeightsString += "::";
         }
     }
-    //Converting string to double[] method
+
+    /**
+     * Convery string to double[] method
+     * used to retrieve hu moment min,max and weights from the database
+     * @param flowerAttributes flower to retrieve data  to
+     * @param str the retrieved string
+     * @param type type to convert: min/max or weight
+     */
     public void convertStringToArray(FlowerAttributes flowerAttributes,String str,int type){
         String[] strToPars;
         int i;
@@ -223,6 +258,11 @@ public class FlowerAttributes_Repo extends AbstractFlower_Repo implements Reposi
 
     }
 
+    /**
+     * Retrieve data from cursor and fill FlowerAttributes according to the data retrieved
+     * @param DBFlower Flower to insert data to
+     * @param cursor Cursor to retrieve data from
+     */
     public void setParams(AbstractDBFlower DBFlower,Cursor cursor)
     {
         FlowerAttributes flowerAttributes = (FlowerAttributes) DBFlower;

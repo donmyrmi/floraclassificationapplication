@@ -1,7 +1,7 @@
 package com.sn.floraclassificationapplication.flowerdatabase;
 
 /**
- * Created by Sapir on 05-Dec-15.
+ * Repository for DB class FlowerLocation
  */
 
 import android.content.ContentValues;
@@ -26,6 +26,11 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         dbHelper = DBController.getInstance(context);
     }
 
+    /**
+     * Insert new row of flower attributes
+     * @param DBFlower flower to insert
+     * @return status
+     */
     public int insert(AbstractDBFlower DBFlower) {
 
         FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
@@ -42,6 +47,10 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         return (int) FlowerLocation_Id;
     }
 
+    /**
+     * Delete a row from the db table
+     * @param flower_Id the flower id to delete
+     */
     public void delete(int flower_Id) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -49,6 +58,10 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         db.close(); // Closing database connection
     }
 
+    /**
+     * Update a table entry of a flower
+     * @param DBFlower the flower to update
+     */
     public void update(AbstractDBFlower DBFlower) {
 
         FlowerLocation flowerLocation = (FlowerLocation)DBFlower;
@@ -61,6 +74,10 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         db.close(); // Closing database connection
     }
 
+    /**
+     * Retrieve flower attributes from the database to ArrayList of <String, Object>
+     * @return the ArrayList of data
+     */
     public ArrayList<HashMap<String, Object>>  getAttributesList() {
         //Open connection to read only
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -92,6 +109,11 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         return Flower_Location;
     }
 
+    /**
+     * retrieve flower attributes from the db
+     * @param Id id of the flower
+     * @return FlowerAttributes class
+     */
     public FlowerLocation getAttributesById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -119,15 +141,25 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         return flowerLocation;
     }
 
+
+    /**
+     * Add a location to flowering location ArrayList
+     * @param flowerId flower to add location to
+     * @param loc Location to add
+     */
     public void addLocation(int flowerId,FloweringLocation loc)
     {
         FlowerLocation flowerLoc = getAttributesById(flowerId);
         FloweringLocation location = new FloweringLocation(loc.getLongitudeMin(),loc.getLatitudeMin(),loc.getLongitudeMax(),loc.getLatitudeMin());
         flowerLoc.locations.add(location);
-        updateRaw(flowerLoc);
+        updateRow(flowerLoc);
     }
 
-    public void updateRaw(FlowerLocation flowerLoc)
+    /**
+     * Update flowering locaiton of a flower
+     * @param flowerLoc Locaiton to update
+     */
+    public void updateRow(FlowerLocation flowerLoc)
     {
         delete(flowerLoc.flower_ID);
         insert(flowerLoc);
@@ -153,6 +185,11 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         }
     }
 
+    /**
+     * Retrieve data from cursor and fill FlowerLocation according to the data retrieved
+     * @param DBFlower Flower to insert data to
+     * @param cursor Cursor to retrieve data from
+     */
     public void setParams(AbstractDBFlower DBFlower,Cursor cursor)
     {
         String tempStr;
@@ -162,6 +199,10 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         convertStringToFloweringLocations(flowerLocation,tempStr);
     }
 
+    /**
+     * Converting flowering location of a flower to a string
+     * @param floweringLocations
+     */
     public void convertFloweringLocationToString(ArrayList<FloweringLocation> floweringLocations)
     {
         int i = 1;
@@ -189,6 +230,11 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
 
     }
 
+    /**
+     * Convert a string to an ArrayList of flowering location
+     * @param flowerLocation class to insert data to
+     * @param strToConvert String to retrieve data from
+     */
     public void convertStringToFloweringLocations(FlowerLocation flowerLocation, String strToConvert)
     {
         String[] strToPars;
@@ -211,7 +257,7 @@ public class FlowerLocation_Repo extends AbstractFlower_Repo implements Reposito
         }
     }
 
-public String getFloweringLocationsString()
+    public String getFloweringLocationsString()
 {
     return floweringLocationsString;
 }

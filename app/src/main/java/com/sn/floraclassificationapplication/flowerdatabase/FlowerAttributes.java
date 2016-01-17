@@ -9,7 +9,12 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
- * Created by Sapir on 05-Dec-15.
+ * Attributes of a flower in the database.
+ * Attributes:
+ * Flower id
+ * Image angle
+ * Moments: min, max and weight
+ * RGB color averages: min max and weight
  */
 public class FlowerAttributes extends AbstractDBFlower{
     //Labels table name

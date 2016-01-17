@@ -2,7 +2,6 @@ package com.sn.floraclassificationapplication.flowerdatabase;
 
 /**
  * Repository for DB class FlowerGeneralAtt
- * Created by Sapir on 29-Nov-15.
  */
 
 import android.content.ContentValues;
@@ -28,6 +27,11 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         dbHelper = DBController.getInstance(context);
     }
 
+    /**
+     * Insert new row of flower attributes
+     * @param DBFlower flower to insert
+     * @return status
+     */
     public int insert(AbstractDBFlower DBFlower) {
 
         FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;
@@ -45,13 +49,21 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         return (int) FlowerGeneralAtt_Id;
     }
 
+    /**
+     * Delete a row from the db table
+     * @param flower_Id the flower id to delete
+     */
     public void delete(int flower_Id) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(FlowerGeneralAtt.TABLE, FlowerGeneralAtt.KEY_ID + "= ?", new String[] { String.valueOf(flower_Id) });
+        db.delete(FlowerGeneralAtt.TABLE, FlowerGeneralAtt.KEY_ID + "= ?", new String[]{String.valueOf(flower_Id)});
         db.close(); // Closing database connection
     }
 
+    /**
+     * Update a table entry of a flower
+     * @param DBFlower the flower to update
+     */
     public void update(AbstractDBFlower DBFlower) {
 
         FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;
@@ -66,6 +78,10 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         db.close(); // Closing database connection
     }
 
+    /**
+     * Retrieve flower attributes from the database to ArrayList of <String, Object>
+     * @return the ArrayList of data
+     */
     public ArrayList<HashMap<String, Object>>  getAttributesList() {
         //Open connection to read only
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -101,6 +117,11 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
         return FlowerInDBList;
     }
 
+    /**
+     * retrieve flower attributes from the db
+     * @param Id id of the flower
+     * @return FlowerAttributes class
+     */
     public FlowerGeneralAtt getAttributesById(int Id){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String selectQuery =  "SELECT  " +
@@ -146,23 +167,11 @@ public class FlowerGeneralAtt_Repo extends AbstractFlower_Repo implements Reposi
             return gradedResultList;
         }
 
-    //set flower in temporary table
-    private void setTempFlowerTable(Flower flowerToInsert,int angle,int flower_ID)
-    {
-        tempFlowerTable.put("flowerId",flower_ID);
-        tempFlowerTable.put("angle",angle);
-        tempFlowerTable.put("avgColor",flowerToInsert.getColor());
-        tempFlowerTable.put("months",flowerToInsert.getMonth());
-        tempFlowerTable.put("longitude",flowerToInsert.getLongitude());
-        tempFlowerTable.put("latitude", flowerToInsert.getLatitude());
-        tempFlowerTable.put("hu8Moments", flowerToInsert.getHu8Moments());
-    }
-
-    public HashMap<String,Object> getTempFlowerTable()
-    {
-        return tempFlowerTable;
-    }
-
+    /**
+     * Retrieve data from cursor and fill FlowerGeneralAtt according to the data retrieved
+     * @param DBFlower Flower to insert data to
+     * @param cursor Cursor to retrieve data from
+     */
     public void setParams(AbstractDBFlower DBFlower, Cursor cursor)
     {
         FlowerGeneralAtt flowerGeneralAtt = (FlowerGeneralAtt)DBFlower;

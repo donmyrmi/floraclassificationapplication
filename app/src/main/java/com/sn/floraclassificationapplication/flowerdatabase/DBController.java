@@ -29,43 +29,38 @@ import java.util.regex.Pattern;
 
 /**
  * Database controller.
- * Handles updating DB and getting flower informations
+ * Handles updating DB and getting flower information.
+ * Can handle table creation and updates.
  */
 public class DBController extends SQLiteOpenHelper{
+
+    private List<FlowerInDB> flowerInDB; // list of the DB flowers
+    private static DBController ourInstance;
+
     //version number to upgrade database version
     //each time if you Add, Edit table, you need to change the
     //version number.
-    private List<FlowerInDB> flowerInDB;
-    private static DBController ourInstance;
     private static final int DATABASE_VERSION = 1;
-    private static FlowerGeneralAtt_Repo flowerGeneralAtt_repo;
-    private static FlowerAttributes_Repo flowerAttributes_repo;
-    private static FlowerLocation_Repo flowerLocation_repo;
+
+    private static FlowerGeneralAtt_Repo flowerGeneralAtt_repo; // repository of flower general attributes table
+    private static FlowerAttributes_Repo flowerAttributes_repo; // repository of flower Hu + RGB attributes table
+    private static FlowerLocation_Repo flowerLocation_repo; // repository of flower locations table
+
     // Database Name & path
     private static final String DATABASE_NAME = "FlowersCRUD.db";
     private static String DB_FILEPATH = "/data/data/com.sn.floraclassificationapplication/databases/FlowersCRUD.db";
     private static SQLiteDatabase db;
-    public static boolean dbSuccess;
 
     private DBController(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-//        try
-//        {
-//            insertFromFile(context,R.raw.flowers);
-//        }
-//        catch (Exception ioEx)
-//        {
-//            System.out.print("IO EXCEPTION - DBController constructor");
-//        }
 
         db = getWritableDatabase();
-        //loadTestFlowerDB();
     }
 
     /**
      * return instance of the DBController. initialize if necessary.
      * @param context application context
-     * @return
+     * @return A singleton instance
      */
     public static DBController getInstance(Context context) {
         if (ourInstance == null) {
@@ -78,17 +73,15 @@ public class DBController extends SQLiteOpenHelper{
             {
                 insertFromFile(context,R.raw.flowers);
                 DB_FILEPATH = context.getFilesDir().getPath() + "/databases/FlowersCRUD.db";
-                //dbSuccess = ourInstance.importDatabase("/data/data/com.sn.floraclassificationapplication/FlowersCRUD.sql");
 
+                // update database from .sql file
                 insertFromFile(context, R.raw.flowers);
 
             }
             catch (Exception IOException)
             {
                 IOException.printStackTrace();
-                System.out.print("IOExecption occurred");
             }
-
         }
 
         return ourInstance;
@@ -102,7 +95,7 @@ public class DBController extends SQLiteOpenHelper{
      * @throws IOException
      */
     public static int insertFromFile(Context context, int resourceId) throws IOException {
-        // Reseting Counter
+        // Counter for number of updated rows
         int result = 0;
 
         // Open the resource
@@ -121,11 +114,9 @@ public class DBController extends SQLiteOpenHelper{
             }
 
             result++;
-            // rest of your logic
         }
 
-
-        // returning number of inserted rows
+        // returning number of inserted/updated rows
         return result;
     }
 
@@ -179,7 +170,6 @@ public class DBController extends SQLiteOpenHelper{
 
         // Create tables again
         onCreate(database);
-
     }
 
     /**
@@ -270,7 +260,7 @@ public class DBController extends SQLiteOpenHelper{
     }
 
     /**
-     * Get flowers from DB
+     * Retrieve flowers data from DB
      */
     public void getFlowers()
     {
@@ -321,7 +311,7 @@ public class DBController extends SQLiteOpenHelper{
     }
 
     /**
-     * Sort the ListArray of the DB flowers based on the ranks.
+     * Sort the ListArray of the DB flowers based on their ranks.
      */
     public void sortFlowerByRanks() {
         Collections.sort(flowerInDB, new Comparator<FlowerInDB>() {
@@ -331,5 +321,3 @@ public class DBController extends SQLiteOpenHelper{
         });
     }
 }
-//    public Cursor query (String table, String[] columns, String selection, String[] selectionArgs,
-//                         String groupBy, String having, String orderBy, String limit)

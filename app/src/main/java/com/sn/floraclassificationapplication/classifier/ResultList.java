@@ -27,6 +27,15 @@ public class ResultList extends ArrayAdapter<String> {
     private final boolean[] isRGB;
     private ImageController ic = ImageController.getInstance();
 
+    /**
+     * Create a entry in the result list
+     * @param context - The application context
+     * @param upTxt - Flower name
+     * @param imageId - Flower image icon
+     * @param downTxt - optional, text under the flower name
+     * @param rankText - matching score for the flower
+     * @param isRGB - if true image of the flower will be an rgb background from imageID value
+     */
     public ResultList(AppCompatActivity context,
                       String[] upTxt, int[] imageId, String[] downTxt, String[] rankText, boolean[] isRGB) {
         super(context, R.layout.resultsingle, upTxt);
@@ -62,14 +71,12 @@ public class ResultList extends ArrayAdapter<String> {
             options.inSampleSize = 8;
             tempBi = BitmapFactory.decodeResource(context.getResources(), imageId[position], options);
         }
-        //tempBi = ic.getRoundedShape(tempBi);
-
 
         upTxtTitle.setText(upTxt[position]);
         downTxtTitle.setText(downTxt[position]);
         rankTxtTitle.setText(rankText[position]+'%');
         imageView.setImageBitmap(tempBi);
-        //imageView.setImageResource(imageId[position]);
+
         return rowView;
     }
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Sapir on 13-Dec-15.
+ * Abstract class for SQL tables
  */
 abstract class AbstractDBFlower {
 

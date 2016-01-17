@@ -1,7 +1,7 @@
 package com.sn.floraclassificationapplication.flowerdatabase;
 //based on SQLite Database
 /**
- * Created by Nadav and Sapir on 19-Nov-15.
+ * Object of a flower in the database.
  */
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -27,27 +27,10 @@ public class FlowerInDB extends AbstractDBFlower{
     //Label table column names
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
-    public static final String KEY_flowerImage = "flowerImageIndex";
-    public static final String KEY_hu8MomentsMax = "hu8MomentsMax";
-    public static final String KEY_hu8MomentsMin = "hu8MomentsMin";
-    public static final String KEY_red = "red";
-    public static final String KEY_redMin = "redMin";
-    public static final String KEY_redMax = "redMax";
-    public static final String KEY_redRange = "redRange";
-    public static final String KEY_green = "green";
-    public static final String KEY_greenMin = "greenMin";
-    public static final String KEY_greenMax = "greenMax";
-    public static final String KEY_greenRange = "greenRange";
-    public static final String KEY_blue = "blue";
-    public static final String KEY_blueMin = "blueMin";
-    public static final String KEY_blueMax = "blueMax";
-    public static final String KEY_blueRange = "blueRange";
-    public static final String KEY_locations = "locations";
-    public static final String KEY_months = "months";
-    public static final String KEY_momentsWeight = "momentsWeight";
-    public static final String KEY_colorWeight = "colorWeight";
 
-    //attributes of the flower in DB
+    /*
+    attributes of the flower in DB
+     */
     protected int flower_ID;
     private  String name;
     private int flowerImage;
@@ -63,12 +46,15 @@ public class FlowerInDB extends AbstractDBFlower{
     private List<FloweringLocation> locations;
     private  int months;
 
+    /*
+    Attribute weights
+     */
     private float[] momentsWeight;
     private float colorWeight;
     private float dateWeight;
     private float locationWeight;
 
-    private float rank;
+    private float rank; // flower rank
 
     public FlowerInDB(int fid) {
         flower_ID = fid;

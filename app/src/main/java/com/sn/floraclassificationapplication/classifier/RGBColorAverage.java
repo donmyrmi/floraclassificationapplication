@@ -43,6 +43,11 @@ public class RGBColorAverage extends AsyncTask<Bitmap, Void, Integer> {
         return Color.rgb(rTot,gTot,bTot);
     }
 
+    /**
+     * Calculte the RGB averages of the flower, ASync.
+     * @param params image to extract RGB averages from
+     * @return RGB color as int
+     */
     @Override
     protected Integer doInBackground(Bitmap... params) {
         Bitmap bi = (Bitmap) params[0];

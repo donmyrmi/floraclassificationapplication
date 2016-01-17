@@ -1,7 +1,7 @@
 package com.sn.floraclassificationapplication.flowerdatabase;
 
 /**
- * Created by Sapir on 19-Dec-15.
+ * Abstract class for the DB repository
  */
 public class AbstractFlower_Repo {
 

@@ -7,7 +7,11 @@ import android.location.Location;
 import java.util.List;
 
 /**
- * Created by Sapir on 05-Dec-15.
+ * General attributes of a flower in the database:
+ * Flower id
+ * Flower name
+ * Flowering months and weight
+ * Locations and location weight
  */
 public class FlowerGeneralAtt extends AbstractDBFlower {
 
